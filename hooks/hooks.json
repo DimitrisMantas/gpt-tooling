@@ -1,0 +1,20 @@
+{
+  "description": "This hook restores a compact Engineering Partner policy when a Codex session starts or resumes after compaction.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/session_start.py\"",
+            "commandWindows": "py -3 \"%PLUGIN_ROOT%\\hooks\\session_start.py\"",
+            "timeout": 5,
+            "statusMessage": "Loading the Engineering Partner policy.",
+            "additionalContextLimit": 1200
+          }
+        ]
+      }
+    ]
+  }
+}
