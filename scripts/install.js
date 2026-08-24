@@ -6,9 +6,9 @@ const { spawnSync } = require("child_process");
 
 const root = path.join(__dirname, "..");
 const marketplacePath = path.join(root, ".agents", "plugins", "marketplace.json");
-const marketplaceName = "engineer-suite";
-const plugins = ["engineer", "writer", "ponytail"];
-const predecessors = ["engineering", "engineering-partner", "writing"];
+const marketplaceName = "personal-engineering-tooling";
+const plugins = ["plinth", "quire", "ponytail"];
+const predecessors = ["engineering", "engineering-partner", "engineer", "writing", "writer"];
 const ponytailCommit = "2ed6c52c9d7e5e56942508591085fd45dea277d3";
 
 function run(command, args, options = {}) {
@@ -81,9 +81,9 @@ function installPlugins() {
   }
   const duplicates = installed.filter(plugin => predecessors.includes(plugin.name) || (plugins.includes(plugin.name) && plugin.marketplaceName !== marketplaceName));
   if (duplicates.length) {
-    process.stdout.write(`The suite is installed. Disable or remove these predecessor or duplicate plugins before starting a new thread: ${duplicates.map(plugin => plugin.pluginId).join(", ")}.\n`);
+    process.stdout.write(`The toolkit is installed. Disable or remove these predecessor or duplicate plugins before starting a new thread: ${duplicates.map(plugin => plugin.pluginId).join(", ")}.\n`);
   } else {
-    process.stdout.write("The Engineer suite is installed. Review and trust its hooks, then start a new thread.\n");
+    process.stdout.write("The personal engineering toolkit is installed. Review and trust its hooks, then start a new thread.\n");
   }
 }
 
@@ -91,7 +91,7 @@ function selfTest() {
   initializePonytail();
   verifyFiles();
   JSON.parse(runCodex(["plugin", "marketplace", "list", "--json"]));
-  process.stdout.write("The Engineer suite installer checks passed.\n");
+  process.stdout.write("The personal engineering toolkit installer checks passed.\n");
 }
 
 if (process.argv[2] === "test") {

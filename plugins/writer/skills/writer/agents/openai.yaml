@@ -1,7 +1,0 @@
-interface:
-  display_name: "Writer"
-  short_description: "Always-on writing for responses, documents, logs, and messages"
-  default_prompt: "Use $writer to apply the Writer standard to this response or text artifact."
-
-policy:
-  allow_implicit_invocation: true

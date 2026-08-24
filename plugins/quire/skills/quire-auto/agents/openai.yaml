@@ -1,0 +1,7 @@
+interface:
+  display_name: "Automatic"
+  short_description: "Let Quire select the writing branch"
+  default_prompt: "Use $quire-auto to select Quire's Automatic mode."
+
+policy:
+  allow_implicit_invocation: false

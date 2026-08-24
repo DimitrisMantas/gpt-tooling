@@ -1,0 +1,7 @@
+interface:
+  display_name: "Quire"
+  short_description: "Always-on writing for responses, documents, logs, and messages"
+  default_prompt: "Use $quire to apply the Quire policy to this response or text artifact."
+
+policy:
+  allow_implicit_invocation: true

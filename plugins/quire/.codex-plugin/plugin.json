@@ -1,0 +1,26 @@
+{
+  "name": "quire",
+  "version": "1.0.0",
+  "description": "Apply an always-on, medium-aware writing policy with Standard and Technical branches to every natural-language surface.",
+  "author": {
+    "name": "Local developer"
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Quire",
+    "shortDescription": "Always-on writing for all natural-language output",
+    "longDescription": "Applies the Standard writing policy to every natural-language surface and progressively loads its Technical extension when the artifact requires it.",
+    "developerName": "Local developer",
+    "category": "Productivity",
+    "capabilities": [
+      "Instructions",
+      "Lifecycle hooks"
+    ],
+    "defaultPrompt": [
+      "Use Quire in Automatic mode.",
+      "Use Quire in Standard mode.",
+      "Use Quire in Technical mode."
+    ]
+  }
+}

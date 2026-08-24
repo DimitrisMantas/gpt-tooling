@@ -1,14 +1,14 @@
 {
-  "name": "engineer-suite",
+  "name": "personal-engineering-tooling",
   "interface": {
-    "displayName": "Engineer Suite"
+    "displayName": "Personal Engineering Tooling"
   },
   "plugins": [
     {
-      "name": "engineer",
+      "name": "plinth",
       "source": {
         "source": "local",
-        "path": "./plugins/engineer"
+        "path": "./plugins/plinth"
       },
       "policy": {
         "installation": "INSTALLED_BY_DEFAULT",
@@ -17,10 +17,10 @@
       "category": "Productivity"
     },
     {
-      "name": "writer",
+      "name": "quire",
       "source": {
         "source": "local",
-        "path": "./plugins/writer"
+        "path": "./plugins/quire"
       },
       "policy": {
         "installation": "INSTALLED_BY_DEFAULT",

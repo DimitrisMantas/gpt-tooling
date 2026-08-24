@@ -1,0 +1,7 @@
+interface:
+  display_name: "Standard"
+  short_description: "Force Quire's standard writing branch"
+  default_prompt: "Use $quire-standard to select Quire's Standard mode."
+
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Plinth"
+  short_description: "General, defensible engineering decisions"
+  default_prompt: "Use $plinth to make this engineering work standard, evidence-grounded, and defensible."
+
+policy:
+  allow_implicit_invocation: true

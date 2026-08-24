@@ -1,0 +1,7 @@
+interface:
+  display_name: "Technical"
+  short_description: "Force Quire's technical writing branch"
+  default_prompt: "Use $quire-technical to select Quire's Technical mode."
+
+policy:
+  allow_implicit_invocation: false
