@@ -82,7 +82,7 @@ Automatic mode routes by purpose rather than by nouns. A business report or repo
 
 ## Plinth agents
 
-Plinth includes bounded profiles for code, methods, and claim review. They are optional because reviewer topology should follow the material failure modes of the task. See the [Plinth agent guide](plugins/plinth/codex-agents/README.md), then install them when you want the profiles available in your Codex agent directory:
+Plinth includes bounded profiles for methods, code, and claim review. They are optional because reviewer topology should follow the material failure modes of the task. See the [Plinth agent guide](plugins/plinth/codex-agents/README.md), then install them when you want the profiles available in your Codex agent directory:
 
 ```bash
 node plugins/plinth/scripts/install-agents.js

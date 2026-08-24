@@ -89,8 +89,8 @@ Technical feedback is evidence or a proposal to evaluate. Reviewer identity does
 
 Optional Plinth agents are documented in the [agent guide](codex-agents/README.md):
 
-- `plinth-code.toml` checks implementation fidelity and material code-level defects.
 - `plinth-methods.toml` checks scientific, statistical, experimental, and evaluation validity.
+- `plinth-code.toml` checks implementation fidelity and material code-level defects.
 - `plinth-claims.toml` checks whether available evidence supports a consequential claim.
 
 Use one only for a distinct material failure mode or bounded investigation that benefits from fresh context. The parent agent retains synthesis and decision ownership.
