@@ -1,43 +1,46 @@
 # Engineering Partner
 
-Engineering Partner is a Codex plugin and standalone skill for general-purpose and task-specific engineering work. It changes how Codex frames problems, selects methods, teaches consequential concepts, gathers evidence, diagnoses failures, and reviews important work. It does not replace a dedicated coding-style skill or a dedicated writing skill.
+Engineering Partner is an always-on, general-purpose engineering discipline for Codex. It evolves the installed Engineering skill and hook without changing their aim: produce the best result available while making every engineering item, decision, and action as standard, evidence-grounded, reviewable, and defensible as possible.
 
-Version 1.3.0 adds an explicit null-result policy, source-of-truth precedence, settled-decision preservation, project-convention precedence, custom-method sanity checks, material-threshold provenance, reproducibility-versus-stability guidance, external-test quarantine, semantic boundary checks, and stricter local review scope.
+The package adds progressive guidance for method selection, teaching, empirical work, diagnosis, review, and skill composition. It remains domain-agnostic. The same policy applies to software, architecture, systems, hardware, interfaces, models, methods, estimates, experiments, operations, validation, and reviews.
 
-The package uses a short governing skill, progressive-disclosure references, one compact session hook, and three optional read-only reviewer profiles. This structure keeps persistent context small and loads detailed guidance only when the task needs it.
+Version 1.4.0 aligns the package with the installed Engineering, Ponytail, and Writing packages. It expands the policy from consequential work to all engineering work, restores the complete skill in parent sessions and subagents, uses typed authority and proportionate research, controls complexity through a material-need test, removes duplicated specialist policy, and generalizes the behavioral evaluations.
 
-## Intended operating model
-
-Use GPT-5.6 Sol with High reasoning for the main Codex session when the work involves consequential engineering judgement, unfamiliar methodology, experimental design, difficult diagnosis, or review. The optional reviewer profiles use `model = "gpt-5.6"` and `model_reasoning_effort = "high"`.
+## Operating model
 
 Engineering Partner uses these defaults:
 
-- It treats the current requirement and current project artifacts as the source of truth before prior chat or model memory.
-- It starts from repository facts and established practice before it invents a method.
-- It translates informal symptoms into established technical problem classes.
-- It teaches at consequential decision boundaries and automates routine work between those boundaries.
-- It uses engineering fitness for purpose as the normal correctness standard.
-- It applies explicit requests for proof, exactness, exhaustive search, or optimization literally to the requested object.
-- It accepts clean or null results when no material action is justified. `None` is allowed when an interface naturally represents null that way, but ordinary agent communication uses natural technical prose rather than required status tokens.
-- It derives metrics, diagnostics, experiments, and review work from material evidence obligations instead of fixed counts.
-- It preserves accepted decisions until a requirement changes or new material evidence invalidates them.
-- It prefers deterministic checks and encoded invariants over agent opinion.
-- It uses independent agents only for distinct material review axes or consequential uncertain claims.
-- It stops when remaining uncertainty cannot change the current engineering action.
+- Authority follows the question. Current requirements govern project intent, project artifacts govern current behavior, current specifications govern external semantics, and applicable methodological evidence governs scientific claims.
+- Inspectable facts are resolved before the user is asked to make a decision.
+- Informal symptoms are translated into established technical problem classes.
+- The simplest established solution that satisfies the requirement is the baseline. Every added abstraction, dependency, method, metric, agent, or workflow layer must address a named material limitation.
+- External research is used when an unresolved judgment is consequential, unfamiliar, contested, scientifically material, or uncertain enough that stronger evidence could change the decision. Research depth follows consequence and uncertainty.
+- Source weight reflects applicability, methods, review and publication process, established standing and relevant track record, independent support, transparency, conflicts, currency, and correction status. Reputation and uptake remain supporting signals.
+- Departures from established practice require a material reason from requirements or evidence. Their validation and rollback burden increases with novelty and consequence.
+- The user receives a recommendation and the conceptual bridge needed to own material decisions.
+- Engineering fitness for purpose is the default correctness standard. Explicit requests for proof, exactness, exhaustive search, optimization, or a specified tolerance apply literally to the requested object.
+- Metrics, diagnostics, experiments, and reviews exist only to meet material evidence obligations.
+- Clean and null results are valid. Insufficient evidence remains distinct from a clean result.
+- Deterministic checks and encoded invariants precede agent judgment when a condition is mechanically testable.
+- Accepted decisions remain settled until requirements or material evidence change.
+- Independent reviewers address distinct material risks. They do not act as votes.
+- Work stops when remaining uncertainty cannot change the next engineering action.
 
 ## Package layout
 
 ```text
-engineering-partner-v1.3.0-audited/
+engineering-partner/
 ├── .codex-plugin/
 │   └── plugin.json
 ├── README.md
 ├── hooks/
-│   ├── hooks.json
-│   └── session_start.py
+│   ├── engineering-partner.js
+│   └── hooks.json
 ├── skills/
 │   └── engineering-partner/
 │       ├── SKILL.md
+│       ├── agents/
+│       │   └── openai.yaml
 │       └── references/
 │           ├── authoring-and-composition.md
 │           ├── diagnosis-and-review.md
@@ -48,79 +51,65 @@ engineering-partner-v1.3.0-audited/
 │   ├── implementation_reviewer.toml
 │   └── methodology_reviewer.toml
 ├── scripts/
-│   └── install_agents.py
+│   └── install-agents.js
 └── evals/
     └── BEHAVIORAL_EVALS.md
 ```
 
-The plugin manifest points only to the bundled skill. Codex automatically discovers `hooks/hooks.json` at the plugin root, so the manifest does not repeat that path.
+Codex discovers `hooks/hooks.json` at the plugin root. The hook uses the Node.js runtime already used by the installed Engineering, Ponytail, and Writing hooks. It loads the complete skill once per agent context when needed, emits only developer context, and does not inspect or modify project files.
 
-## Null-result policy
+## Install the plugin or skill
 
-The package explicitly treats a clean or null result as successful completion when it is the correct engineering outcome. It does not require a literal keyword for that state unless a machine-readable workflow needs one.
+Use the OpenAI plugin-creator workflow to add this folder to a personal or repository marketplace, then install it from that local source. Review and trust the hook definition if you want automatic activation. Plugin hooks are not trusted automatically.
 
-Examples include:
+For a standalone installation, copy `skills/engineering-partner/` to the applicable skills directory. A user installation can live at `$HOME/.agents/skills/engineering-partner/`; a repository installation can live under the repository's `.agents/skills/` hierarchy.
 
-- A review finds no material defect.
-- A search finds no clear precedent.
-- A comparison shows no material difference.
-- A diagnosis finds no justified change from the available evidence.
-- The current implementation is already fit for purpose.
+Keep repository-specific instructions and navigation in `AGENTS.md`. Do not copy this reusable policy into a large global instruction file.
 
-The package distinguishes a true clean result from unresolved uncertainty. Reviewers state the result naturally. They explain missing evidence when a material concern cannot be settled. `None` remains available only when the surrounding interface naturally represents a null result that way.
+## Install optional reviewer profiles
 
-## Install the plugin
-
-For local development, use the built-in OpenAI plugin-creator workflow to add this folder to a personal or repository marketplace. Review the generated marketplace entry, install the plugin from that local source, and test it in a new Codex session.
-
-Codex does not automatically trust hooks that arrive through a plugin. Review and trust the bundled hook definition if you want the session policy to load. The hook only emits static developer context. It does not read or modify project files.
-
-If you want only the standalone skill, copy `skills/engineering-partner/` to an appropriate `.agents/skills/` location. A user-level installation can live under `$HOME/.agents/skills/engineering-partner/`. A repository-specific installation can live under the repository's `.agents/skills/` hierarchy.
-
-Do not copy the full skill into a large global `AGENTS.md`. Use `AGENTS.md` for repository-specific requirements and navigation. Keep detailed reusable policy in the skill references.
-
-## Install the optional reviewer profiles
-
-The plugin format does not bundle Codex custom agent profiles as a plugin component, so the three profiles are provided separately. Install them with:
+The three read-only Codex custom-agent profiles are separate because the plugin manifest does not install user agent profiles. Install them with:
 
 ```bash
-python scripts/install_agents.py
+node scripts/install-agents.js
 ```
 
 Use `--force` only when you intend to replace profiles with the same filenames.
 
-The profiles are read-only and use GPT-5.6 High reasoning:
+The bundled profiles currently use `gpt-5.6` with high reasoning:
 
-- `methodology_reviewer` checks scientific, statistical, experimental, analytical, and evaluation validity.
-- `implementation_reviewer` checks the implementation against the agreed requirement and invariants.
-- `claim_validator` checks one consequential uncertain reviewer finding or technical claim and explains whether the evidence supports it, contradicts it, or remains insufficient.
+- `methodology_reviewer` tests one material scientific, statistical, experimental, analytical, or evaluation concern.
+- `implementation_reviewer` tests the implementation against the accepted requirement and invariants.
+- `claim_validator` checks one consequential uncertain finding or claim.
 
-Do not dispatch all three by default. The parent agent should use only the reviewer whose failure mode is material to the current task.
+Dispatch only the role whose failure mode is material to the task. The parent agent retains responsibility for the objective, constraints, synthesis, teaching, and user escalation.
 
-## Compose with Ponytail Full and the writing skill
+## Compose with Engineering, Ponytail, and Writing
 
-Keep Ponytail Full and the user's dedicated writing skill installed as separate specialists. Engineering Partner is the cross-cutting orchestration layer. It owns problem formulation, methodological grounding, evidence, technical semantics, decision ownership, and review policy.
+Engineering Partner and the installed Engineering skill share the same purpose. If both are active, apply the more specific Engineering Partner guidance without weakening the installed Engineering discipline.
 
-For implementation work, apply Ponytail Full after the engineering requirement and accepted design are clear. Ponytail should minimize the implementation by reusing the codebase, the standard library, native platform capabilities, and existing dependencies before new code or abstractions are added. It can surface an implementation constraint that changes the engineering trade-off, but it should not silently redefine an accepted requirement or methodology.
+Ponytail governs code and coding decisions: implementation economy, reuse, dependency and abstraction restraint, root-cause fixes, and the smallest correct diff. Engineering Partner governs the engineering requirement, semantics, accepted design, evidence, conventionality, quality, risk, teaching, and defensibility.
 
-For prose artifacts, apply the user's writing skill to the final expression, structure, and artifact-specific style. Engineering Partner continues to govern technical terminology, evidence fidelity, claim strength, and material limitations. A writing pass must not change the technical meaning merely to improve the prose.
+Writing governs every natural-language surface. Its scientific extension applies to papers, reports, literature reviews, and written reviews. Engineering Partner retains ownership of technical meaning, terminology, evidence boundaries, claim strength, and material limitations.
 
-The same task can use all three layers. The orchestrator should delegate concerns rather than reproduce the full rules of one skill inside another. Explicit user instructions and project requirements take precedence over generic skill defaults.
-
-Engineering Partner retains a short Ponytail-compatible fallback policy for environments where Ponytail Full is unavailable. It does not duplicate the complete Ponytail skill.
-
-The baseline prose policy uses direct US English, sentence-case headings, consistent terminology, active constructions when natural, and full prose sentences. It also uses Wikipedia's `Signs of AI writing` page as an editorial anti-pattern checklist and applies ASD-STE100-inspired clarity principles without claiming formal ASD-STE100 compliance.
-
-## Interagent communication
-
-The package does not impose a private mini-protocol on the orchestrator and its subagents. Agents communicate in ordinary technical prose by default. Structured fields, exact status words, or machine-readable objects are appropriate only when a downstream tool must parse the response or when the workflow branches mechanically on that state.
-
-The orchestrator should synthesize the meaning of reviewer and validator responses rather than depend on magic tokens. A reviewer can simply say that it found no material issues. A validator can explain that the evidence supports a claim, contradicts it, or does not yet settle it. Literal `None` is acceptable only when the surrounding interface already uses a null value naturally.
+All applicable skills can operate together. Explicit user instructions and project requirements take precedence. The package delegates specialist concerns instead of duplicating the complete Ponytail or Writing policy.
 
 ## Maintain and evaluate the package
 
-OpenAI's current GPT-5.6 guidance favors lean prompts, clear autonomy boundaries, and representative evaluations. Do not add another persistent rule, hook, agent, or reference file because it seems prudent in isolation. Add it when an observed failure demonstrates a gap that the existing package cannot address cleanly.
+Run the hook self-check after policy changes:
 
-Run the behavioral scenarios in `evals/BEHAVIORAL_EVALS.md` when you change the skill or hook policy. Compare representative tasks before and after the change. Preserve task success, necessary evidence, teaching quality, null-result integrity, and scope discipline while reducing redundant context and output.
+```bash
+node hooks/engineering-partner.js test
+```
 
-The source list and review date are recorded in `skills/engineering-partner/references/authoring-and-composition.md`.
+Run the optional-agent installer self-check without modifying the user agent directory:
+
+```bash
+node scripts/install-agents.js test
+```
+
+Run the scenarios in `evals/BEHAVIORAL_EVALS.md` on representative general engineering, software, empirical, and spatial or data-intensive tasks. Compare behavior before and after prompt changes. Preserve task success, evidence quality, teaching, null-result integrity, action boundaries, and scope discipline.
+
+Keep the hook compact and the skill discoverable. Add persistent policy only for a demonstrated behavioral gap that the existing governing skill or references cannot address.
+
+The review basis and date are recorded in `skills/engineering-partner/references/authoring-and-composition.md`.

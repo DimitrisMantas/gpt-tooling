@@ -1,12 +1,18 @@
 # Diagnosis and review
 
+## Build a tight diagnostic feedback loop
+
+For a difficult bug or regression, first seek the smallest executable loop that reproduces the user's actual symptom or a demonstrated equivalent. Prefer a fast, deterministic, agent-runnable check. For a stochastic failure, raise the reproduction rate enough to discriminate among hypotheses. Tighten the loop only while it preserves the relevant causal conditions.
+
+Do not spend substantial effort theorizing from static code when a practical red-and-green signal can be constructed cheaply. If direct reproduction is impractical, use the strongest available trace, log, captured artifact, or proxy and state how that limit affects the diagnosis.
+
 ## Diagnose from the smallest relevant difference
 
 When a failure appears in one experiment, configuration, environment, or recent change, begin with the nearest known-good case.
 
 Use this sequence:
 
-1. Reproduce or verify the symptom.
+1. Run the tightest available feedback loop to reproduce or verify the symptom.
 2. Identify the closest known-good case.
 3. List the smallest relevant differences between the two cases.
 4. Inspect the actual execution path before you speculate about broad causes.
@@ -39,9 +45,15 @@ If a condition can be established mechanically, check it mechanically before you
 
 Examples include test results, schema validity, file hashes, split disjointness, raster alignment, dimensionality, dependency state, configuration values, and reproducible benchmark measurements.
 
-Use agent review for questions that require judgement, such as methodological appropriateness, requirement interpretation, unsupported inference, security reasoning, or architectural trade-offs.
+Use agent review for questions that require judgment, such as methodological appropriateness, requirement interpretation, unsupported inference, security reasoning, or architectural trade-offs.
 
 Choose tests by contract and risk rather than by count or coverage theater. Prefer the smallest set of tests that exercises the changed behavior, important boundary conditions, and previously observed failure modes. Add broader tests when a material integration risk remains. Do not create test scaffolding whose maintenance cost exceeds the protection it provides.
+
+## Match success claims to evidence
+
+Before claiming that work functions, is fixed, passes, or is complete, obtain the most direct practical evidence for that claim. Match the evidence to the claim: exercise the original symptom for a bug fix, run the relevant tests for a test claim, build the applicable target for a build claim, and check the accepted requirements for a completion claim.
+
+Do not infer success solely from implementation, absence of an error while editing, a partial check, or another agent's report. If direct verification is unavailable or disproportionate, state what was verified and what remains unverified instead of implying stronger confidence.
 
 ## Review the relevant surface
 
@@ -74,7 +86,7 @@ The orchestrator should understand and synthesize the substance of subagent resp
 
 A reviewer should test one explicit material concern rather than judge the work generically.
 
-Provide the reviewer with the artifact or relevant code, the requirement, necessary project constraints, and relevant evidence. When independent judgement matters, omit the originating agent's persuasive rationale until after the reviewer forms its assessment.
+Provide the reviewer with the artifact or relevant code, the requirement, necessary project constraints, and relevant evidence. When independent judgment matters, omit the originating agent's persuasive rationale until after the reviewer forms its assessment.
 
 Keep reviewers read-only by default. The implementation agent makes changes. The reviewer that raised a blocking finding should verify the fix when practical.
 
@@ -85,6 +97,12 @@ Do not confuse a clean review with uncertainty. If the evidence cannot settle a 
 Describe a material finding in natural technical prose. Make the defect, supporting evidence, material consequence, and resolution condition clear. Use headings, fields, or a structured object only when they improve coordination or when an automated consumer requires them.
 
 Do not merge independent review axes into an arbitrary overall score or vote. Do not assign numerical confidence unless the number has a defined calibrated or statistical meaning.
+
+## Evaluate technical feedback before acting
+
+Treat a technical recommendation, diagnosis, or review finding as a proposal to evaluate, not as an instruction by default. Before consequential action, check whether its premises hold for the current project, whether the recommendation is technically correct in context, and whether it conflicts with accepted requirements or evidence. Push back, qualify, or decline the recommendation when project evidence warrants it.
+
+Explicit user instructions, accepted project requirements, and binding standards retain the authority that applies to them. Evaluate the technical rationale and proposed remedy without silently overriding a governing requirement.
 
 ## Validate consequential uncertain findings
 
@@ -100,9 +118,15 @@ Review the most fundamental validity condition before secondary quality concerns
 
 For an empirical model, methodological validity normally precedes implementation polish. For ordinary application code, requirement compliance normally precedes broader engineering quality. For a numerical implementation, mathematical formulation can precede code-level review when an incorrect formulation would make the implementation irrelevant.
 
+Keep materially independent validity axes separate. Strength on one axis cannot compensate for failure on another: implementation quality does not rescue an incorrect requirement or method, and a semantically correct solution should not be rejected merely because another implementation is aesthetically preferable.
+
 Use a final fresh-context holistic review only when the work is consequential enough that it adds material value after local findings are closed.
 
-## Stop review loops deliberately
+## Stop iterative loops deliberately
+
+Use a durable goal or other autonomous iterative loop only when the objective, permitted scope, progress evidence, and externally verifiable stopping condition are clear. Work in checkpoints proportionate to the risk and cost. Stop when the condition is met, progress is genuinely blocked, the user changes or ends the objective, or further iteration cannot materially improve the outcome under the accepted requirement.
+
+Do not define completion as subjective perfection, absence of imaginable improvements, or an agent-generated status phrase without supporting evidence.
 
 Continue a review and fix loop until blocking material findings are resolved and the agreed engineering-sufficiency conditions hold.
 
