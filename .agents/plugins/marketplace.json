@@ -1,7 +1,7 @@
 {
-  "name": "personal-engineering-tooling",
+  "name": "gpt-tooling",
   "interface": {
-    "displayName": "Personal Engineering Tooling"
+    "displayName": "GPT Tooling"
   },
   "plugins": [
     {

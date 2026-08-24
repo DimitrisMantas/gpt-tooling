@@ -10,7 +10,7 @@
   "interface": {
     "displayName": "Quire",
     "shortDescription": "Always-on writing for all natural-language output",
-    "longDescription": "Applies the Standard writing policy to every natural-language surface and progressively loads its Technical extension when the artifact requires it.",
+    "longDescription": "GPT Tooling's writing module. Applies the Standard policy to every natural-language surface and progressively loads its Technical extension when the artifact requires it.",
     "developerName": "Local developer",
     "category": "Productivity",
     "capabilities": [

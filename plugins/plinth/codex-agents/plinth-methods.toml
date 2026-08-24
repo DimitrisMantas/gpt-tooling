@@ -1,5 +1,5 @@
-name = "methodology_reviewer"
-description = "Read-only reviewer for scientific, statistical, experimental, analytical, or evaluation choices that could change the meaning or validity of an engineering result."
+name = "plinth_methods"
+description = "Read-only Plinth review of methodological validity."
 model = "gpt-5.6"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"

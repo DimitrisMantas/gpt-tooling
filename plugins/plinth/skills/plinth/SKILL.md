@@ -48,10 +48,10 @@ Ask before destructive actions, external writes, purchases or other material cos
 
 Read only the references needed for the task.
 
-- Read `references/methods-and-teaching.md` for engineering method selection, architecture or design choices, source evaluation, exactness, teaching, project conventions, and settled decisions.
-- Read `references/evidence-and-empirical-work.md` for experiments, statistics, machine learning, data, validation, metrics, diagnostics, custom analyses, stochastic stability, or scientific claims.
-- Read `references/diagnosis-and-review.md` for debugging, expensive operations, verification, semantic boundary checks, subagents, review loops, durable goals, or autonomous iteration.
-- Read `references/authoring-and-composition.md` when producing an engineering report, maintaining this package, or composing this skill with Ponytail or Quire.
+- Read `references/decisions.md` for method selection, design choices, source evaluation, exactness, teaching, project conventions, and settled decisions.
+- Read `references/evidence.md` for experiments, statistics, machine learning, data, validation, metrics, diagnostics, custom analyses, stochastic stability, or scientific claims.
+- Read `references/verification.md` for debugging, expensive operations, verification, semantic boundaries, subagents, review loops, durable goals, or autonomous iteration.
+- Read `references/integration.md` for engineering reports, toolkit maintenance, and composition with Ponytail or Quire.
 
 ## Composition with other skills
 

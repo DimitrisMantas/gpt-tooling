@@ -10,7 +10,7 @@
   "interface": {
     "displayName": "Plinth",
     "shortDescription": "General, defensible engineering decisions",
-    "longDescription": "Applies an always-on engineering discipline, adds progressive guidance for evidence and teaching, and composes with Ponytail and Quire.",
+    "longDescription": "GPT Tooling's engineering module. Applies an always-on engineering discipline with progressive guidance for evidence, teaching, review, and verification.",
     "developerName": "Local developer",
     "category": "Productivity",
     "capabilities": [

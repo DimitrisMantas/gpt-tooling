@@ -1,8 +1,8 @@
 # Plinth
 
-An always-on engineering discipline for Codex.
+The engineering module of GPT Tooling.
 
-[Return to the toolkit overview](../../README.md)
+[Return to GPT Tooling](../../README.md)
 
 Plinth provides the stable technical foundation beneath implementation and communication. It helps Codex produce the best engineering result available within the actual requirements, evidence, resources, risk, and preference for conventional solutions. It applies to software, systems, hardware, interfaces, models, methods, experiments, operations, validation, and reviews.
 
@@ -87,11 +87,11 @@ This approach favors a fast deterministic reproducer. For stochastic failures, i
 
 Technical feedback is evidence or a proposal to evaluate. Reviewer identity does not confer authority. Before applying a consequential recommendation, Plinth checks whether its premises hold in the current project, whether it conflicts with accepted requirements, and whether direct evidence supports it.
 
-Optional reviewer profiles live in `codex-agents/`:
+Optional Plinth agents are documented in the [agent guide](codex-agents/README.md):
 
-- `implementation_reviewer.toml` checks implementation fidelity and material code-level defects.
-- `methodology_reviewer.toml` checks scientific, statistical, experimental, and evaluation validity.
-- `claim_validator.toml` checks whether available evidence supports a consequential claim.
+- `plinth-code.toml` checks implementation fidelity and material code-level defects.
+- `plinth-methods.toml` checks scientific, statistical, experimental, and evaluation validity.
+- `plinth-claims.toml` checks whether available evidence supports a consequential claim.
 
 Use one only for a distinct material failure mode or bounded investigation that benefits from fresh context. The parent agent retains synthesis and decision ownership.
 
@@ -101,10 +101,10 @@ The compact [SKILL.md](skills/plinth/SKILL.md) governs behavior and routes to fo
 
 | Reference | Use it for |
 | --- | --- |
-| [Methods and teaching](skills/plinth/references/methods-and-teaching.md) | Method selection, design, source evaluation, project conventions, teaching, and engineering sufficiency |
-| [Evidence and empirical work](skills/plinth/references/evidence-and-empirical-work.md) | Experiments, statistics, machine learning, data, validation, metrics, and stochastic stability |
-| [Diagnosis and review](skills/plinth/references/diagnosis-and-review.md) | Debugging, direct verification, boundaries, reviewers, durable goals, and bounded iteration |
-| [Authoring and composition](skills/plinth/references/authoring-and-composition.md) | Technical artifacts, package maintenance, and composition with Ponytail and Quire |
+| [Decisions](skills/plinth/references/decisions.md) | Method selection, design, source evaluation, project conventions, teaching, and engineering sufficiency |
+| [Evidence](skills/plinth/references/evidence.md) | Experiments, statistics, machine learning, data, validation, metrics, and stochastic stability |
+| [Verification](skills/plinth/references/verification.md) | Debugging, direct verification, boundaries, reviewers, durable goals, and bounded iteration |
+| [Integration](skills/plinth/references/integration.md) | Technical artifacts, toolkit maintenance, and composition with Ponytail and Quire |
 
 The lifecycle hook injects only a concise route. Each agent context reads the complete base skill once when needed and loads task-specific references progressively.
 
@@ -129,7 +129,7 @@ node plugins/plinth/hooks/plinth.js test
 node plugins/plinth/scripts/install-agents.js test
 ```
 
-Use [behavioral evaluations](evals/BEHAVIORAL_EVALS.md) to assess policy changes on representative engineering pressure. The suite tests outcomes such as proportional research, complexity restraint, dependency-ordered decisions, direct verification, semantic boundaries, null results, goal stopping conditions, and composition with Ponytail and Quire.
+Use [behavioral evaluations](evals/behavior.md) to assess policy changes on representative engineering pressure. The suite tests outcomes such as proportional research, complexity restraint, dependency-ordered decisions, direct verification, semantic boundaries, null results, goal stopping conditions, and composition with Ponytail and Quire.
 
 ## Maintenance rule
 

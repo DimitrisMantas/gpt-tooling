@@ -1,4 +1,4 @@
-# Behavioral evaluations
+# Plinth Behavior
 
 Use these scenarios to test the Plinth policy on representative work. Evaluate the behavior, not exact wording. A change passes when it preserves the material engineering properties described for the scenario without adding unnecessary process.
 

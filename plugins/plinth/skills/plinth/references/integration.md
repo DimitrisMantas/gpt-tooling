@@ -1,4 +1,4 @@
-# Authoring and composition
+# Plinth: Integration
 
 ## Preserve engineering meaning
 

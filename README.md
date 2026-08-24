@@ -1,18 +1,18 @@
-# My Personal Engineering Tooling for GPT-5.6
+# GPT Tooling
 
-A coordinated Codex toolkit for sound engineering judgment, economical implementation, and clear technical communication.
+My personal engineering tooling for GPT-5.6: a coordinated Codex product for sound judgment, economical implementation, and clear technical communication.
 
-GPT-5.6 can reason broadly, write substantial code, and produce polished documents. Those strengths also create predictable failure modes: solving a larger problem than requested, treating plausible methodology as established fact, adding machinery before proving its value, or turning a simple result into an oversized report. This repository addresses those failure modes by separating three responsibilities instead of asking one monolithic prompt to optimize everything at once.
+GPT-5.6 can reason broadly, write substantial code, and produce polished documents. Those strengths also create predictable failure modes: solving a larger problem than requested, treating plausible methodology as established fact, adding machinery before proving its value, or turning a simple result into an oversized report. GPT Tooling addresses those failure modes by separating three responsibilities instead of asking one monolithic prompt to optimize everything at once.
 
-## The toolkit
+## Modules
 
-| Plugin | Responsibility | Guiding question |
+| Module | Responsibility | Guiding question |
 | --- | --- | --- |
 | [Plinth](plugins/plinth/README.md) | Requirements, technical semantics, methodology, evidence, risk, decisions, review, and verification | What is technically defensible? |
 | [Ponytail](plugins/ponytail/README.md) | Source-code form, reuse, dependency restraint, abstraction restraint, and the minimum correct diff | How little code should exist? |
 | [Quire](plugins/quire/README.md) | Natural-language expression, organization, readability, terminology, genre conventions, and faithful presentation | How should the accepted meaning be communicated? |
 
-The plugins cooperate through an explicit authority model:
+The modules cooperate through an explicit authority model:
 
 1. Plinth establishes the requirement, evidence obligation, accepted technical meaning, and verification boundary.
 2. Ponytail implements that meaning with the smallest sound change that fits the project.
@@ -42,10 +42,11 @@ The policies are general-purpose. They cover software, systems, hardware, numeri
 - Node.js
 - Git when installing from a clone
 
-Clone the repository with submodules, or initialize them in an existing checkout:
+Clone GPT Tooling with its pinned Ponytail module, then run the installer:
 
 ```bash
-git submodule update --init --recursive
+git clone --recurse-submodules https://github.com/DimitrisMantas/gpt-tooling.git
+cd gpt-tooling
 node scripts/install.js
 ```
 
@@ -53,19 +54,13 @@ The installer:
 
 1. initializes and verifies the pinned Ponytail submodule;
 2. validates the local marketplace and plugin manifests;
-3. registers this checkout as the `personal-engineering-tooling` marketplace;
+3. registers this checkout as the `gpt-tooling` marketplace;
 4. installs Plinth, Quire, and Ponytail from that marketplace;
-5. reports predecessor or duplicate policy plugins without removing user configuration.
-
-When installing from a source archive, the archive must include the populated `plugins/ponytail` directory. The installer fails clearly when that dependency is absent.
+5. verifies that all three modules were installed from this checkout.
 
 Review and trust the bundled hooks after installation, then start a new Codex thread so the session and subagent policies load from a clean context.
 
-### Existing installations
-
-The installer does not disable or delete earlier Engineering, Engineering Partner, Engineer, Writing, Writer, or separately installed Ponytail plugins. Remove or disable duplicates after reviewing their local configuration. Running overlapping always-on policies can inject conflicting instructions.
-
-## Using the toolkit
+## Using GPT Tooling
 
 Plinth, Ponytail, and Quire are designed to remain active without repeated invocation. Ordinary requests can be written naturally:
 
@@ -85,9 +80,9 @@ Quire exposes three mode selectors in the skill UI:
 
 Automatic mode routes by purpose rather than by nouns. A business report or report-parser error stays Standard. A research paper, methodological review, validation report, or evidence-bearing technical document uses the Technical extension.
 
-## Optional review agents
+## Plinth agents
 
-Plinth includes bounded reviewer profiles for implementation, methodology, and claim validation. They are optional because reviewer topology should follow the material failure modes of the task. Install them only when you want the profiles available in your Codex agent directory:
+Plinth includes bounded profiles for code, methods, and claim review. They are optional because reviewer topology should follow the material failure modes of the task. See the [Plinth agent guide](plugins/plinth/codex-agents/README.md), then install them when you want the profiles available in your Codex agent directory:
 
 ```bash
 node plugins/plinth/scripts/install-agents.js
@@ -124,20 +119,20 @@ node scripts/install.js test
 
 Behavioral scenarios live in:
 
-- [Plinth evaluations](plugins/plinth/evals/BEHAVIORAL_EVALS.md)
-- [Quire evaluations](plugins/quire/evals/BEHAVIORAL_EVALS.md)
+- [Plinth behavior](plugins/plinth/evals/behavior.md)
+- [Quire behavior](plugins/quire/evals/behavior.md)
 
-The mechanical checks protect manifests, hook contracts, routes, state migration, selector metadata, context budgets, submodule integrity, and installer behavior. The behavioral suites protect the policy outcomes without coupling them to exact prose.
+The mechanical checks protect manifests, hook contracts, routes, selector metadata, context budgets, submodule integrity, and installer behavior. The behavioral suites protect the policy outcomes without coupling them to exact prose.
 
 ## Hook and data behavior
 
 Plinth and Quire use `SessionStart` and `SubagentStart` hooks to reactivate concise routing context. Quire also uses `UserPromptSubmit` for explicit mode changes. It stores only the selected mode in the plugin data directory. The hooks do not perform network requests or inject their complete reference files into every prompt.
 
-## Documentation
+## Manual
 
-- [Plinth: engineering discipline](plugins/plinth/README.md)
-- [Quire: writing policy](plugins/quire/README.md)
-- [Ponytail: implementation economy](plugins/ponytail/README.md)
+- [Plinth manual](plugins/plinth/README.md)
+- [Quire manual](plugins/quire/README.md)
+- [Ponytail manual](plugins/ponytail/README.md)
 - [OpenAI skill documentation](https://learn.chatgpt.com/docs/build-skills)
 - [OpenAI plugin documentation](https://developers.openai.com/plugins/build/plugins)
 - [OpenAI hook documentation](https://learn.chatgpt.com/docs/hooks)

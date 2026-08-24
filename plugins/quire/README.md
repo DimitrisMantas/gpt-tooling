@@ -1,8 +1,8 @@
 # Quire
 
-An always-on, medium-aware writing policy for Codex.
+The writing module of GPT Tooling.
 
-[Return to the toolkit overview](../../README.md)
+[Return to GPT Tooling](../../README.md)
 
 Quire governs every natural-language surface that is not source-code syntax: responses, documents, READMEs, comments, docstrings, command-line output, logs, diagnostics, warnings, labels, help text, prompts, and interagent communication.
 
@@ -84,7 +84,7 @@ Short operational text receives checks for correctness, clarity, terminology, ac
 
 ## Technical extension
 
-The [Technical extension](skills/quire/references/technical-writing.md) adds evidence-aware reporting behavior without taking over methodology.
+The [Technical extension](skills/quire/references/technical.md) adds evidence-aware reporting behavior without taking over methodology.
 
 It requires Quire to:
 
@@ -127,7 +127,7 @@ plugins/quire/
 │   ├── quire-auto/
 │   ├── quire-standard/
 │   └── quire-technical/
-├── evals/BEHAVIORAL_EVALS.md
+├── evals/behavior.md
 └── README.md
 ```
 
@@ -149,7 +149,7 @@ node plugins/quire/hooks/quire.js test
 
 The check validates the plugin identity, required policy files, mode migration, concise progressive routes, hook events, selector metadata, UI labels, and false-positive-resistant mode parsing.
 
-Use the [behavioral evaluations](evals/BEHAVIORAL_EVALS.md) to assess routing, technical-content boundaries, claim calibration, null-result preservation, medium-aware editing, interagent concision, source provenance, and the three selector modes.
+Use the [behavioral evaluations](evals/behavior.md) to assess routing, technical-content boundaries, claim calibration, null-result preservation, medium-aware editing, interagent concision, source provenance, and the three selector modes.
 
 ## License
 

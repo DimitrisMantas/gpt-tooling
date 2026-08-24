@@ -1,4 +1,4 @@
-# Technical and scientific extension
+# Quire: Technical
 
 Apply the complete Standard Quire policy first. This extension governs substantive scientific, research, empirical, methodological, and evidence-bearing technical artifacts, including scientific writing.
 

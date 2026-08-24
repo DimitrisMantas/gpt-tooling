@@ -1,4 +1,4 @@
-# Quire behavioral evaluations
+# Quire Behavior
 
 Use these scenarios to test behavior, not exact wording. A response passes when it preserves the described writing properties without inventing technical content or adding document ceremony.
 

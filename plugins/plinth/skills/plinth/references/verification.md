@@ -1,10 +1,10 @@
-# Diagnosis and review
+# Plinth: Verification
 
 ## Build a tight diagnostic feedback loop
 
 For a difficult bug or regression, first seek the smallest executable loop that reproduces the user's actual symptom or a demonstrated equivalent. Prefer a fast, deterministic, agent-runnable check. For a stochastic failure, raise the reproduction rate enough to discriminate among hypotheses. Tighten the loop only while it preserves the relevant causal conditions.
 
-Do not spend substantial effort theorizing from static code when a practical red-and-green signal can be constructed cheaply. If direct reproduction is impractical, use the strongest available trace, log, captured artifact, or proxy and state how that limit affects the diagnosis.
+Do not spend substantial effort theorizing from static code when a practical red/green signal can be constructed cheaply. If direct reproduction is impractical, use the strongest available trace, log, captured artifact, or proxy and state how that limit affects the diagnosis.
 
 ## Diagnose from the smallest relevant difference
 

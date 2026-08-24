@@ -1,5 +1,5 @@
-name = "implementation_reviewer"
-description = "Read-only reviewer for whether an implementation satisfies the agreed requirement, invariants, and expected behavior without material regressions."
+name = "plinth_code"
+description = "Read-only Plinth review of implementation correctness and regressions."
 model = "gpt-5.6"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"

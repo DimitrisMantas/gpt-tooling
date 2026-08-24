@@ -8,15 +8,12 @@ const root = process.env.PLUGIN_ROOT || process.env.CLAUDE_PLUGIN_ROOT || path.j
 const dataDir = process.env.PLUGIN_DATA || process.env.CLAUDE_PLUGIN_DATA || path.join(os.tmpdir(), "quire");
 const statePath = path.join(dataDir, "mode");
 const skillPath = path.join(root, "skills", "quire", "SKILL.md");
-const technicalPath = path.join(root, "skills", "quire", "references", "technical-writing.md");
+const technicalPath = path.join(root, "skills", "quire", "references", "technical.md");
 const modes = new Set(["auto", "standard", "technical"]);
 const labels = { auto: "Automatic", standard: "Standard", technical: "Technical" };
 
 function normalizeMode(mode) {
   const value = String(mode || "").trim().toLowerCase();
-  if (value === "automatic") return "auto";
-  if (value === "base" || value === "everyday") return "standard";
-  if (value === "scientific") return "technical";
   return modes.has(value) ? value : "auto";
 }
 
@@ -62,7 +59,7 @@ function promptMode(prompt) {
   const normalized = String(prompt || "").trim().toLowerCase().replace(/[.!?]+$/, "");
   const selector = normalized.match(/\$quire-(auto|standard|technical)\b/);
   if (selector) return normalizeMode(selector[1]);
-  const command = normalized.match(/^(?:[/@$]quire|quire)(?:\s+(auto|automatic|standard|technical))?$/);
+  const command = normalized.match(/^(?:[/@$]quire|quire)(?:\s+(auto|standard|technical))?$/);
   return command ? normalizeMode(command[1] || readMode()) : null;
 }
 
@@ -81,9 +78,7 @@ function selfTest() {
   const hooks = JSON.parse(fs.readFileSync(path.join(root, "hooks", "hooks.json"), "utf8"));
   if (manifest.name !== "quire") throw new Error("The Quire manifest name is invalid.");
   if (!fs.existsSync(skillPath) || !fs.existsSync(technicalPath)) throw new Error("A required Quire policy file is missing.");
-  if (normalizeMode("base") !== "standard" || normalizeMode("everyday") !== "standard" || normalizeMode("scientific") !== "technical") {
-    throw new Error("Legacy mode migration is invalid.");
-  }
+  if (normalizeMode("standard") !== "standard" || normalizeMode("unsupported") !== "auto") throw new Error("Mode normalization is invalid.");
   for (const mode of modes) {
     const context = instructions(mode);
     if (!context.includes(skillPath)) throw new Error(`The ${labels[mode]} mode omits the Quire skill route.`);
@@ -92,7 +87,7 @@ function selfTest() {
   if (instructions("standard").includes(technicalPath)) throw new Error("Standard mode does not suppress the Technical route.");
   if (!instructions("technical").includes(technicalPath) || !instructions("auto").includes(technicalPath)) throw new Error("A Technical route is missing.");
   if (instructions("technical").includes(fs.readFileSync(technicalPath, "utf8").slice(0, 120))) throw new Error("The hook injects the Technical reference instead of routing to it.");
-  if (promptMode("/quire automatic") !== "auto" || promptMode("/quire standard") !== "standard" || promptMode("quire technical") !== "technical" || promptMode("$quire-auto") !== "auto" || promptMode("$quire-standard") !== "standard" || promptMode("$quire-technical") !== "technical" || promptMode("write a report") !== null) {
+  if (promptMode("/quire auto") !== "auto" || promptMode("/quire standard") !== "standard" || promptMode("quire technical") !== "technical" || promptMode("$quire-auto") !== "auto" || promptMode("$quire-standard") !== "standard" || promptMode("$quire-technical") !== "technical" || promptMode("write a report") !== null) {
     throw new Error("Quire mode parsing is invalid.");
   }
   selectorMetadata("quire-auto", "Automatic");

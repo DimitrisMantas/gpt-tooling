@@ -13,7 +13,7 @@ Quire has three persistent modes and corresponding UI labels:
 
 - Automatic (`auto`, `$quire-auto`) selects the branch from the artifact's function.
 - Standard (`standard`, `$quire-standard`) forces the Standard branch and suppresses automatic Technical routing.
-- Technical (`technical`, `$quire-technical`) forces the Standard branch plus [references/technical-writing.md](references/technical-writing.md). This branch includes scientific writing.
+- Technical (`technical`, `$quire-technical`) forces the Standard branch plus [references/technical.md](references/technical.md). This branch includes scientific writing.
 
 Use `/quire auto`, `/quire standard`, or `/quire technical` only when the user requests an override. In Automatic mode, load the Technical extension for substantive scientific, research, empirical, methodological, or evidence-bearing technical work, or when the artifact requires technical or scientific reporting conventions. Do not infer Technical mode merely because a prompt contains `paper`, `report`, or `review`. An annual business report, product review, performance review, or report-parser diagnostic normally uses the Standard branch. A research paper, literature review, validation report, evidence-bearing engineering report, or methodological review normally uses the Technical branch.
 
@@ -106,4 +106,4 @@ The Standard principles adapt [ASD-STE100 Issue 9](https://www.asd-ste100.org/as
 
 OpenAI's current [model guidance](https://developers.openai.com/api/docs/guides/latest-model) informs prompt economy, outcome-focused scope, and explicit autonomy boundaries.
 
-[blader/humanizer](https://github.com/blader/humanizer/tree/e2e92e7b4b8229253ed5c8e81dc65463fdeddda5), version 2.11.2 at commit `e2e92e7b4b8229253ed5c8e81dc65463fdeddda5`, [Stop Slop](https://github.com/hardikpandya/stop-slop), and Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) provide secondary anti-pattern diagnostics. Humanizer substantially operationalizes patterns from the Wikipedia field guide, so they are related sources rather than independent evidence. Use them to detect synthetic prose tendencies, not as authorities on technical meaning or scientific reporting.
+[blader/humanizer](https://github.com/blader/humanizer), [Stop Slop](https://github.com/hardikpandya/stop-slop), and Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) provide secondary anti-pattern diagnostics. Humanizer substantially operationalizes patterns from the Wikipedia field guide, so they are related sources rather than independent evidence. Use them to detect synthetic prose tendencies, not as authorities on technical meaning or scientific reporting.

@@ -1,4 +1,4 @@
-# Methods and teaching
+# Plinth: Decisions
 
 ## Select authority by question
 
