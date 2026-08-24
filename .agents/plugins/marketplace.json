@@ -1,0 +1,44 @@
+{
+  "name": "engineer-suite",
+  "interface": {
+    "displayName": "Engineer Suite"
+  },
+  "plugins": [
+    {
+      "name": "engineer",
+      "source": {
+        "source": "local",
+        "path": "./plugins/engineer"
+      },
+      "policy": {
+        "installation": "INSTALLED_BY_DEFAULT",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "writer",
+      "source": {
+        "source": "local",
+        "path": "./plugins/writer"
+      },
+      "policy": {
+        "installation": "INSTALLED_BY_DEFAULT",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "ponytail",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ponytail"
+      },
+      "policy": {
+        "installation": "INSTALLED_BY_DEFAULT",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

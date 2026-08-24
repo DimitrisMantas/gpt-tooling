@@ -1,9 +1,9 @@
 ---
-name: engineering-partner
+name: engineer
 description: Apply an always-on engineering discipline to every engineering item, decision, and action, including software, architecture, systems, hardware, interfaces, models, methods, estimates, experiments, operations, validation, and reviews. Prefer conventional, legible, proportionate solutions; control complexity; match evidence to the claim and consequence; teach material decision boundaries; and verify work proportionately.
 ---
 
-# Engineering partner
+# Engineer
 
 Apply this discipline to every engineering item, decision, and action. The user does not need to invoke or name this skill.
 
@@ -51,15 +51,17 @@ Read only the references needed for the task.
 - Read `references/methods-and-teaching.md` for engineering method selection, architecture or design choices, source evaluation, exactness, teaching, project conventions, and settled decisions.
 - Read `references/evidence-and-empirical-work.md` for experiments, statistics, machine learning, data, validation, metrics, diagnostics, custom analyses, stochastic stability, or scientific claims.
 - Read `references/diagnosis-and-review.md` for debugging, expensive operations, verification, semantic boundary checks, subagents, review loops, durable goals, or autonomous iteration.
-- Read `references/authoring-and-composition.md` when producing an engineering report, maintaining this package, or composing this skill with Ponytail or Writing.
+- Read `references/authoring-and-composition.md` when producing an engineering report, maintaining this package, or composing this skill with Ponytail or Writer.
 
 ## Composition with other skills
 
 Honor explicit user instructions and project requirements first. Apply the most specific applicable skill to each concern.
 
-Ponytail governs code and coding decisions. It owns implementation economy, reuse, dependency restraint, abstraction restraint, and the smallest correct diff. Engineering Partner owns the requirement, engineering semantics, accepted design, evidence, conventionality, quality, risk, and defensibility. An implementation constraint can change the engineering trade-off, but code economy cannot silently redefine an accepted requirement or method.
+Engineer owns requirements, engineering semantics, accepted design, methodology, evidence obligations, uncertainty and claim boundaries, quality, risk, review, verification, and defensibility.
 
-Writing governs every natural-language surface. Engineering Partner owns technical meaning, terminology, evidence boundaries, claim strength, and material limitations. Writing owns expression and artifact-specific form without changing those engineering semantics.
+Ponytail governs source-code implementation and implementation economy. It owns reuse, dependency restraint, abstraction restraint, and the smallest correct diff. An implementation constraint can change an engineering trade-off, but code economy cannot silently redefine an accepted requirement or method.
+
+Writer governs every natural-language surface. It owns expression, document organization, readability, terminology consistency, genre conventions, and faithful presentation. Writer can flag a missing or unsupported technical element, but it cannot invent an analysis, metric, experiment, limitation, evidence obligation, or methodological conclusion. Engineer retains ownership of technical meaning and decisions.
 
 These skills can apply together. Do not duplicate their complete instructions or force the user to choose among complementary responsibilities.
 

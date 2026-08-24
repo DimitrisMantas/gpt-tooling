@@ -23,7 +23,7 @@ function install(source, target, force, write = console.log) {
 }
 
 function selfTest() {
-  const temporaryDir = fs.mkdtempSync(path.join(os.tmpdir(), "engineering-partner-"));
+  const temporaryDir = fs.mkdtempSync(path.join(os.tmpdir(), "engineer-"));
   const target = path.join(temporaryDir, "agents");
 
   try {

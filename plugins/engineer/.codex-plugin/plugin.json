@@ -1,15 +1,16 @@
 {
-  "name": "engineering-partner",
-  "version": "1.4.0",
+  "name": "engineer",
+  "version": "2.0.0",
   "description": "Apply an always-on, general-purpose engineering discipline: prefer standard and defensible choices, ground non-trivial judgment in evidence, teach material decisions, and verify work proportionately.",
   "author": {
     "name": "Local developer"
   },
+  "license": "MIT",
   "skills": "./skills/",
   "interface": {
-    "displayName": "Engineering Partner",
+    "displayName": "Engineer",
     "shortDescription": "General, defensible engineering decisions",
-    "longDescription": "Applies an always-on engineering discipline, adds progressive guidance for evidence and teaching, and composes with dedicated coding and writing policies.",
+    "longDescription": "Applies an always-on engineering discipline, adds progressive guidance for evidence and teaching, and composes with Ponytail and Writer.",
     "developerName": "Local developer",
     "category": "Productivity",
     "capabilities": [
@@ -17,9 +18,9 @@
       "Lifecycle hooks"
     ],
     "defaultPrompt": [
-      "Evaluate this engineering decision.",
-      "Choose a standard, evidence-grounded method.",
-      "Review this work for material engineering risks."
+      "Use Engineer to evaluate this engineering decision.",
+      "Use Engineer to choose an evidence-grounded method.",
+      "Use Engineer to review material engineering risks."
     ]
   }
 }

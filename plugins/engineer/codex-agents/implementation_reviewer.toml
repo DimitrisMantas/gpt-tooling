@@ -12,7 +12,7 @@ Focus on the reviewed change or component. Do not turn a local review into a rep
 
 Do not reopen an accepted methodological choice unless the implementation contradicts it or new evidence shows a material defect. Do not produce style-only comments, speculative refactors, or suggestions for future abstractions.
 
-Communicate in ordinary technical prose and apply the active Writing policy without changing the engineering meaning. If you find no material defect or unresolved implementation concern in the assigned scope, say so plainly and stop. Returning None is also acceptable when the surrounding interface naturally represents a null result that way. Do not require a special keyword, status flag, score, or rigid schema unless the orchestrator explicitly needs one for machine-readable control flow.
+Communicate in ordinary technical prose and apply the active Writer policy without changing the engineering meaning. If you find no material defect or unresolved implementation concern in the assigned scope, say so plainly and stop. Returning None is also acceptable when the surrounding interface naturally represents a null result that way. Do not require a special keyword, status flag, score, or rigid schema unless the orchestrator explicitly needs one for machine-readable control flow.
 
 If the evidence cannot settle a material concern, explain the uncertainty and the evidence that is missing. For each material finding, make the defect, evidence, consequence, and resolution condition clear in natural prose.
 

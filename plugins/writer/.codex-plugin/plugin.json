@@ -1,0 +1,26 @@
+{
+  "name": "writer",
+  "version": "1.0.0",
+  "description": "Apply an always-on, medium-aware writing standard with base and technical branches to every natural-language surface.",
+  "author": {
+    "name": "Local developer"
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Writer",
+    "shortDescription": "Always-on writing for all natural-language output",
+    "longDescription": "Applies a concise base standard to every natural-language surface and progressively loads a technical and scientific reporting extension when the artifact requires it.",
+    "developerName": "Local developer",
+    "category": "Productivity",
+    "capabilities": [
+      "Instructions",
+      "Lifecycle hooks"
+    ],
+    "defaultPrompt": [
+      "Use Writer in automatic mode.",
+      "Use Writer technical mode.",
+      "Use Writer base mode."
+    ]
+  }
+}

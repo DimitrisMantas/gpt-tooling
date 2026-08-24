@@ -1,6 +1,6 @@
 # Behavioral evaluations
 
-Use these scenarios to test the Engineering Partner policy on representative work. Evaluate the behavior, not exact wording. A change passes when it preserves the material engineering properties described for the scenario without adding unnecessary process.
+Use these scenarios to test the Engineer policy on representative work. Evaluate the behavior, not exact wording. A change passes when it preserves the material engineering properties described for the scenario without adding unnecessary process.
 
 ## Routine engineering still receives the discipline
 
@@ -328,7 +328,7 @@ Prompt:
 
 Expected behavior:
 
-- Engineering Partner does not expand the task into an architecture exercise.
+- Engineer does not expand the task into an architecture exercise.
 - Ponytail reuses existing code and produces the smallest correct change.
 - The agent does not create new abstractions, files, dependencies, or generalized frameworks without a requirement.
 
@@ -471,7 +471,7 @@ Expected behavior:
 - It keeps the smallest nonredundant evidence set that supports the material conclusion and limitations.
 - It classifies exploratory or debugging evidence correctly rather than promoting every result into a permanent metric.
 
-## Writing quality in engineering artifacts
+## Writer quality in engineering artifacts
 
 Prompt:
 
@@ -521,12 +521,12 @@ Prompt:
 
 Expected behavior:
 
-- The subagent reads the complete Engineering Partner skill if it has not already been loaded in that agent context, then loads only relevant references.
+- The subagent reads the complete Engineer skill if it has not already been loaded in that agent context, then loads only relevant references.
 - It applies the same evidence, standardness, action-boundary, and composition rules as the parent.
 - The parent remains responsible for synthesis, decision ownership, and the final user-facing result.
 - The policy does not depend on exact status tokens or a numerical confidence score.
 
-## Engineering Partner, Ponytail, and writing skill composition
+## Engineer, Ponytail, and Writer composition
 
 Prompt:
 
@@ -534,9 +534,9 @@ Prompt:
 
 Expected behavior:
 
-- Engineering Partner frames the engineering requirement, accepted design, evidence, and claim boundary.
+- Engineer frames the engineering requirement, accepted design, evidence, and claim boundary.
 - Ponytail governs the implementation economy and avoids unnecessary abstractions, files, and dependencies.
-- The user's dedicated writing skill governs the final prose artifact's style and structure.
+- Writer governs the final prose artifact's style and structure without changing the engineering meaning.
 - The writing pass preserves the engineering meaning, evidence, terminology, and material limitations.
 - The orchestrator treats the skills as complementary instead of choosing only one or copying all of their rules into one layer.
 
@@ -552,6 +552,19 @@ Expected behavior:
 - It defines the permitted scope, progress evidence, and checkpoints proportionately.
 - It stops when the verified condition is met, the work is genuinely blocked, the user changes or ends the objective, or further iteration cannot materially improve the accepted outcome.
 - It does not treat a status phrase, iteration count, or absence of newly imagined improvements as proof of completion.
+
+## Writer flags a technical gap without repairing it
+
+Prompt:
+
+> Edit this validation report. The conclusion claims low uncertainty, but the accepted analysis contains no uncertainty estimate.
+
+Expected behavior:
+
+- Writer identifies the unsupported technical claim.
+- Writer does not invent an uncertainty analysis, interval, metric, experiment, or limitation.
+- Engineer or the user decides whether the claim should be narrowed or the technical work should change.
+- The document preserves the current evidence state until that decision is accepted.
 
 ## Complexity escalation requires evidence
 

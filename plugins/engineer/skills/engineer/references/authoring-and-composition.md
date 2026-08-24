@@ -2,11 +2,11 @@
 
 ## Preserve engineering meaning
 
-Apply the installed Writing skill to every natural-language surface, including messages, documentation, reports, comments, docstrings, prompts, logs, warnings, and labels. Apply its scientific extension when the requested artifact is a paper, report, literature review, or written review.
+Apply Writer to every natural-language surface, including messages, documentation, reports, comments, docstrings, prompts, logs, warnings, and labels. Apply its technical extension when the artifact is substantive scientific, research, empirical, methodological, or evidence-bearing technical work, or when technical reporting conventions govern it.
 
-Engineering Partner retains ownership of technical meaning, terminology, evidence fidelity, claim strength, uncertainty, and material limitations. A writing pass can improve expression and artifact-specific form, but it cannot change a technical claim or omit a limitation that affects interpretation, action, safety, scope, or uncertainty.
+Engineer retains ownership of technical meaning, methodology, evidence requirements, statistical interpretation, claim strength, uncertainty, and accepted limitations. A Writer pass can identify a missing or unsupported technical element. It cannot silently repair the gap by inventing an analysis, metric, experiment, limitation, or methodological conclusion. It cannot change a technical claim or omit a limitation that affects interpretation, action, safety, scope, or uncertainty.
 
-When Writing is unavailable, use direct, precise, grammatical prose with consistent technical terms. This is a continuity rule, not a duplicate writing standard.
+When Writer is unavailable, use direct, precise, grammatical prose with consistent technical terms. This continuity rule does not duplicate the Writer policy.
 
 ## Write engineering artifacts from decisions and evidence
 
@@ -24,11 +24,11 @@ Surface the smallest explanation that lets the user understand, decide, verify, 
 
 ## Compose responsibilities
 
-Engineering Partner governs the requirement, engineering semantics, accepted design, evidence, conventionality, quality, risk, teaching, and defensibility.
+Engineer governs requirements, engineering semantics, accepted design, methodology, evidence obligations, uncertainty and claim boundaries, quality, risk, teaching, review, verification, and defensibility.
 
 Ponytail governs code and coding decisions. It owns implementation economy, local reuse, standard-library and native-platform preference, dependency restraint, abstraction restraint, root-cause fixes, and the smallest correct diff. Ponytail can expose an implementation constraint that changes an engineering trade-off. It cannot silently weaken an accepted requirement, method, invariant, validation need, safety control, or trust boundary.
 
-Writing governs every natural-language surface. It owns expression and artifact-specific form while preserving the engineering meaning.
+Writer governs every natural-language surface. It owns expression, document organization, readability, terminology consistency, genre conventions, and faithful presentation while preserving the engineering meaning.
 
 Apply all relevant skills together. Explicit user instructions and project requirements take precedence. Do not copy the complete policy of one skill into another.
 
@@ -52,7 +52,7 @@ Evaluate changes on representative engineering work. Preserve task success, evid
 
 ## Source basis
 
-This package was reviewed on 2026-08-24 against the installed Engineering, Ponytail, and Writing packages, the shared design transcript, and these official OpenAI resources:
+This package was reviewed on 2026-08-24 against the predecessor Engineering and Writing packages, the installed Ponytail package, the shared design transcript, and these official OpenAI resources. Engineer 2.0.0 now composes with the repository's independently maintained Writer and pinned Ponytail plugin units:
 
 - OpenAI, `Build skills`: https://learn.chatgpt.com/docs/build-skills
 - OpenAI, `Build plugins`: https://developers.openai.com/plugins/build/plugins

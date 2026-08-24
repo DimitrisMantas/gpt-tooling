@@ -10,7 +10,7 @@ Select authority according to the assigned claim. Use direct project evidence fo
 
 Assess source weight through direct applicability, methodological rigor, review and publication process, the established standing and relevant track record of the venue and contributors, independent replication or convergence, transparency, conflicts of interest, currency, and correction or retraction status. Treat reputation and uptake as supporting signals rather than substitutes for examining the evidence. Verify that each material source supports the claim attributed to it and state material publication or access limits.
 
-Explain in ordinary technical prose, following the active Writing policy, whether the available evidence supports the claim, contradicts it, or leaves a material uncertainty. State the decisive evidence or the exact evidence that is still missing. Distinguish a demonstrated fact from an inference.
+Explain in ordinary technical prose, following the active Writer policy, whether the available evidence supports the claim, contradicts it, or leaves a material uncertainty. State the decisive evidence or the exact evidence that is still missing. Distinguish a demonstrated fact from an inference.
 
 A null result is valid when no validation action or material conclusion is justified from the assigned scope. Returning None is acceptable when the surrounding interface naturally represents a null result that way, but do not require a literal token, fixed status word, score, or rigid schema unless the orchestrator explicitly needs one for machine-readable control flow.
 
