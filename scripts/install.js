@@ -3,11 +3,14 @@
 const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const ponytailCompatibility = require("./prepare-ponytail");
 
 const root = path.join(__dirname, "..");
 const marketplacePath = path.join(root, ".agents", "plugins", "marketplace.json");
 const marketplaceName = "gpt-tooling";
 const plugins = ["plinth", "quire", "ponytail"];
+const localPlugins = ["plinth", "quire"];
+const ponytailPath = path.join(root, "plugins", "ponytail");
 const ponytailCommit = "2ed6c52c9d7e5e56942508591085fd45dea277d3";
 
 function run(command, args, options = {}) {
@@ -29,9 +32,9 @@ function samePath(left, right) {
 function runCodex(args) {
   if (process.platform !== "win32") return run("codex", args);
   const paths = run("where.exe", ["codex"]).split(/\r?\n/).filter(Boolean);
-  const executable = paths.find(file => /\.(?:exe|com)$/i.test(file));
+  const executable = paths.find((file) => /\.(?:exe|com)$/i.test(file));
   if (executable) return run(executable, args);
-  const commandShim = paths.find(file => /\.cmd$/i.test(file));
+  const commandShim = paths.find((file) => /\.cmd$/i.test(file));
   const powerShellShim = commandShim && commandShim.replace(/\.cmd$/i, ".ps1");
   if (!powerShellShim || !fs.existsSync(powerShellShim)) throw new Error("The Codex command could not be resolved to a Windows executable or PowerShell shim.");
   return run("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", powerShellShim, ...args]);
@@ -41,7 +44,7 @@ function verifyFiles() {
   const marketplace = readJson(marketplacePath);
   if (marketplace.name !== marketplaceName) throw new Error("The marketplace name is invalid.");
   for (const name of plugins) {
-    const entry = marketplace.plugins.find(plugin => plugin.name === name);
+    const entry = marketplace.plugins.find((plugin) => plugin.name === name);
     if (!entry || entry.source.path !== `./plugins/${name}`) throw new Error(`The ${name} marketplace entry is invalid.`);
     const manifest = readJson(path.join(root, "plugins", name, ".codex-plugin", "plugin.json"));
     if (manifest.name !== name) throw new Error(`The ${name} plugin manifest is invalid.`);
@@ -49,53 +52,100 @@ function verifyFiles() {
 }
 
 function initializePonytail() {
-  const manifest = path.join(root, "plugins", "ponytail", ".codex-plugin", "plugin.json");
+  const manifest = path.join(ponytailPath, ".codex-plugin", "plugin.json");
   if (fs.existsSync(path.join(root, ".git"))) {
     run("git", ["submodule", "update", "--init", "--recursive", "--", "plugins/ponytail"]);
-    const actual = run("git", ["-C", path.join(root, "plugins", "ponytail"), "rev-parse", "HEAD"]);
+    const actual = run("git", ["-C", ponytailPath, "rev-parse", "HEAD"]);
     if (actual !== ponytailCommit) throw new Error(`Ponytail is at ${actual}; expected ${ponytailCommit}.`);
   } else if (!fs.existsSync(manifest)) {
     throw new Error("This source archive does not contain the pinned Ponytail plugin. Use a complete release archive or clone with submodules.");
   }
-  const ponytail = readJson(manifest);
-  if (ponytail.name !== "ponytail") throw new Error("The bundled Ponytail manifest does not match the pinned dependency.");
+  if (readJson(manifest).name !== "ponytail") throw new Error("The bundled Ponytail manifest does not match the pinned dependency.");
+}
+
+function marketplaces() {
+  return JSON.parse(runCodex(["plugin", "marketplace", "list", "--json"])).marketplaces;
 }
 
 function addMarketplace() {
-  const marketplaces = JSON.parse(runCodex(["plugin", "marketplace", "list", "--json"])).marketplaces;
-  const existing = marketplaces.find(marketplace => marketplace.name === marketplaceName);
+  const existing = marketplaces().find((marketplace) => marketplace.name === marketplaceName);
   if (existing && !samePath(existing.root, root)) {
     throw new Error(`The ${marketplaceName} marketplace already points to ${existing.root}. Remove that source before installing this checkout.`);
   }
   if (!existing) runCodex(["plugin", "marketplace", "add", root, "--json"]);
+  const registered = marketplaces().find((marketplace) => marketplace.name === marketplaceName);
+  if (!registered || !samePath(registered.root, root)) throw new Error(`The ${marketplaceName} marketplace does not point to this checkout.`);
 }
 
-function installPlugins() {
-  for (const name of plugins) runCodex(["plugin", "add", `${name}@${marketplaceName}`, "--json"]);
+function verifyInstalled(names) {
   const installed = JSON.parse(runCodex(["plugin", "list", "--available", "--json"])).installed;
-  for (const name of plugins) {
-    if (!installed.some(plugin => plugin.name === name && plugin.marketplaceName === marketplaceName)) {
+  for (const name of names) {
+    if (!installed.some((plugin) => plugin.name === name && plugin.marketplaceName === marketplaceName)) {
       throw new Error(`${name} was not installed from ${marketplaceName}.`);
     }
   }
+}
+
+function installPlugins(names) {
+  for (const name of names) runCodex(["plugin", "add", `${name}@${marketplaceName}`, "--json"]);
+  verifyInstalled(names);
+}
+
+function cachebuster(version, date = new Date()) {
+  const base = String(version).split("+")[0];
+  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(base)) throw new Error(`The plugin version is not valid semantic versioning: ${version}.`);
+  const stamp = date.toISOString().replace(/[-:]/g, "").replace("T", "-").slice(0, 15);
+  return `${base}+codex.local-${stamp}`;
+}
+
+function refreshCachebusters(date = new Date()) {
+  for (const name of localPlugins) {
+    const file = path.join(root, "plugins", name, ".codex-plugin", "plugin.json");
+    const manifest = readJson(file);
+    manifest.version = cachebuster(manifest.version, date);
+    fs.writeFileSync(file, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+  }
+}
+
+function initialInstall() {
+  initializePonytail();
+  verifyFiles();
+  addMarketplace();
+  const applied = ponytailCompatibility.apply(ponytailPath);
+  try {
+    installPlugins(plugins);
+  } finally {
+    if (applied) ponytailCompatibility.reverse(ponytailPath);
+  }
   process.stdout.write("GPT Tooling is installed. Review and trust its hooks, then start a new thread.\n");
+}
+
+function updateLocalPlugins() {
+  initializePonytail();
+  verifyFiles();
+  addMarketplace();
+  refreshCachebusters();
+  installPlugins(localPlugins);
+  process.stdout.write("Plinth and Quire were updated from this checkout. Start a new thread to load the updated policies.\n");
 }
 
 function selfTest() {
   initializePonytail();
   verifyFiles();
+  const fixed = new Date("2026-08-24T13:01:00.000Z");
+  if (cachebuster("1.2.3", fixed) !== "1.2.3+codex.local-20260824-130100") throw new Error("Cachebuster creation is invalid.");
+  if (cachebuster("1.2.3+old", fixed) !== "1.2.3+codex.local-20260824-130100") throw new Error("Cachebuster replacement is invalid.");
   JSON.parse(runCodex(["plugin", "marketplace", "list", "--json"]));
   process.stdout.write("The GPT Tooling installer checks passed.\n");
 }
 
-if (process.argv[2] === "test") {
-  selfTest();
-} else if (process.argv.length === 2) {
-  initializePonytail();
-  verifyFiles();
-  addMarketplace();
-  installPlugins();
-} else {
-  process.stderr.write("Usage: node scripts/install.js [test]\n");
+const command = process.argv[2];
+
+if (!command) initialInstall();
+else if (command === "test") selfTest();
+else if (command === "update") updateLocalPlugins();
+else {
+  process.stderr.write("Usage: node scripts/install.js [test|update]\n");
   process.exitCode = 2;
 }
+

@@ -6,18 +6,61 @@ const path = require("path");
 
 const sourceDir = path.join(__dirname, "..", "codex-agents");
 const targetDir = path.join(os.homedir(), ".codex", "agents");
+const supportedModels = new Set(["gpt-5.6"]);
+const supportedEfforts = new Set(["low", "medium", "high", "xhigh", "max", "ultra"]);
+
+function scalar(source, key) {
+  const match = source.match(new RegExp(`^${key}\\s*=\\s*"([^"]*)"\\s*$`, "m"));
+  return match && match[1];
+}
+
+function readProfile(file) {
+  const source = fs.readFileSync(file, "utf8");
+  const instructions = source.match(/^developer_instructions\s*=\s*"""([\s\S]*?)"""\s*$/m);
+  return {
+    file,
+    name: scalar(source, "name"),
+    description: scalar(source, "description"),
+    model: scalar(source, "model"),
+    effort: scalar(source, "model_reasoning_effort"),
+    sandbox: scalar(source, "sandbox_mode"),
+    instructions: instructions && instructions[1].trim()
+  };
+}
+
+function profiles(source) {
+  const files = fs.readdirSync(source).filter((file) => file.endsWith(".toml")).sort();
+  const parsed = files.map((file) => readProfile(path.join(source, file)));
+  const names = new Set();
+
+  for (const profile of parsed) {
+    const stem = path.basename(profile.file, ".toml");
+    if (!profile.name || !/^[a-z][a-z0-9_]*$/.test(profile.name)) throw new Error(`The agent name is invalid: ${profile.file}.`);
+    if (profile.name !== stem) throw new Error(`The agent filename must match its name: ${profile.file}.`);
+    if (names.has(profile.name)) throw new Error(`The agent name is duplicated: ${profile.name}.`);
+    if (!profile.description || !profile.instructions) throw new Error(`The agent profile is incomplete: ${profile.file}.`);
+    if (!supportedModels.has(profile.model)) throw new Error(`The agent model is unsupported: ${profile.model}.`);
+    if (!supportedEfforts.has(profile.effort)) throw new Error(`The agent reasoning effort is unsupported: ${profile.effort}.`);
+    if (profile.sandbox !== "read-only") throw new Error(`The agent must use the read-only sandbox: ${profile.name}.`);
+    names.add(profile.name);
+  }
+
+  return parsed;
+}
 
 function install(source, target, force, write = console.log) {
+  const validated = profiles(source);
   fs.mkdirSync(target, { recursive: true });
 
-  for (const name of fs.readdirSync(source).filter((file) => file.endsWith(".toml")).sort()) {
+  for (const profile of validated) {
+    const name = path.basename(profile.file);
     const destination = path.join(target, name);
     if (fs.existsSync(destination) && !force) {
       write(`The existing agent profile was not replaced: ${destination}.`);
       continue;
     }
 
-    fs.copyFileSync(path.join(source, name), destination);
+    fs.copyFileSync(profile.file, destination);
     write(`The agent profile was installed: ${destination}.`);
   }
 }
@@ -27,6 +70,11 @@ function selfTest() {
   const target = path.join(temporaryDir, "agents");
 
   try {
+    const validated = profiles(sourceDir);
+    const expectedNames = ["plinth_claims", "plinth_code", "plinth_methods"];
+    if (JSON.stringify(validated.map((profile) => profile.name)) !== JSON.stringify(expectedNames)) {
+      throw new Error("The expected Plinth agent profiles are not present.");
+    }
     install(sourceDir, target, false, () => {});
     const expected = fs.readdirSync(sourceDir).filter((file) => file.endsWith(".toml")).sort();
     const actual = fs.readdirSync(target).sort();

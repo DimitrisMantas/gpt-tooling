@@ -37,7 +37,7 @@ function instructions(mode) {
       ? "Use the Standard branch. Suppress automatic Technical routing until the mode changes."
       : `Select the branch from the artifact's function. Load the extension at "${technicalPath}" only for substantive scientific, research, empirical, methodological, or evidence-bearing technical work, or when technical reporting conventions govern the artifact.`;
   return [
-    `QUIRE POLICY ACTIVE | mode: ${labels[mode]}`,
+    `Quire is active in ${labels[mode]} mode.`,
     "",
     `If the complete Quire skill at "${skillPath}" has not been loaded in this agent context, read it before producing substantive natural-language output.`,
     route,

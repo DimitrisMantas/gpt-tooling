@@ -37,7 +37,7 @@ Quire has three persistent modes. The plugin exposes each mode as an explicit-on
 | UI label | Skill | Command | Behavior |
 | --- | --- | --- | --- |
 | Automatic | `$quire-auto` | `/quire auto` | Selects Standard or Technical from the artifact's function |
-| Standard | `$quire-standard` | `/quire standard` | Forces the common writing policy and suppresses automatic Technical routing |
+| Standard | `$quire-standard` | `/quire standard` | Forces ordinary and operational writing, including technical subject matter that does not require the Technical extension |
 | Technical | `$quire-technical` | `/quire technical` | Forces Standard plus the technical and scientific extension |
 
 Automatic is the default. Mode changes persist through the plugin data directory until another selector changes the mode.
@@ -147,7 +147,7 @@ Run the mechanical check from the repository root:
 node plugins/quire/hooks/quire.js test
 ```
 
-The check validates the plugin identity, required policy files, mode migration, concise progressive routes, hook events, selector metadata, UI labels, and false-positive-resistant mode parsing.
+The check validates the plugin identity, required policy files, mode behavior, concise progressive routes, hook events, selector metadata, UI labels, and false-positive-resistant mode parsing.
 
 Use the [behavioral evaluations](evals/behavior.md) to assess routing, technical-content boundaries, claim calibration, null-result preservation, medium-aware editing, interagent concision, source provenance, and the three selector modes.
 

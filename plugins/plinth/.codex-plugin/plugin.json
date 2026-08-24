@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Apply an always-on, general-purpose engineering discipline: prefer standard and defensible choices, ground non-trivial judgment in evidence, teach material decisions, and verify work proportionately.",
   "author": {
-    "name": "Local developer"
+    "name": "GPT Tooling"
   },
   "license": "MIT",
   "skills": "./skills/",
@@ -11,7 +11,7 @@
     "displayName": "Plinth",
     "shortDescription": "General, defensible engineering decisions",
     "longDescription": "GPT Tooling's engineering module. Applies an always-on engineering discipline with progressive guidance for evidence, teaching, review, and verification.",
-    "developerName": "Local developer",
+    "developerName": "GPT Tooling",
     "category": "Productivity",
     "capabilities": [
       "Instructions",

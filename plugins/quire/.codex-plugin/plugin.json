@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Apply an always-on, medium-aware writing policy with Standard and Technical branches to every natural-language surface.",
   "author": {
-    "name": "Local developer"
+    "name": "GPT Tooling"
   },
   "license": "MIT",
   "skills": "./skills/",
@@ -11,7 +11,7 @@
     "displayName": "Quire",
     "shortDescription": "Always-on writing for all natural-language output",
     "longDescription": "GPT Tooling's writing module. Applies the Standard policy to every natural-language surface and progressively loads its Technical extension when the artifact requires it.",
-    "developerName": "Local developer",
+    "developerName": "GPT Tooling",
     "category": "Productivity",
     "capabilities": [
       "Instructions",

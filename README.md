@@ -1,4 +1,4 @@
-# GPT Tooling
+# My Personal Engineering Tooling for GPT-5.6
 
 My personal engineering tooling for GPT-5.6: a coordinated Codex product for sound judgment, economical implementation, and clear technical communication.
 
@@ -55,10 +55,22 @@ The installer:
 1. initializes and verifies the pinned Ponytail submodule;
 2. validates the local marketplace and plugin manifests;
 3. registers this checkout as the `gpt-tooling` marketplace;
-4. installs Plinth, Quire, and Ponytail from that marketplace;
-5. verifies that all three modules were installed from this checkout.
+4. applies the reviewed GPT Tooling compatibility patch to the installable Ponytail copy;
+5. installs Plinth, Quire, and Ponytail from that marketplace;
+6. restores the source submodule when the patch was applied temporarily;
+7. verifies that all three modules were installed from this checkout.
 
 Review and trust the bundled hooks after installation, then start a new Codex thread so the session and subagent policies load from a clean context.
+
+### Updating a local installation
+
+After editing Plinth or Quire in an already registered checkout, refresh their Codex cachebusters and reinstall them:
+
+```bash
+node scripts/install.js update
+```
+
+This command changes only the local Plinth and Quire manifest cachebusters. It confirms that the `gpt-tooling` marketplace points to the current checkout, reinstalls both plugins, verifies their marketplace identity, and prompts you to start a new thread. Ponytail remains at the reviewed pinned commit.
 
 ## Using GPT Tooling
 
@@ -75,7 +87,7 @@ Quire exposes three mode selectors in the skill UI:
 | UI label | Skill | Command | Behavior |
 | --- | --- | --- | --- |
 | Automatic | `$quire-auto` | `/quire auto` | Selects Standard or Technical from the artifact's function |
-| Standard | `$quire-standard` | `/quire standard` | Forces ordinary and operational writing policy |
+| Standard | `$quire-standard` | `/quire standard` | Forces ordinary and operational writing, including technical subject matter that does not require the Technical extension |
 | Technical | `$quire-technical` | `/quire technical` | Forces Standard plus the technical and scientific extension |
 
 Automatic mode routes by purpose rather than by nouns. A business report or report-parser error stays Standard. A research paper, methodological review, validation report, or evidence-bearing technical document uses the Technical extension.
@@ -99,12 +111,21 @@ The parent agent retains synthesis and decision ownership. Reviewers communicate
 │   ├── plinth/
 │   ├── ponytail/
 │   └── quire/
-├── scripts/install.js
+├── evals/cases.json
+├── patches/ponytail-gpt-tooling.patch
+├── scripts/
+│   ├── eval.js
+│   ├── install.js
+│   ├── prepare-ponytail.js
+│   └── release.js
+├── .gitattributes
 ├── .gitmodules
 └── README.md
 ```
 
-Plinth and Quire each contain their own manifest, hooks, skill policy, progressive references, documentation, and behavioral checks. Ponytail remains an upstream Git submodule so the toolkit can pin and install a reviewed dependency without copying or silently drifting its code.
+Plinth and Quire each contain their own manifest, hooks, skill policy, progressive references, documentation, and behavioral checks. Ponytail remains an upstream Git submodule so the toolkit can pin a reviewed dependency without silently drifting its code.
+
+The pinned upstream Ponytail release contains an output-length directive and a Codex warning banner that overlap Quire's authority over natural-language form. The tracked compatibility patch removes only those two conflicts from the installed and released copy. It preserves Ponytail's implementation ladder, root-cause rule, safety boundaries, and verification requirement. The patch is applied reproducibly and tested against the exact pinned commit.
 
 ## Verification
 
@@ -114,15 +135,39 @@ Run the bundled mechanical checks from the repository root:
 node plugins/plinth/hooks/plinth.js test
 node plugins/plinth/scripts/install-agents.js test
 node plugins/quire/hooks/quire.js test
+node scripts/prepare-ponytail.js test
 node scripts/install.js test
+node scripts/eval.js test
+node scripts/release.js test
 ```
 
-Behavioral scenarios live in:
+After installing the current checkout, run the executable behavioral suite to exercise a small set of representative cross-module regressions:
+
+```bash
+node scripts/eval.js run smoke
+node scripts/eval.js run core
+node scripts/eval.js run extended
+node scripts/eval.js run clean-review-null-result
+```
+
+`run` defaults to the Core suite. Smoke contains 13 must-never-regress cases, Core contains 19 independent contract cases, and Extended contains 21 cases, including settled-decision and stale-history authority checks. A named case runs by itself. One semantic grading call follows each candidate response, so complete Smoke, Core, and Extended runs use 26, 38, and 42 Codex executions respectively.
+
+Each semantic result is graded in a separate Codex context that ignores user configuration and disables hooks and plugins. Mechanically observable requirements, such as an exact paragraph count, use deterministic checks instead of model judgment. Each run records the selected suite, model, reasoning effort, prompt, candidate output, semantic criteria, deterministic results, grader isolation, and grader decision under `dist/evals/`. The reference scenario catalogs remain in:
 
 - [Plinth behavior](plugins/plinth/evals/behavior.md)
 - [Quire behavior](plugins/quire/evals/behavior.md)
 
-The mechanical checks protect manifests, hook contracts, routes, selector metadata, context budgets, submodule integrity, and installer behavior. The behavioral suites protect the policy outcomes without coupling them to exact prose.
+The mechanical checks protect manifests, hook contracts, routes, selector metadata, context budgets, agent-profile semantics, dependency compatibility, and installer behavior. The behavioral suites protect policy outcomes without coupling them to exact prose.
+
+## Release packaging
+
+Create a distributable archive from a clean branch whose commits match its configured upstream:
+
+```bash
+node scripts/release.js
+```
+
+The release builder verifies the Ponytail pin, assembles a `gpt-tooling/` directory from tracked Git content, applies the compatibility patch, excludes all Git metadata, runs the mechanical checks, creates `dist/gpt-tooling.zip`, extracts it into a fresh temporary directory, and runs the checks again against the extracted artifact. Use `node scripts/release.js test` to exercise assembly and validation without requiring a clean, synchronized release branch or writing an archive.
 
 ## Hook and data behavior
 

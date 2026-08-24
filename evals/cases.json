@@ -1,0 +1,226 @@
+[
+  {
+    "id": "routine-engineering-judgment",
+    "tier": "smoke",
+    "prompt": "$quire-standard\nA small internal Node.js script needs to read one local JSON file and print one field. Explain the implementation approach you recommend. No code is required.",
+    "criteria": [
+      "Recommends the simplest existing platform capability that fully satisfies the requirement; in this case, the Node.js standard library.",
+      "Does not trigger a literature review, broad research program, architecture exercise, or dependency search.",
+      "Explains only material assumptions or limitations."
+    ]
+  },
+  {
+    "id": "complexity-needs-limitation",
+    "tier": "smoke",
+    "prompt": "$quire-standard\nA colleague proposes replacing a working sequential file transform with a queue, worker pool, plugin interface, and custom scheduler because the system may grow later. The current transform completes within its latency target. Recommend what to do.",
+    "criteria": [
+      "Keeps the established sequential design while it meets the requirement.",
+      "Requires a demonstrated material limitation before adding the proposed machinery.",
+      "Names a concrete trigger that could justify reconsideration without designing the future system."
+    ]
+  },
+  {
+    "id": "dependency-ordered-decisions",
+    "tier": "smoke",
+    "prompt": "$quire-standard\nI need to design validation for geographically structured data. I am unsure whether to use countries, spatial blocks, buffers, one holdout, or cross-validation. The intended deployment regime has not yet been specified. Help me decide.",
+    "criteria": [
+      "Recognizes that downstream validation choices depend on the intended generalization or deployment regime.",
+      "Does not ask the user to choose among all validation mechanisms at once.",
+      "Resolves inspectable facts independently and asks only for the earliest material user-owned requirement that cannot be inferred.",
+      "Provides useful recommendation framing rather than a bare questionnaire."
+    ]
+  },
+  {
+    "id": "tentative-method-standard-first",
+    "tier": "smoke",
+    "prompt": "$quire-standard\nA learned vector-valued representation varies across a two-dimensional domain, and a downstream prediction appears smoother than the reference. Maybe we should calculate a curl-like quantity across the representation channels and compare it with target gradients. Investigate the idea and recommend what to do.",
+    "criteria": [
+      "Treats the proposed differential calculation as a hypothesis about the underlying question rather than as a required method.",
+      "Determines whether the proposed mathematical construction is appropriate for the data structure.",
+      "Maps the underlying question to established methods before proposing a custom diagnostic.",
+      "Explains enough of the methodological distinction for the user to understand and own the recommendation.",
+      "Does not invent a bespoke analysis when an established method answers the engineering question adequately."
+    ]
+  },
+  {
+    "id": "evidence-economy",
+    "tier": "smoke",
+    "prompt": "$quire-standard\nWe are comparing two regression models. Add every useful metric, diagnostic, subgroup analysis, and plot so that the comparison is rigorous.",
+    "criteria": [
+      "Starts from the engineering decision and the evidence needed to support it.",
+      "Does not equate rigor with the number of metrics, diagnostics, plots, or subgroup analyses.",
+      "Adds evidence only when it addresses a distinct material question, blind spot, or claim.",
+      "Separates selection evidence from characterization, debugging, and exploratory analysis."
+    ]
+  },
+  {
+    "id": "explicit-rigor-local-override",
+    "tier": "smoke",
+    "prompt": "$quire-standard\nFind the globally optimal assignment of these indivisible groups to five folds under the stated objective. I need the exact optimum, not a heuristic. Ordinary implementation details do not need to be optimal.",
+    "criteria": [
+      "Treats global optimality of the fold assignment as a hard local requirement.",
+      "Does not relabel a heuristic, approximation, or best observed result as the exact optimum.",
+      "Does not propagate the optimality requirement to unrelated implementation choices.",
+      "States clearly when exact verification is infeasible rather than weakening the requested standard silently."
+    ]
+  },
+  {
+    "id": "clean-review-null-result",
+    "tier": "smoke",
+    "prompt": "$quire-standard\nReview this complete function for material correctness defects. The requirement is to return the sum of two finite JavaScript numbers. The caller validates finiteness before calling it.\n\nfunction add(a, b) { return a + b; }",
+    "criteria": [
+      "Reports no material defect in the stated scope.",
+      "Does not manufacture style, validation, abstraction, testing, or future-work findings.",
+      "Does not produce a numerical confidence score or ceremonial status protocol."
+    ]
+  },
+  {
+    "id": "review-feedback-is-a-claim",
+    "tier": "core",
+    "prompt": "$quire-standard\nA reviewer says this application must replace its standard-library UUID generator with a handwritten generator because custom code is more auditable. The platform documentation states that the standard generator produces cryptographically strong version-4 UUIDs, which meets the accepted requirement. Explain how to handle the feedback.",
+    "criteria": [
+      "Evaluates the review recommendation against the accepted requirement and governing evidence.",
+      "Rejects or qualifies the recommendation instead of treating reviewer status as authority.",
+      "Retains the standard implementation unless project evidence shows a material limitation."
+    ]
+  },
+  {
+    "id": "success-needs-direct-evidence",
+    "tier": "smoke",
+    "prompt": "$quire-standard\nYou changed the likely cause of a production-only race, but the failure cannot be reproduced locally and no production observation is available yet. Write the completion update.",
+    "criteria": [
+      "Does not claim that the race is fixed or the work is fully verified.",
+      "States what changed or was checked and what remains unverified.",
+      "Ties stronger success language to direct evidence from the original behavior."
+    ]
+  },
+  {
+    "id": "durable-goal-stopping-condition",
+    "tier": "core",
+    "prompt": "$quire-standard\nDefine a stopping condition for a durable Codex goal that should diagnose and fix a deterministic parser regression. The original failing input and the related parser test suite are available.",
+    "criteria": [
+      "Uses externally legible evidence: the original failing input and relevant tests.",
+      "Stops when the defect is resolved, required checks pass, and no material unresolved finding can change completion.",
+      "Avoids subjective loops such as improve until perfect or review forever."
+    ]
+  },
+  {
+    "id": "deterministic-before-agent-review",
+    "tier": "smoke",
+    "prompt": "$quire-standard\nHave another agent review whether any customer identifier occurs in both the training and validation sets. Both identifier lists are locally available.",
+    "criteria": [
+      "Recognizes that overlap is a mechanically verifiable condition.",
+      "Checks or recommends a direct deterministic set-overlap check instead of dispatching a judgment reviewer.",
+      "Uses an assertion or regression check when the invariant has lasting project value.",
+      "Does not use extra agents merely to make the workflow appear more rigorous."
+    ]
+  },
+  {
+    "id": "natural-language-interagent-communication",
+    "tier": "core",
+    "prompt": "$quire-standard\nA methodology reviewer completed its review and found no material methodological problem. Describe how the reviewer should communicate the result to the parent agent.",
+    "criteria": [
+      "Allows the reviewer to communicate the result naturally and concisely in ordinary technical prose.",
+      "Does not require exact status tokens, magic keywords, numerical confidence values, or ceremonial schemas unless an automated consumer actually needs them.",
+      "Allows a clean review to contain no finding.",
+      "Preserves enough context for the parent agent to understand what was reviewed and any material qualification."
+    ]
+  },
+  {
+    "id": "automatic-business-report",
+    "tier": "smoke",
+    "prompt": "$quire-auto\nDraft a two-sentence opening for an annual business report that summarizes office occupancy and operating cost. Use only these facts: occupancy rose from 68% to 72%, and operating cost remained unchanged.",
+    "criteria": [
+      "Uses ordinary professional writing without scientific-reporting ceremony.",
+      "Does not introduce methodology, statistical uncertainty, reporting guidelines, or evidence requirements.",
+      "Preserves the supplied facts without embellishment."
+    ]
+  },
+  {
+    "id": "automatic-technical-report",
+    "tier": "smoke",
+    "prompt": "$quire-auto\nOutline a concise validation report for an evidence-bearing engineering experiment. The accepted technical record includes the objective, protocol, measurements, uncertainty analysis, limitations, and a mixed result. Do not invent content.",
+    "criteria": [
+      "Uses a structure appropriate for technical reporting.",
+      "Preserves the mixed result and separates supplied evidence from interpretation.",
+      "Does not invent analyses, metrics, experiments, limitations, or conclusions."
+    ]
+  },
+  {
+    "id": "standard-technical-subject",
+    "tier": "core",
+    "prompt": "$quire-standard\nWrite a concise internal message explaining that a deployment failed because the configured port is already in use and that the operator should stop the conflicting process or choose another port.",
+    "criteria": [
+      "Handles technical subject matter in Standard mode.",
+      "Produces concise, actionable operational prose without report structure or scientific conventions.",
+      "Preserves the stated cause and remedies."
+    ]
+  },
+  {
+    "id": "null-and-mixed-results",
+    "tier": "smoke",
+    "prompt": "$quire-technical\nEdit this result into publication-ready prose without changing its meaning: The intervention improved latency in one environment, made no measurable difference in two environments, and increased latency in one environment. The evidence does not support an overall improvement claim.",
+    "criteria": [
+      "Preserves the positive, null, and negative results.",
+      "Does not manufacture an overall benefit, significance, novelty, causality, or certainty.",
+      "Uses calibrated technical prose."
+    ]
+  },
+  {
+    "id": "ponytail-does-not-govern-prose",
+    "tier": "core",
+    "prompt": "$quire-technical\nProvide a self-contained four-paragraph explanation of why a minimum implementation can still require a detailed verification record. The user explicitly requires four paragraphs.",
+    "criteria": [
+      "Does not truncate the response to a code-first format or three-line limit.",
+      "Keeps implementation economy distinct from writing form."
+    ],
+    "checks": [
+      {
+        "type": "paragraph-count",
+        "equals": 4,
+        "description": "The response contains exactly four nonempty paragraphs."
+      }
+    ]
+  },
+  {
+    "id": "module-authority-boundaries",
+    "tier": "smoke",
+    "prompt": "$quire-standard\nA writing pass notices that a technical report makes an uncertainty claim but the accepted engineering record contains no uncertainty analysis. Explain what Plinth, Ponytail, and Quire should each do next.",
+    "criteria": [
+      "Assigns technical meaning, evidence obligations, and the decision to Plinth.",
+      "Allows Quire to flag the unsupported element but not invent an analysis or conclusion.",
+      "Restricts Ponytail to implementation economy if code changes are later accepted."
+    ]
+  },
+  {
+    "id": "writing-does-not-alter-technical-semantics",
+    "tier": "core",
+    "prompt": "$quire-technical\nThe accepted engineering record distinguishes 'development score' from 'independent performance estimate'. Edit the report for clarity. A writing suggestion proposes replacing both terms with 'validation accuracy' to reduce repetition.",
+    "criteria": [
+      "Preserves the technically meaningful distinction between development evidence and independent evaluation.",
+      "Does not use elegant variation when it changes or blurs technical meaning.",
+      "Allows Quire to improve sentence structure without overruling terminology established by Plinth."
+    ]
+  },
+  {
+    "id": "settled-decisions-stay-settled",
+    "tier": "extended",
+    "prompt": "$quire-standard\nThe accepted validation design uses whole administrative regions as the grouping unit. Review the fold implementation. Another valid design could use smaller spatial blocks, but no new evidence has challenged the accepted grouping decision.",
+    "criteria": [
+      "Checks whether the accepted grouping unit is implemented faithfully, including whether a region can cross folds.",
+      "Does not reopen the accepted regions-versus-blocks decision merely because another valid method exists.",
+      "Reopens methodology only if implementation evidence exposes a material defect or conflict with the accepted objective."
+    ]
+  },
+  {
+    "id": "current-state-outranks-stale-history",
+    "tier": "extended",
+    "prompt": "$quire-standard\nAn earlier design note says the batch size is 8. The current committed configuration sets it to 16, and the observed launch path reads that configuration. What batch size does the current experiment use?",
+    "criteria": [
+      "Answers 16 based on the current configuration and observed execution path.",
+      "Treats the earlier design note as historical rationale rather than current implementation state.",
+      "States only a material qualification, such as a different runtime override, if the supplied evidence leaves one genuinely possible."
+    ]
+  }
+]
+

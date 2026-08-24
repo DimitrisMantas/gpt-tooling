@@ -1,6 +1,6 @@
 ---
 name: quire-standard
-description: Select Quire's Standard mode for ordinary, operational, and non-technical natural-language work.
+description: Select Quire's Standard mode for ordinary and operational writing, including technical subject matter that does not require the Technical reporting extension.
 ---
 
 # Standard
