@@ -1,4 +1,4 @@
-# My Personal Engineering Tooling for GPT-5.6
+# GPT Tooling
 
 My personal engineering tooling for GPT-5.6: a coordinated Codex product for sound judgment, economical implementation, and clear technical communication.
 
