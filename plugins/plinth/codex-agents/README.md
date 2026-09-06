@@ -2,6 +2,8 @@
 
 These optional read-only agents extend Plinth with three independent review roles. They investigate a bounded question and return evidence-based findings to the parent agent. They do not edit files, implement fixes, or take ownership of the final decision.
 
+The profiles inherit model selection from the spawn request, configured subagent default, or parent session. They retain `high` reasoning effort for review. Choose a compatible model in the calling environment; the package does not pin reviewer roles to a model identifier. This follows the [custom-agent configuration rules](https://learn.chatgpt.com/docs/agent-configuration/subagents).
+
 The natural dependency order is Methods, Code, then Claims:
 
 | Agent | Question |

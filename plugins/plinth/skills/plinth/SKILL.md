@@ -52,6 +52,7 @@ Read only the references needed for the task.
 - Read `references/evidence.md` for experiments, statistics, machine learning, data, validation, metrics, diagnostics, custom analyses, stochastic stability, or scientific claims.
 - Read `references/verification.md` for debugging, expensive operations, verification, semantic boundaries, subagents, review loops, durable goals, or autonomous iteration.
 - Read `references/integration.md` for engineering reports, toolkit maintenance, and composition with Ponytail or Quire.
+- Read `references/software.md` for software design, programming, repository organization, notebooks, experiments, and software artifacts. Read its Python companion only when Python is involved.
 
 ## Composition with other skills
 

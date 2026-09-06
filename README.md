@@ -1,8 +1,8 @@
 # GPT Tooling
 
-My personal engineering tooling for GPT-5.6: a coordinated Codex product for sound judgment, economical implementation, and clear technical communication.
+My personal engineering tooling: a coordinated Codex product for sound judgment, economical implementation, and clear technical communication.
 
-GPT-5.6 can reason broadly, write substantial code, and produce polished documents. Those strengths also create predictable failure modes: solving a larger problem than requested, treating plausible methodology as established fact, adding machinery before proving its value, or turning a simple result into an oversized report. GPT Tooling addresses those failure modes by separating three responsibilities instead of asking one monolithic prompt to optimize everything at once.
+Capable models can reason broadly, write substantial code, and produce polished documents. Those strengths also create predictable failure modes: solving a larger problem than requested, treating plausible methodology as established fact, adding machinery before proving its value, or turning a simple result into an oversized report. GPT Tooling addresses those failure modes through three coordinated responsibilities.
 
 ## Modules
 
@@ -21,6 +21,8 @@ The modules cooperate through an explicit authority model:
 
 This division keeps the policies independently maintainable. It also prevents code minimalism from silently weakening a requirement and prevents a writing pass from manufacturing methodology, metrics, certainty, or a more positive result.
 
+These are cooperating responsibilities, not required sequential passes. Implementation constraints, diagnostics, and ambiguities feed back into Plinth's engineering decision; Ponytail and Quire then preserve the resolved contract. Mechanical tools check selected conditions without acquiring authority over the requirement.
+
 ## Design principles
 
 - Prefer conventional, legible solutions when they satisfy the requirement. Complexity must answer a named material limitation.
@@ -33,6 +35,8 @@ This division keeps the policies independently maintainable. It also prevents co
 - Promote observed, generalizable agent failures into policy and behavioral regression tests. Avoid speculative process.
 
 The policies are general-purpose. They cover software, systems, hardware, numerical work, data, models, experiments, operations, and technical documents without naming a particular project, model, dataset, or domain workflow.
+
+The [software policy](plugins/plinth/skills/plinth/references/software.md) adds contracts, types, cohesion, repository ownership, notebooks, and artifact lifecycles within Plinth. Its [Python companion](plugins/plinth/skills/plinth/references/python.md) supplies an optional uv/Ruff/BasedPyright/WPS/pytest profile for authorized Python tooling work. General policy remains language- and model-independent; Codex packaging and the measured evaluation model remain explicit implementation choices. See the [extension review](docs/software-extension-review.md) for requirement coverage, source corrections, and validation limits.
 
 ## Installation
 
@@ -143,6 +147,12 @@ node scripts/eval.js test
 node scripts/release.js test
 ```
 
+Verify the optional Python profile separately with uv. This uses a temporary directory and pinned script dependencies; it does not configure this repository as a Python project:
+
+```bash
+uv run --script plugins/plinth/scripts/check-python-profile.py
+```
+
 After installing the current checkout, run the executable behavioral suite to exercise a small set of representative cross-module regressions:
 
 ```bash
@@ -152,9 +162,11 @@ node scripts/eval.js run extended
 node scripts/eval.js run clean-review-null-result
 ```
 
-`run` defaults to the Core suite. Smoke contains 13 must-never-regress cases, Core contains 19 independent contract cases, and Extended contains 21 cases, including settled-decision and stale-history authority checks. A named case runs by itself. One semantic grading call follows each candidate response, so complete Smoke, Core, and Extended runs use 26, 38, and 42 Codex executions respectively.
+`run` defaults to the Core suite. Smoke contains 13 must-never-regress cases, Core contains 19 independent contract cases, and Extended contains 24 cases, including software contracts, language independence, and typing-versus-runtime boundaries. A named case runs by itself. One semantic grading call follows each candidate response, so complete Smoke, Core, and Extended runs use 26, 38, and 48 Codex executions respectively. The default evaluation model is `gpt-5.6-sol`; set `GPT_TOOLING_EVAL_MODEL` to choose another available model. Results record the actual selection.
 
-Each semantic result is graded in a separate Codex context that ignores user configuration and disables hooks and plugins. Mechanically observable requirements, such as an exact paragraph count, use deterministic checks instead of model judgment. Each run records the selected suite, model, reasoning effort, prompt, candidate output, semantic criteria, deterministic results, grader isolation, and grader decision under `dist/evals/`. The reference scenario catalogs remain in:
+Use `node scripts/eval.js run-local <case-id-or-suite>` to evaluate a snapshot of the current checkout without reinstalling plugins. It copies the local policies, applies the existing Ponytail compatibility patch, records content hashes, and supplies the complete policies through stdin to a clean candidate context. This tests policy composition; the installed `run` path remains the check for plugin discovery and lifecycle activation. For example, run `software-contract-before-lint`, `software-agnostic-repository`, or `python-contract-and-prose` locally while developing the extension.
+
+Each semantic result is graded in a separate Codex context that ignores user configuration and execution rules, disables hooks and plugins, and sets the AGENTS.md byte limit to zero. The same isolation settings apply to local-snapshot candidates. Mechanically observable requirements, such as an exact paragraph count, use deterministic checks instead of model judgment. Each run records the selected suite, model, reasoning effort, prompt, candidate output, semantic criteria, deterministic results, grader isolation, and grader decision under `dist/evals/`. The reference scenario catalogs remain in:
 
 - [Plinth behavior](plugins/plinth/evals/behavior.md)
 - [Quire behavior](plugins/quire/evals/behavior.md)

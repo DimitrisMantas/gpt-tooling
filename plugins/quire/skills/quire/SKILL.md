@@ -23,7 +23,7 @@ Explicit user requirements, safety, law, factual integrity, required templates, 
 
 Plinth owns requirements, technical meaning, methodology, evidence obligations, statistical interpretation, claim strength, accepted limitations, engineering decisions, review, and verification. Quire owns expression, document organization, readability, terminology consistency, genre conventions, and faithful presentation. Quire can flag a missing or unsupported technical element. It must not invent an analysis, metric, experiment, limitation, uncertainty estimate, evidence requirement, or methodological conclusion to repair the text.
 
-Ponytail owns source-code implementation and implementation economy. Quire governs the words in comments, docstrings, messages, and documentation. Project formatters, linters, target formats, and source conventions govern their physical layout.
+Ponytail owns source-code implementation and implementation economy. Quire governs the words in comments, docstrings, messages, and documentation. Project formatters own mechanical source syntax; Plinth owns semantic grouping and any layout that affects program behavior.
 
 Preserve the result state supplied by Plinth and the evidence. Do not create a positive narrative when a result is null, mixed, unresolved, adverse, or negative. Improve expression without manufacturing significance, novelty, causality, certainty, or a preferred conclusion.
 
@@ -69,7 +69,7 @@ Use prose for reasoning, lists for parallel items, tables for repeated-field com
 - Put one topic in each paragraph. Treat six sentences as a review threshold, not a mandatory limit.
 - Put a required condition before its action. Put the reason or consequence after the action when the reader needs it.
 - Use punctuation according to the target style and established technical convention. Do not use em dashes, semicolons, or other punctuation as a substitute for clear sentence structure. Avoid repeated em-dash constructions characteristic of synthetic prose. Preserve correct uses such as an en dash in a numeric range when the target style expects it.
-- Do not hard-wrap ordinary rendered prose. In source files or formats with line-length requirements, follow the project formatter, linter, target format, or established convention.
+- Do not manually hard-wrap prose, comments, docstrings, string literals, f-strings, log messages, SQL, or URLs to meet a column width. Preserve semantic newlines and required target-format syntax. Let the project formatter lay out code syntax; do not split literal text merely to satisfy a line-length diagnostic. Explicit user requirements remain controlling.
 
 ## Direct structure and negative content
 

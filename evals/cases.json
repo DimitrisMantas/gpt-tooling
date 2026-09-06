@@ -221,6 +221,38 @@
       "Treats the earlier design note as historical rationale rather than current implementation state.",
       "States only a material qualification, such as a different runtime override, if the supplied evidence leaves one genuinely possible."
     ]
+  },
+  {
+    "id": "software-contract-before-lint",
+    "tier": "extended",
+    "prompt": "$quire-standard\nReview this proposed refactor. A working async Python consumer awaits each write sequentially because the remote protocol requires ordered writes and stops at the first failure. WPS476 flags the await in a loop. A reviewer suggests gather, splitting a cohesive function to reduce a complexity score, and deleting a Protocol because it has only one implementation. The Protocol is the accepted boundary consumed by an external host. Recommend how to reconcile these findings with Plinth, Ponytail, and Quire. No code changes are requested.",
+    "criteria": [
+      "Preserves sequential execution and first-failure semantics instead of automatically introducing concurrency.",
+      "Retains the meaningful externally consumed contract even with one implementation.",
+      "Treats complexity warnings as investigation triggers and uses narrow justified exceptions for genuine rule conflicts.",
+      "Explains cooperation and feedback between engineering meaning, implementation economy, and expression without inventing mandatory agents or phases."
+    ]
+  },
+  {
+    "id": "software-agnostic-repository",
+    "tier": "extended",
+    "prompt": "$quire-standard\nAn existing small Julia research repository has a notebook, one coherent settings module, a shared computation function, a working native dependency lock and test command, and runs identified by configuration and input-data hashes. Suggest how the software engineering extension should apply. A colleague proposes adding uv, Pydantic, a Python package with src and CLI folders, replacing the notebook, and splitting settings merely because its name sounds generic.",
+    "criteria": [
+      "Applies general contract, cohesion, ownership, verification, and reproducibility principles without imposing Python tools or a foreign repository layout.",
+      "Retains legitimate notebooks, the coherent settings module, and sound native tools.",
+      "Ties any proposed promotion or infrastructure to an actual consumer or material limitation.",
+      "Does not equate a dependency lock alone with complete experimental reproducibility."
+    ]
+  },
+  {
+    "id": "python-contract-and-prose",
+    "tier": "extended",
+    "prompt": "$quire-standard\nReview these claims in a Python design: a NumPy ndarray annotated with tuple[int, int, int] and uint8 proves RGB input; typing.cast validates that claim; Final makes a dict deeply immutable; strict Pydantic validates once so later arbitrary mutation is safe. The application has repeated dependent-field validation that is currently handwritten. A reviewer also asks to split long log literals, docstrings, SQL, and URLs at column 88. Explain the corrections and appropriate implementation direction. Do not implement anything.",
+    "criteria": [
+      "Distinguishes rank and dtype from channel count, axis meaning, and other runtime image invariants.",
+      "Recognizes that cast is not runtime validation and Final does not establish deep immutability.",
+      "Recommends appropriate Pydantic validation for repeated dependent-field logic while accounting for mutation or invariant lifetime.",
+      "Preserves the no-manual-hard-wrapping requirement for literal text and prose while allowing formatter-owned code syntax."
+    ]
   }
 ]
-

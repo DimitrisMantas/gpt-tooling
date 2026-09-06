@@ -1,6 +1,6 @@
 {
   "name": "plinth",
-  "version": "1.0.0",
+  "version": "1.0.0+codex.20260906152534",
   "description": "Apply an always-on, general-purpose engineering discipline: prefer standard and defensible choices, ground non-trivial judgment in evidence, teach material decisions, and verify work proportionately.",
   "author": {
     "name": "GPT Tooling"

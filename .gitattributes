@@ -4,3 +4,6 @@
 *.json text eol=lf
 *.toml text eol=lf
 *.yaml text eol=lf
+*.py text eol=lf
+*.csv text eol=lf
+.flake8 text eol=lf

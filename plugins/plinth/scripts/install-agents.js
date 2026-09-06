@@ -6,7 +6,6 @@ const path = require("path");
 
 const sourceDir = path.join(__dirname, "..", "codex-agents");
 const targetDir = path.join(os.homedir(), ".codex", "agents");
-const supportedModels = new Set(["gpt-5.6"]);
 const supportedEfforts = new Set(["low", "medium", "high", "xhigh", "max", "ultra"]);
 
 function scalar(source, key) {
@@ -39,7 +38,6 @@ function profiles(source) {
     if (profile.name !== stem) throw new Error(`The agent filename must match its name: ${profile.file}.`);
     if (names.has(profile.name)) throw new Error(`The agent name is duplicated: ${profile.name}.`);
     if (!profile.description || !profile.instructions) throw new Error(`The agent profile is incomplete: ${profile.file}.`);
-    if (!supportedModels.has(profile.model)) throw new Error(`The agent model is unsupported: ${profile.model}.`);
     if (!supportedEfforts.has(profile.effort)) throw new Error(`The agent reasoning effort is unsupported: ${profile.effort}.`);
     if (profile.sandbox !== "read-only") throw new Error(`The agent must use the read-only sandbox: ${profile.name}.`);
     names.add(profile.name);
@@ -71,6 +69,7 @@ function selfTest() {
 
   try {
     const validated = profiles(sourceDir);
+    if (validated.some((profile) => profile.model !== null)) throw new Error("Bundled reviewers must inherit model selection.");
     const expectedNames = ["plinth_claims", "plinth_code", "plinth_methods"];
     if (JSON.stringify(validated.map((profile) => profile.name)) !== JSON.stringify(expectedNames)) {
       throw new Error("The expected Plinth agent profiles are not present.");

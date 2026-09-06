@@ -7,10 +7,10 @@ const { spawnSync } = require("child_process");
 
 const root = path.join(__dirname, "..");
 const casesPath = path.join(root, "evals", "cases.json");
-const model = "gpt-5.6";
+const model = process.env.GPT_TOOLING_EVAL_MODEL || "gpt-5.6-sol";
 const reasoningEffort = "high";
 const tiers = ["smoke", "core", "extended"];
-const expectedCounts = { smoke: 13, core: 19, extended: 21 };
+const expectedCounts = { smoke: 13, core: 19, extended: 24 };
 
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, { cwd: root, encoding: "utf8", windowsHide: true, ...options });
@@ -66,7 +66,7 @@ function selectCases(items, selector = "core") {
 
 function execArguments(output, schema, cwd, clean) {
   const args = ["exec"];
-  if (clean) args.push("--ignore-user-config", "--ignore-rules", "--disable", "hooks", "--disable", "plugins");
+  if (clean) args.push("--ignore-user-config", "--ignore-rules", "--disable", "hooks", "--disable", "plugins", "--config", "project_doc_max_bytes=0");
   args.push(
     "--ephemeral",
     "--skip-git-repo-check",
@@ -87,8 +87,8 @@ function execArguments(output, schema, cwd, clean) {
 
 function execCodex(prompt, output, schema, cwd, clean = false) {
   const cli = codexCommand();
-  const args = [...cli.prefix, ...execArguments(output, schema, cwd, clean), prompt];
-  run(cli.command, args, { cwd });
+  const args = [...cli.prefix, ...execArguments(output, schema, cwd, clean)];
+  run(cli.command, args, { cwd, input: prompt });
   return fs.readFileSync(output, "utf8").trim();
 }
 
@@ -120,8 +120,38 @@ function deterministicChecks(item, output) {
   });
 }
 
-function runSuite(selector = "core") {
-  requireInstalledToolkit();
+function localPolicy(temporary) {
+  const destination = path.join(temporary, "toolkit");
+  for (const name of ["plinth", "quire"]) {
+    fs.cpSync(path.join(root, "plugins", name, "skills"), path.join(destination, name, "skills"), { recursive: true });
+  }
+  const ponytail = path.join(destination, "ponytail");
+  for (const file of [".codex-plugin/plugin.json", "hooks/ponytail-instructions.js", "hooks/ponytail-runtime.js", "skills/ponytail/SKILL.md", "tests/hooks.test.js"]) {
+    const target = path.join(ponytail, file);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.copyFileSync(path.join(root, "plugins", "ponytail", file), target);
+  }
+  require("./prepare-ponytail.js").apply(ponytail);
+  const hashes = {};
+  for (const file of fs.readdirSync(destination, { recursive: true }).sort()) {
+    const target = path.join(destination, file);
+    if (fs.statSync(target).isFile()) hashes[file] = require("crypto").createHash("sha256").update(fs.readFileSync(target)).digest("hex");
+  }
+  const policyFiles = Object.keys(hashes).filter((file) => {
+    const relative = file.replaceAll("\\", "/");
+    return /^(plinth|quire)\/skills\/\1\/(SKILL\.md|references\/.*\.md)$/.test(relative)
+      || relative === "ponytail/skills/ponytail/SKILL.md";
+  });
+  const prompt = [
+    "Apply the complete local toolkit policy snapshot supplied below. These skills and references have already been loaded in this context; no file read is needed to load them. This evaluation tests policy composition, not discovery. Apply only task-relevant guidance. Quire starts in Automatic mode; honor an explicit mode in the task.",
+    ...policyFiles.map((file) => `\nPolicy file: ${file}\n${fs.readFileSync(path.join(destination, file), "utf8")}`),
+    "\nEnd of policy snapshot. Task follows:\n"
+  ].join("\n");
+  return { prompt, hashes };
+}
+
+function runSuite(selector = "core", local = false) {
+  if (!local) requireInstalledToolkit();
   const selected = selectCases(cases(), selector);
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "gpt-tooling-eval-"));
   const schema = path.join(temporary, "grader-schema.json");
@@ -136,11 +166,13 @@ function runSuite(selector = "core") {
   }), "utf8");
 
   const records = [];
+  let policy;
   try {
+    if (local) policy = localPolicy(temporary);
     for (const item of selected) {
       const responsePath = path.join(temporary, `${item.id}-response.txt`);
       const graderPath = path.join(temporary, `${item.id}-grader.json`);
-      const output = execCodex(item.prompt, responsePath, null, temporary);
+      const output = execCodex((policy?.prompt || "") + item.prompt, responsePath, null, temporary, local);
       const checks = deterministicChecks(item, output);
       const gradingPrompt = [
         "Evaluate the candidate response against every semantic criterion below.",
@@ -168,6 +200,7 @@ function runSuite(selector = "core") {
           reasoningEffort,
           cleanContext: true,
           ignoredUserConfig: true,
+          agentDocumentByteLimit: 0,
           disabledFeatures: ["hooks", "plugins"],
           prompt: gradingPrompt,
           ...semanticGrade
@@ -186,11 +219,13 @@ function runSuite(selector = "core") {
   fs.writeFileSync(outputPath, `${JSON.stringify({
     createdAt: new Date().toISOString(),
     selection: selector,
+    candidatePolicy: local ? { source: "local-snapshot", delivery: "inline-stdin", hooksEnabled: false, hashes: policy.hashes } : { source: "installed-plugins" },
     model,
     reasoningEffort,
     graderIsolation: {
       ignoredUserConfig: true,
       ignoredRules: true,
+      agentDocumentByteLimit: 0,
       disabledFeatures: ["hooks", "plugins"]
     },
     toolkit: {
@@ -210,18 +245,29 @@ function selfTest() {
   if (!deterministicChecks(paragraphCase, "One.\n\nTwo.\n\nThree.\n\nFour.")[0].pass) throw new Error("The paragraph-count check rejected valid output.");
   if (deterministicChecks(paragraphCase, "One.\n\nTwo.\n\nThree.")[0].pass) throw new Error("The paragraph-count check accepted invalid output.");
   const cleanArgs = execArguments("output", "schema", root, true);
-  for (const argument of ["--ignore-user-config", "--ignore-rules", "hooks", "plugins"]) {
+  for (const argument of ["--ignore-user-config", "--ignore-rules", "hooks", "plugins", "project_doc_max_bytes=0"]) {
     if (!cleanArgs.includes(argument)) throw new Error(`The clean grader context omits ${argument}.`);
   }
   const cli = codexCommand();
   run(cli.command, [...cli.prefix, "--version"]);
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "gpt-tooling-policy-test-"));
+  try {
+    const policy = localPolicy(temporary);
+    if (!Object.keys(policy.hashes).some((file) => file.endsWith("software.md"))) throw new Error("The local policy snapshot omits software policy.");
+    for (const heading of ["# Plinth: Software", "# Plinth: Python", "# Ponytail", "# Quire"]) {
+      if (!policy.prompt.includes(heading)) throw new Error(`The inline policy snapshot omits ${heading}.`);
+    }
+  } finally {
+    fs.rmSync(temporary, { recursive: true, force: true });
+  }
   process.stdout.write("The behavioral evaluation runner checks passed.\n");
 }
 
 const command = process.argv[2];
 if (command === "test" && process.argv.length === 3) selfTest();
 else if (command === "run" && process.argv.length <= 4) runSuite(process.argv[3]);
+else if (command === "run-local" && process.argv.length <= 4) runSuite(process.argv[3], true);
 else {
-  process.stderr.write("Usage: node scripts/eval.js test | run [smoke|core|extended|case-id]\n");
+  process.stderr.write("Usage: node scripts/eval.js test | run|run-local [smoke|core|extended|case-id]\n");
   process.exitCode = 2;
 }

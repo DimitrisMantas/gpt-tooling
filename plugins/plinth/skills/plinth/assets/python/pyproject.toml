@@ -1,0 +1,36 @@
+# Merge into an authorized Python project; retain its metadata and Python minimum.
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+  "A", "ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "ANN205", "ANN206",
+  "ASYNC", "B", "BLE", "C4", "C90", "E", "ERA", "F", "FURB", "G", "I", "ICN001",
+  "LOG", "N", "NPY", "PERF", "PIE", "PLC", "PLE", "PLW", "PLR0911", "PLR0912",
+  "PLR0913", "PLR0915", "PLR0917", "PLR2004", "PT", "RUF", "SIM101", "SIM103",
+  "SIM110", "SIM112", "SIM113", "SIM115", "SIM118", "SIM201", "SIM202",
+  "SIM208", "SIM210", "SIM211", "SIM300", "TID252", "UP", "W", "YTT",
+  "B903", "PLR0904", "PLR0914", "PLR0916", "PLR1702", "PLR6301", "RUF045",
+]
+ignore = ["E501", "W191", "W505"]
+preview = true
+explicit-preview-rules = true
+
+[tool.ruff.lint.flake8-builtins]
+strict-checking = true
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.pylint]
+max-positional-args = 3
+
+[tool.basedpyright]
+typeCheckingMode = "all"
+
+[tool.pytest]
+minversion = "9.0"
+strict = true

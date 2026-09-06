@@ -97,7 +97,7 @@ Use one only for a distinct material failure mode or bounded investigation that 
 
 ## Progressive policy
 
-The compact [SKILL.md](skills/plinth/SKILL.md) governs behavior and routes to four focused references:
+The compact [SKILL.md](skills/plinth/SKILL.md) governs behavior and routes to focused references:
 
 | Reference | Use it for |
 | --- | --- |
@@ -105,6 +105,8 @@ The compact [SKILL.md](skills/plinth/SKILL.md) governs behavior and routes to fo
 | [Evidence](skills/plinth/references/evidence.md) | Experiments, statistics, machine learning, data, validation, metrics, and stochastic stability |
 | [Verification](skills/plinth/references/verification.md) | Debugging, direct verification, boundaries, reviewers, durable goals, and bounded iteration |
 | [Integration](skills/plinth/references/integration.md) | Technical artifacts, toolkit maintenance, and composition with Ponytail and Quire |
+| [Software](skills/plinth/references/software.md) | Contracts, programming, cohesion, repository ownership, notebooks, and artifacts |
+| [Python](skills/plinth/references/python.md) | Python contracts and an optional checked uv/Ruff/BasedPyright/WPS/pytest profile |
 
 The lifecycle hook injects only a concise route. Each agent context reads the complete base skill once when needed and loads task-specific references progressively.
 

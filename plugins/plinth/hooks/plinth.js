@@ -36,9 +36,12 @@ function selfTest() {
   const frontmatter = source.match(/^---\s*\n([\s\S]*?)\n---\s*\n/);
   if (!frontmatter || !/^name:\s*plinth\s*$/m.test(frontmatter[1])) throw new Error("The Plinth skill front matter is invalid.");
 
-  const references = ["decisions.md", "evidence.md", "verification.md", "integration.md"];
+  const references = ["decisions.md", "evidence.md", "verification.md", "integration.md", "software.md", "python.md"];
   for (const name of references) {
     if (!fs.existsSync(path.join(root, "skills", "plinth", "references", name))) throw new Error(`The Plinth reference is missing: ${name}.`);
+  }
+  for (const name of ["pyproject.toml", ".flake8"]) {
+    if (!fs.existsSync(path.join(root, "skills", "plinth", "assets", "python", name))) throw new Error(`The Python profile asset is missing: ${name}.`);
   }
 
   const manifest = JSON.parse(fs.readFileSync(path.join(root, ".codex-plugin", "plugin.json"), "utf8"));

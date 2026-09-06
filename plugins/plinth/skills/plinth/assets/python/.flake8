@@ -1,0 +1,12 @@
+[flake8]
+select = WPS
+# Conflict rationale lives in references/python.md; retain the remaining WPS checks.
+extend-ignore =
+    WPS301,
+    WPS303,
+    WPS335,
+    WPS336,
+    WPS430,
+    WPS473,
+    WPS476,
+    WPS602
