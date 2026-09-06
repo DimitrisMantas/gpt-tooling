@@ -125,7 +125,7 @@ The parent agent retains synthesis and decision ownership. Reviewers communicate
 
 Plinth and Quire each contain their own manifest, hooks, skill policy, progressive references, documentation, and behavioral checks. Ponytail remains an upstream Git submodule so the toolkit can pin a reviewed dependency without silently drifting its code.
 
-The pinned upstream Ponytail release contains an output-length directive and a Codex warning banner that overlap Quire's authority over natural-language form. The tracked compatibility patch removes only those two conflicts from the installed and released copy. It preserves Ponytail's implementation ladder, root-cause rule, safety boundaries, and verification requirement. The patch is applied reproducibly and tested against the exact pinned commit.
+The pinned upstream Ponytail release contains an output-length directive and a Codex warning banner that overlap Quire's authority over natural-language form. The tracked compatibility patch removes those two conflicts from the installed and released copy and identifies it as `4.9.0+gpt-tooling.1` so Codex cannot reuse an unpatched `4.9.0` cache entry. It preserves Ponytail's implementation ladder, root-cause rule, safety boundaries, and verification requirement. The patch is applied reproducibly and tested against the exact pinned commit.
 
 ## Verification
 
