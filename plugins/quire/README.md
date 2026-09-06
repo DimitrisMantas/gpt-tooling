@@ -26,7 +26,7 @@ Quire owns:
 
 [Plinth](../plinth/README.md) owns requirements, methodology, technical semantics, evidence obligations, statistical interpretation, claim strength, accepted limitations, decisions, review, and verification. Quire can flag a missing or unsupported technical element. It cannot silently repair the text by inventing an analysis, metric, experiment, uncertainty estimate, limitation, evidence requirement, or conclusion.
 
-[Ponytail](../ponytail/README.md) owns source-code implementation and implementation economy. Quire governs the words in code comments, docstrings, messages, and documentation. Project formatters, linters, target formats, and source conventions govern their physical layout.
+[Ponytail](../ponytail/README.md) owns source-code implementation and implementation economy. Quire governs the words in code comments, docstrings, messages, and documentation. Project formatters own mechanical source syntax. Preserve semantic newlines and required target-format syntax; do not manually split prose or literal text to satisfy a line-length diagnostic.
 
 This boundary protects a central invariant: better prose must not manufacture significance, novelty, causality, certainty, or a preferred outcome. Null, mixed, adverse, negative, and unresolved results remain in that state.
 
@@ -78,7 +78,7 @@ It favors:
 - material negative or limiting information without repetitive qualification;
 - proportionate final checks.
 
-Sentence-length thresholds drawn from controlled technical English are diagnostics, not mandatory limits. Punctuation follows the target style and technical convention. Ordinary rendered prose is not hard-wrapped, while source files follow the project formatter or established layout rules.
+Sentence-length thresholds drawn from controlled technical English are diagnostics, not mandatory limits. Punctuation follows the target style and technical convention. Let the project formatter lay out source syntax while preserving complete prose and literal text, including comments and docstrings.
 
 Short operational text receives checks for correctness, clarity, terminology, actionability, and unnecessary wording. Substantive documents also receive checks for audience, structure, background, uncertainty, scope, repetition, and standalone readability.
 

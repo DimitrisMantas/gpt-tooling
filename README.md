@@ -76,7 +76,7 @@ After editing Plinth or Quire in an already registered checkout, refresh their C
 node scripts/install.js update
 ```
 
-This command changes only the local Plinth and Quire manifest cachebusters. It confirms that the `gpt-tooling` marketplace points to the current checkout, reinstalls both plugins, verifies their marketplace identity, and prompts you to start a new thread. Ponytail remains at the reviewed pinned commit.
+This command changes only the local Plinth and Quire manifest cachebusters. It confirms that the `gpt-tooling` marketplace points to the current checkout, reinstalls both plugins, verifies their marketplace identity, and prompts you to start a new thread. It checks that Ponytail is at the reviewed pinned commit without changing the submodule checkout.
 
 ## Using GPT Tooling
 
@@ -171,7 +171,9 @@ Each semantic result is graded in a separate Codex context that ignores user con
 - [Plinth behavior](plugins/plinth/evals/behavior.md)
 - [Quire behavior](plugins/quire/evals/behavior.md)
 
-The mechanical checks protect manifests, hook contracts, routes, selector metadata, context budgets, agent-profile semantics, dependency compatibility, and installer behavior. The behavioral suites protect policy outcomes without coupling them to exact prose.
+Evaluation records are saved before candidate execution, after each response, and after each grade. A record distinguishes a running, completed, or errored execution and lists all selected cases. An ungraded response has `pass: null`; an execution error retains completed results and the failing case. A completed execution can still contain failed behavioral cases. These checkpoints preserve collected evidence when a later call fails; they do not resume an interrupted run.
+
+The mechanical checks protect manifests, hook contracts, routes, selector metadata, context budgets, agent-profile semantics, dependency compatibility, installer behavior, and evaluation failure records. The installer check verifies the existing Ponytail pin without initializing or updating the submodule. The behavioral suites protect policy outcomes without coupling them to exact prose.
 
 ## Release packaging
 

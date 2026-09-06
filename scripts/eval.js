@@ -150,7 +150,7 @@ function localPolicy(temporary) {
   return { prompt, hashes };
 }
 
-function runSuite(selector = "core", local = false) {
+function runSuite(selector = "core", local = false, execute = execCodex, outputDirectory = path.join(root, "dist", "evals")) {
   if (!local) requireInstalledToolkit();
   const selected = selectCases(cases(), selector);
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "gpt-tooling-eval-"));
@@ -166,60 +166,13 @@ function runSuite(selector = "core", local = false) {
   }), "utf8");
 
   const records = [];
-  let policy;
-  try {
-    if (local) policy = localPolicy(temporary);
-    for (const item of selected) {
-      const responsePath = path.join(temporary, `${item.id}-response.txt`);
-      const graderPath = path.join(temporary, `${item.id}-grader.json`);
-      const output = execCodex((policy?.prompt || "") + item.prompt, responsePath, null, temporary, local);
-      const checks = deterministicChecks(item, output);
-      const gradingPrompt = [
-        "Evaluate the candidate response against every semantic criterion below.",
-        "Return pass only when all criteria are materially satisfied. Judge behavior and meaning, not exact wording.",
-        "Mechanically observable requirements are evaluated separately and are intentionally omitted from these criteria.",
-        "",
-        `Prompt:\n${item.prompt}`,
-        "",
-        `Semantic criteria:\n${item.criteria.map((criterion) => `- ${criterion}`).join("\n")}`,
-        "",
-        `Candidate response:\n${output}`
-      ].join("\n");
-      const rawGrade = execCodex(gradingPrompt, graderPath, schema, temporary, true);
-      const semanticGrade = JSON.parse(rawGrade);
-      const pass = semanticGrade.pass && checks.every((check) => check.pass);
-      records.push({
-        id: item.id,
-        tier: item.tier,
-        prompt: item.prompt,
-        semanticCriteria: item.criteria,
-        output,
-        deterministicChecks: checks,
-        semanticGrader: {
-          model,
-          reasoningEffort,
-          cleanContext: true,
-          ignoredUserConfig: true,
-          agentDocumentByteLimit: 0,
-          disabledFeatures: ["hooks", "plugins"],
-          prompt: gradingPrompt,
-          ...semanticGrade
-        },
-        pass
-      });
-      process.stdout.write(`${pass ? "PASS" : "FAIL"}: ${item.id}\n`);
-    }
-  } finally {
-    fs.rmSync(temporary, { recursive: true, force: true });
-  }
-
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const outputPath = path.join(root, "dist", "evals", `${stamp}.json`);
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, `${JSON.stringify({
+  const outputPath = path.join(outputDirectory, `${stamp}.json`);
+  const report = {
     createdAt: new Date().toISOString(),
     selection: selector,
-    candidatePolicy: local ? { source: "local-snapshot", delivery: "inline-stdin", hooksEnabled: false, hashes: policy.hashes } : { source: "installed-plugins" },
+    selectedCases: selected.map((item) => item.id),
+    status: "running",
     model,
     reasoningEffort,
     graderIsolation: {
@@ -234,8 +187,80 @@ function runSuite(selector = "core", local = false) {
       ponytailCommit: "2ed6c52c9d7e5e56942508591085fd45dea277d3"
     },
     cases: records
-  }, null, 2)}\n`, "utf8");
-  process.stdout.write(`The evaluation record was written to ${outputPath}.\n`);
+  };
+  function save() {
+    fs.mkdirSync(outputDirectory, { recursive: true });
+    fs.writeFileSync(`${outputPath}.tmp`, `${JSON.stringify(report, null, 2)}\n`, "utf8");
+    fs.renameSync(`${outputPath}.tmp`, outputPath);
+  }
+  let policy;
+  try {
+    if (local) policy = localPolicy(temporary);
+    report.candidatePolicy = local ? { source: "local-snapshot", delivery: "inline-stdin", hooksEnabled: false, hashes: policy.hashes } : { source: "installed-plugins" };
+    save();
+    for (const item of selected) {
+      report.activeCase = item.id;
+      save();
+      const responsePath = path.join(temporary, `${item.id}-response.txt`);
+      const graderPath = path.join(temporary, `${item.id}-grader.json`);
+      const output = execute((policy?.prompt || "") + item.prompt, responsePath, null, temporary, local);
+      const checks = deterministicChecks(item, output);
+      const record = {
+        id: item.id,
+        tier: item.tier,
+        prompt: item.prompt,
+        semanticCriteria: item.criteria,
+        output,
+        deterministicChecks: checks,
+        pass: null
+      };
+      records.push(record);
+      save();
+      const gradingPrompt = [
+        "Evaluate the candidate response against every semantic criterion below.",
+        "Return pass only when all criteria are materially satisfied. Judge behavior and meaning, not exact wording.",
+        "Mechanically observable requirements are evaluated separately and are intentionally omitted from these criteria.",
+        "",
+        `Prompt:\n${item.prompt}`,
+        "",
+        `Semantic criteria:\n${item.criteria.map((criterion) => `- ${criterion}`).join("\n")}`,
+        "",
+        `Candidate response:\n${output}`
+      ].join("\n");
+      const rawGrade = execute(gradingPrompt, graderPath, schema, temporary, true);
+      const semanticGrade = JSON.parse(rawGrade);
+      if (typeof semanticGrade?.pass !== "boolean" || typeof semanticGrade.rationale !== "string") {
+        throw new Error(`The semantic grade is invalid: ${item.id}.`);
+      }
+      const pass = semanticGrade.pass && checks.every((check) => check.pass);
+      Object.assign(record, {
+        semanticGrader: {
+          model,
+          reasoningEffort,
+          cleanContext: true,
+          ignoredUserConfig: true,
+          agentDocumentByteLimit: 0,
+          disabledFeatures: ["hooks", "plugins"],
+          prompt: gradingPrompt,
+          ...semanticGrade
+        },
+        pass
+      });
+      save();
+      process.stdout.write(`${pass ? "PASS" : "FAIL"}: ${item.id}\n`);
+    }
+    report.status = "completed";
+    delete report.activeCase;
+    save();
+  } catch (error) {
+    report.status = "error";
+    report.error = error.message;
+    save();
+    throw error;
+  } finally {
+    fs.rmSync(temporary, { recursive: true, force: true });
+    if (fs.existsSync(outputPath)) process.stdout.write(`The evaluation record was written to ${outputPath}.\n`);
+  }
   if (records.some((record) => !record.pass)) process.exitCode = 1;
 }
 
@@ -257,6 +282,39 @@ function selfTest() {
     for (const heading of ["# Plinth: Software", "# Plinth: Python", "# Ponytail", "# Quire"]) {
       if (!policy.prompt.includes(heading)) throw new Error(`The inline policy snapshot omits ${heading}.`);
     }
+    const assert = require("assert/strict");
+    const outputDirectory = path.join(temporary, "results");
+    process.stdout.write("Checking evaluation records with synthetic responses and grades.\n");
+    let calls = 0;
+    assert.throws(() => runSuite("smoke", true, (_prompt, _output, schema) => {
+      calls += 1;
+      if (calls === 4) {
+        const checkpoint = JSON.parse(fs.readFileSync(path.join(outputDirectory, fs.readdirSync(outputDirectory)[0]), "utf8"));
+        assert.equal(checkpoint.status, "running");
+        assert.equal(checkpoint.cases[1].output, "Test response.");
+        assert.equal(checkpoint.cases[1].pass, null);
+        return '{"pass":"false","rationale":"Invalid boolean"}';
+      }
+      return schema ? '{"pass":true,"rationale":"Test grade"}' : "Test response.";
+    }, outputDirectory), /semantic grade is invalid/);
+    const report = JSON.parse(fs.readFileSync(path.join(outputDirectory, fs.readdirSync(outputDirectory)[0]), "utf8"));
+    assert.equal(report.status, "error");
+    assert.equal(report.selectedCases.length, expectedCounts.smoke);
+    assert.equal(report.cases.length, 2);
+    assert.equal(report.cases[0].pass, true);
+    assert.equal(report.cases[1].pass, null);
+    assert.equal(report.cases[1].output, "Test response.");
+    assert.equal(report.activeCase, report.cases[1].id);
+    assert.match(report.error, /semantic grade is invalid/);
+    assert.ok(report.candidatePolicy.hashes);
+    const completedDirectory = path.join(temporary, "completed");
+    runSuite("clean-review-null-result", true, (_prompt, _output, schema) => {
+      return schema ? '{"pass":true,"rationale":"Test grade"}' : "Test response.";
+    }, completedDirectory);
+    const completed = JSON.parse(fs.readFileSync(path.join(completedDirectory, fs.readdirSync(completedDirectory)[0]), "utf8"));
+    assert.equal(completed.status, "completed");
+    assert.equal(completed.activeCase, undefined);
+    assert.equal(completed.cases[0].pass, true);
   } finally {
     fs.rmSync(temporary, { recursive: true, force: true });
   }
