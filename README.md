@@ -62,6 +62,8 @@ The installer:
 
 Review and trust the bundled hooks after installation, then start a new Codex thread so the session and subagent policies load from a clean context.
 
+For persistent candidate testing, install from an extracted release archive. Its Ponytail source already contains the compatibility patch. A marketplace refresh against a Git checkout can select the raw upstream submodule again after the installer restores it; a distinct cache version does not change that source-selection behavior.
+
 ### Updating a local installation
 
 After editing Plinth or Quire in an already registered checkout, refresh their Codex cachebusters and reinstall them:
