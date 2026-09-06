@@ -78,7 +78,7 @@ function addMarketplace() {
 }
 
 function verifyInstalled(names) {
-  const installed = JSON.parse(runCodex(["plugin", "list", "--available", "--json"])).installed;
+  const installed = JSON.parse(runCodex(["plugin", "list", "--json"])).installed;
   for (const name of names) {
     if (!installed.some((plugin) => plugin.name === name && plugin.marketplaceName === marketplaceName)) {
       throw new Error(`${name} was not installed from ${marketplaceName}.`);
@@ -148,4 +148,3 @@ else {
   process.stderr.write("Usage: node scripts/install.js [test|update]\n");
   process.exitCode = 2;
 }
-
