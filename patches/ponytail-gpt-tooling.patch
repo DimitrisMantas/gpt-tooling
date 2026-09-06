@@ -1,3 +1,13 @@
+diff --git a/.codex-plugin/plugin.json b/.codex-plugin/plugin.json
+--- a/.codex-plugin/plugin.json
++++ b/.codex-plugin/plugin.json
+@@ -1,5 +1,5 @@
+ {
+   "name": "ponytail",
+-  "version": "4.9.0",
++  "version": "4.9.0+gpt-tooling.1",
+   "description": "Lazy senior dev mode. Forces the simplest, shortest solution that actually works: YAGNI, stdlib first, no unrequested abstractions.",
+   "author": {
 diff --git a/hooks/ponytail-instructions.js b/hooks/ponytail-instructions.js
 --- a/hooks/ponytail-instructions.js
 +++ b/hooks/ponytail-instructions.js

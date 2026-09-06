@@ -9,6 +9,7 @@ const root = path.join(__dirname, "..");
 const patchPath = path.join(root, "patches", "ponytail-gpt-tooling.patch");
 const defaultPonytail = path.join(root, "plugins", "ponytail");
 const files = [
+  ".codex-plugin/plugin.json",
   "hooks/ponytail-instructions.js",
   "hooks/ponytail-runtime.js",
   "skills/ponytail/SKILL.md",
@@ -23,10 +24,12 @@ function git(args, cwd, allowFailure = false) {
 }
 
 function patched(ponytail) {
+  const manifest = JSON.parse(fs.readFileSync(path.join(ponytail, ".codex-plugin", "plugin.json"), "utf8"));
   const skill = fs.readFileSync(path.join(ponytail, "skills", "ponytail", "SKILL.md"), "utf8");
   const fallback = fs.readFileSync(path.join(ponytail, "hooks", "ponytail-instructions.js"), "utf8");
   const runtime = fs.readFileSync(path.join(ponytail, "hooks", "ponytail-runtime.js"), "utf8");
-  return !skill.includes("Code first. Then at most three short lines")
+  return manifest.version === "4.9.0+gpt-tooling.1"
+    && !skill.includes("Code first. Then at most three short lines")
     && !fallback.includes("Code first. Then at most three short lines")
     && !runtime.includes("systemMessage: `PONYTAIL:");
 }
