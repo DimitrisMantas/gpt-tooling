@@ -98,7 +98,7 @@ function manifestVersion(name) {
 
 function requireInstalledToolkit() {
   const cli = codexCommand();
-  const raw = run(cli.command, [...cli.prefix, "plugin", "list", "--available", "--json"]);
+  const raw = run(cli.command, [...cli.prefix, "plugin", "list", "--json"]);
   const installed = JSON.parse(raw).installed;
   for (const name of ["plinth", "quire", "ponytail"]) {
     if (!installed.some((plugin) => plugin.name === name && plugin.marketplaceName === "gpt-tooling")) {
@@ -225,4 +225,3 @@ else {
   process.stderr.write("Usage: node scripts/eval.js test | run [smoke|core|extended|case-id]\n");
   process.exitCode = 2;
 }
-
