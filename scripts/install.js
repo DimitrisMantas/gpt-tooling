@@ -35,9 +35,9 @@ function runCodex(args) {
   const executable = paths.find((file) => /\.(?:exe|com)$/i.test(file));
   if (executable) return run(executable, args);
   const commandShim = paths.find((file) => /\.cmd$/i.test(file));
-  const powerShellShim = commandShim && commandShim.replace(/\.cmd$/i, ".ps1");
-  if (!powerShellShim || !fs.existsSync(powerShellShim)) throw new Error("The Codex command could not be resolved to a Windows executable or PowerShell shim.");
-  return run("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", powerShellShim, ...args]);
+  const entrypoint = commandShim && path.join(path.dirname(commandShim), "node_modules", "@openai", "codex", "bin", "codex.js");
+  if (!entrypoint || !fs.existsSync(entrypoint)) throw new Error("The Codex command requires a native executable or an npm installation.");
+  return run(process.execPath, [entrypoint, ...args]);
 }
 
 function verifyFiles() {

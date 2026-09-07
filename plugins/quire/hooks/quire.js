@@ -57,7 +57,7 @@ function emit(event, mode) {
 
 function promptMode(prompt) {
   const normalized = String(prompt || "").trim().toLowerCase().replace(/[.!?]+$/, "");
-  const selector = normalized.match(/\$quire-(auto|standard|technical)\b/);
+  const selector = normalized.match(/^\$quire-(auto|standard|technical)(?=\s|$)/);
   if (selector) return normalizeMode(selector[1]);
   const command = normalized.match(/^(?:[/@$]quire|quire)(?:\s+(auto|standard|technical))?$/);
   return command ? normalizeMode(command[1] || readMode()) : null;
@@ -95,6 +95,36 @@ function selfTest() {
   selectorMetadata("quire-technical", "Technical");
   for (const event of ["SessionStart", "SubagentStart", "UserPromptSubmit"]) {
     if (!hooks.hooks[event]) throw new Error(`The ${event} hook is missing.`);
+    const route = hooks.hooks[event][0]?.hooks?.[0];
+    const action = event === "UserPromptSubmit" ? "prompt" : `inject ${event}`;
+    if (route?.type !== "command" || !route.command?.includes("quire.js") || !route.command.includes(action)) throw new Error(`The ${event} hook route is invalid.`);
+  }
+  const assert = require("assert/strict");
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "quire-hook-test-"));
+  const env = { ...process.env, PLUGIN_ROOT: root, PLUGIN_DATA: temporary };
+  function invoke(args, input = "") {
+    return JSON.parse(require("child_process").execFileSync(process.execPath, [__filename, ...args], { env, input, encoding: "utf8", windowsHide: true }));
+  }
+  try {
+    assert.equal(invoke(["inject", "SessionStart"]).hookSpecificOutput.additionalContext, instructions("auto"));
+    for (const mode of modes) {
+      const changed = invoke(["prompt"], JSON.stringify({ prompt: `$quire-${mode}\nApply this mode.` }));
+      assert.equal(changed.hookSpecificOutput.hookEventName, "UserPromptSubmit");
+      for (const event of ["SessionStart", "SubagentStart"]) {
+        const output = invoke(["inject", event]).hookSpecificOutput;
+        assert.equal(output.hookEventName, event);
+        assert.equal(output.additionalContext, instructions(mode));
+      }
+      assert.equal(fs.readFileSync(path.join(temporary, "mode"), "utf8"), mode);
+    }
+    for (const input of ["malformed JSON", JSON.stringify({ prompt: "Explain $quire-standard without changing modes." }), JSON.stringify({ prompt: "$quire-invalid" })]) {
+      assert.deepEqual(invoke(["prompt"], input), {});
+      assert.equal(fs.readFileSync(path.join(temporary, "mode"), "utf8"), "technical");
+    }
+    fs.writeFileSync(path.join(temporary, "mode"), "corrupt-state");
+    assert.equal(invoke(["inject", "SessionStart"]).hookSpecificOutput.additionalContext, instructions("auto"));
+  } finally {
+    fs.rmSync(temporary, { recursive: true, force: true });
   }
   process.stdout.write("The Quire hook checks passed.\n");
 }

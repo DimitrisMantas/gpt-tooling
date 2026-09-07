@@ -141,15 +141,7 @@ Review and trust the Quire hook before use. `SessionStart` and `SubagentStart` k
 
 ## Validation
 
-Run the mechanical check from the repository root:
-
-```bash
-node plugins/quire/hooks/quire.js test
-```
-
-The check validates the plugin identity, required policy files, mode behavior, concise progressive routes, hook events, selector metadata, UI labels, and false-positive-resistant mode parsing.
-
-Use the [behavioral evaluations](evals/behavior.md) to assess routing, technical-content boundaries, claim calibration, null-result preservation, medium-aware editing, interagent concision, source provenance, and the three selector modes.
+From the tooling repository root, run `node scripts/test.js`. Every mechanical and behavioral check must pass. See the [complete verification contract](../../README.md#verification) and [behavioral scenarios](evals/behavior.md).
 
 ## License
 

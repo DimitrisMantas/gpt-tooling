@@ -88,6 +88,7 @@ function validate(destination) {
   }
   for (const file of files.filter((name) => name.endsWith(".json"))) JSON.parse(fs.readFileSync(file, "utf8"));
   const checks = [
+    ["node", ["-e", "require('./scripts/test').selfTest()"]],
     ["node", ["plugins/plinth/hooks/plinth.js", "test"]],
     ["node", ["plugins/plinth/scripts/install-agents.js", "test"]],
     ["node", ["plugins/quire/hooks/quire.js", "test"]],

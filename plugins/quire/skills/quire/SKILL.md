@@ -90,6 +90,10 @@ Remove throat-clearing, announcements, generic praise, reassurance, canned sign-
 
 Write each deliverable so its intended reader can understand it without the conversation that produced it. Include the purpose, scope, definitions, assumptions, evidence, and limitations the artifact needs.
 
+An outline of an existing record must organize only the supplied content and relationships. Match its level of detail: category-level input calls for category-level headings and brief guidance preserving the stated meaning. Specific subfields require specific support in the record. Add a missing element only when the task or governing form requires it, and identify it as missing.
+
+For code examples, explicitly distinguish predicted output from observed execution. Introduce unexecuted output as expected output, even when the prediction is obvious. Do not format a predicted error as an observed test result. State conclusions from inspecting supplied inputs as inspection results.
+
 Remove references to the prompt, chat, user request, prior discussion, drafting process, hidden reasoning, or earlier versions unless the document type requires provenance, a change history, or an AI-use disclosure.
 
 ## Proportional final pass

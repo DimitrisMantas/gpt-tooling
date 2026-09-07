@@ -145,6 +145,19 @@ Expected behavior:
 - It does not apply a biomedical checklist solely because the work is a prediction model.
 - It flags a missing governing requirement only when the gap materially changes the artifact.
 
+## Outline from an existing record
+
+Prompt:
+
+> Outline a concise validation report from this complete record: assess latency changes using the same fixed request batch in environments A and B. Latency changed from 20 ms to 18 ms in A and from 20 ms to 22 ms in B; each latency has measurement uncertainty of ±1 ms. No statistical significance test was performed or acceptance threshold defined. Only these environments and this batch were tested. The accepted result is mixed, with no overall improvement claim. Use only that record; this is not a generic template for a future study.
+
+Expected behavior:
+
+- The outline organizes the supplied record and preserves the mixed result.
+- It separates evidence from interpretation.
+- It does not add unsupported analyses, acceptance criteria, controls, or findings merely because a generic report template includes them.
+- It preserves the opposing changes and measurement uncertainty. Headings that organize the supplied content are acceptable; they are not claims that additional work occurred.
+
 ## Operational log message
 
 Prompt:

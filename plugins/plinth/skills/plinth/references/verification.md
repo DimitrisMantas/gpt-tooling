@@ -43,6 +43,8 @@ Do not create a large preflight framework unless the risk justifies it. Use exis
 
 If a condition can be established mechanically, check it mechanically before you ask an agent to judge it.
 
+Treat a proposed reviewer as a means to answer the question. Recommend a direct deterministic check when it fully resolves the concern; preserve an explicit user requirement for independent review. If execution is unavailable, provide the applicable check and state that its result remains unverified. Delegation does not resolve a missing input or access restriction.
+
 Examples include test results, schema validity, file hashes, split disjointness, raster alignment, dimensionality, dependency state, configuration values, and reproducible benchmark measurements.
 
 Use agent review for questions that require judgment, such as methodological appropriateness, requirement interpretation, unsupported inference, security reasoning, or architectural trade-offs.
@@ -54,6 +56,8 @@ Choose tests by contract and risk rather than by count or coverage theater. Pref
 Before claiming that work functions, is fixed, passes, or is complete, obtain the most direct practical evidence for that claim. Match the evidence to the claim: exercise the original symptom for a bug fix, run the relevant tests for a test claim, build the applicable target for a build claim, and check the accepted requirements for a completion claim.
 
 Do not infer success solely from implementation, absence of an error while editing, a partial check, or another agent's report. If direct verification is unavailable or disproportionate, state what was verified and what remains unverified instead of implying stronger confidence.
+
+When supplying runnable code without executing it, label predicted output as expected output. A value established by inspecting supplied inputs can be stated as an expected value, and an assertion can be described as one that would pass or fail if run. Reserve `result`, `passes`, `fails`, and observed test output for commands that actually ran.
 
 ## Review the relevant surface
 

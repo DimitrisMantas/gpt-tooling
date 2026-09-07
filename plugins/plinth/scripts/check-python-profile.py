@@ -83,7 +83,7 @@ def main() -> None:
 
         # Runtime validation has obligations that rank annotations and strict labels cannot prove.
         import numpy as np
-        from pydantic import TypeAdapter, ValidationError
+        from pydantic import BaseModel, ConfigDict, TypeAdapter, ValidationError
 
         image = np.zeros((2, 2, 4), dtype=np.uint8)
         assert image.ndim == 3 and image.shape[-1] != 3
@@ -95,6 +95,25 @@ def main() -> None:
             pass
         else:
             raise AssertionError("Strict integer validation accepted a string")
+
+        class MutableRecord(BaseModel):
+            count: int
+
+        record = MutableRecord(count=1)
+        record.count = "invalid"
+        assert record.count == "invalid"
+
+        class CheckedRecord(BaseModel):
+            model_config = ConfigDict(validate_assignment=True, strict=True)
+            count: int
+
+        checked = CheckedRecord(count=1)
+        try:
+            checked.count = "invalid"
+        except ValidationError:
+            assert checked.count == 1
+        else:
+            raise AssertionError("Assignment validation accepted an invalid value")
         print("Python profile checks passed: full baseline, negative diagnostics, WPS conflicts, literal layout, rank, and runtime validation.")
 
 

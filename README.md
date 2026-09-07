@@ -135,45 +135,28 @@ The pinned upstream Ponytail release contains an output-length directive and a C
 
 ## Verification
 
-Run the bundled mechanical checks from the repository root:
+Run the complete suite from the repository root:
 
 ```bash
-node plugins/plinth/hooks/plinth.js test
-node plugins/plinth/scripts/install-agents.js test
-node plugins/quire/hooks/quire.js test
-node scripts/prepare-ponytail.js test
-node scripts/install.js test
-node scripts/eval.js test
-node scripts/release.js test
+node scripts/test.js
 ```
 
-Verify the optional Python profile separately with uv. This uses a temporary directory and pinned script dependencies; it does not configure this repository as a Python project:
+The suite requires Node.js, Git, uv, an authenticated Codex CLI, and the initialized Ponytail submodule. It runs every mechanical check group, the upstream Ponytail tests, the Python companion checks, release assembly and extraction checks, and every behavioral case. Python tooling is optional for adoption but mandatory to verify its supported companion profile. There are no tiers or case selectors. Every expected result must pass; a failure, execution error, or incomplete case makes the command fail. Results from different runs are never combined into a passing result.
 
-```bash
-uv run --script plugins/plinth/scripts/check-python-profile.py
-```
+| Responsibility | Coverage |
+| --- | --- |
+| Integration | Manifests, hook events, mode persistence, selector parsing, reviewer restrictions, installer behavior, Unicode transport, compatibility patch, and release roundtrip |
+| Ponytail | Rule and version consistency, runtime, Pi extension, MCP instructions, line-count examples, and correctness examples |
+| Engineering | Conventional methods, proportional evidence, decision order, scope, direct verification, review feedback, and completion conditions |
+| Software and hardware | Shared fixes, existing capabilities, trust boundaries, interface semantics, calibration, and the optional Python type/runtime profile |
+| Teaching | New concepts, demonstrated expertise, mixed knowledge, requested depth, requested brevity, and correction after a follow-up |
+| Writing and composition | Mode selection, technical meaning, uncertainty, null results, interagent prose, and module authority |
 
-After installing the current checkout, run the executable behavioral suite to exercise a small set of representative cross-module regressions:
+Behavioral cases in [evals/cases.json](evals/cases.json) check general outcomes rather than stock phrases or a preferred implementation language. Concrete fixtures supply the evidence needed to answer each prompt. Coverage tags require every major responsibility to remain represented. The scenario catalogs provide additional context: [Plinth behavior](plugins/plinth/evals/behavior.md) and [Quire behavior](plugins/quire/evals/behavior.md).
 
-```bash
-node scripts/eval.js run smoke
-node scripts/eval.js run core
-node scripts/eval.js run extended
-node scripts/eval.js run clean-review-null-result
-```
+Candidates receive a snapshot of the current checkout's policies, including the patched Ponytail policy. Candidate and grader processes use clean contexts with user configuration, hooks, plugins, and repository instruction discovery disabled. This tests policy composition; mechanical lifecycle checks exercise hooks separately. It does not establish that a particular user's installed plugin cache discovers the policies correctly. Known-answer checks require the semantic grader to both accept a supported statement and reject an unsupported causal claim before evaluating candidates. Deterministic requirements use direct checks where possible. Behavioral results remain observations of the recorded model and prompts, not guarantees about every future response.
 
-`run` defaults to the Core suite. Smoke contains 13 must-never-regress cases, Core contains 19 independent contract cases, and Extended contains 24 cases, including software contracts, language independence, and typing-versus-runtime boundaries. A named case runs by itself. One semantic grading call follows each candidate response, so complete Smoke, Core, and Extended runs use 26, 38, and 48 Codex executions respectively. The default evaluation model is `gpt-5.6-sol`; set `GPT_TOOLING_EVAL_MODEL` to choose another available model. Results record the actual selection.
-
-Use `node scripts/eval.js run-local <case-id-or-suite>` to evaluate a snapshot of the current checkout without reinstalling plugins. It copies the local policies, applies the existing Ponytail compatibility patch, records content hashes, and supplies the complete policies through stdin to a clean candidate context. This tests policy composition; the installed `run` path remains the check for plugin discovery and lifecycle activation. For example, run `software-contract-before-lint`, `software-agnostic-repository`, or `python-contract-and-prose` locally while developing the extension.
-
-Each semantic result is graded in a separate Codex context that ignores user configuration and execution rules, disables hooks and plugins, and sets the AGENTS.md byte limit to zero. The same isolation settings apply to local-snapshot candidates. Mechanically observable requirements, such as an exact paragraph count, use deterministic checks instead of model judgment. Each run records the selected suite, model, reasoning effort, prompt, candidate output, semantic criteria, deterministic results, grader isolation, and grader decision under `dist/evals/`. The reference scenario catalogs remain in:
-
-- [Plinth behavior](plugins/plinth/evals/behavior.md)
-- [Quire behavior](plugins/quire/evals/behavior.md)
-
-Evaluation records are saved before candidate execution, after each response, and after each grade. A record distinguishes a running, completed, or errored execution and lists all selected cases. An ungraded response has `pass: null`; an execution error retains completed results and the failing case. A completed execution can still contain failed behavioral cases. These checkpoints preserve collected evidence when a later call fails; they do not resume an interrupted run.
-
-The mechanical checks protect manifests, hook contracts, routes, selector metadata, context budgets, agent-profile semantics, dependency compatibility, installer behavior, and evaluation failure records. The installer check verifies the existing Ponytail pin without initializing or updating the submodule. The behavioral suites protect policy outcomes without coupling them to exact prose.
+The default evaluation model is `gpt-5.6-sol`; `GPT_TOOLING_EVAL_MODEL` can select another available model. Records include model, reasoning effort, policy hashes, prompts, responses, criteria, grades, and deterministic results. Logs and a checkpointed `report.json` live under `dist/tests/<run>/`. The summary counts mechanical check groups and behavioral cases separately from the individual assertions and upstream tests recorded in group logs. Interrupted runs retain completed evidence and mark unfinished work incomplete; rerun the same command for a new complete result.
 
 ## Release packaging
 

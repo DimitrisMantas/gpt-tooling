@@ -90,6 +90,13 @@ function selfTest() {
     if (fs.readFileSync(path.join(target, expected[0]), "utf8") === sentinel) {
       throw new Error("The installer did not replace a profile with --force.");
     }
+    const assert = require("assert/strict");
+    const altered = path.join(target, expected[0]);
+    const original = fs.readFileSync(altered, "utf8");
+    fs.writeFileSync(altered, original.replace('sandbox_mode = "read-only"', 'sandbox_mode = "danger-full-access"'));
+    assert.throws(() => profiles(target), /read-only/);
+    fs.writeFileSync(altered, original.replace(/model_reasoning_effort = "[^"]+"/, 'model_reasoning_effort = "invalid"'));
+    assert.throws(() => profiles(target), /reasoning effort/);
   } finally {
     fs.rmSync(temporaryDir, { recursive: true, force: true });
   }

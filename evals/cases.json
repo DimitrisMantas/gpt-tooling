@@ -1,38 +1,46 @@
 [
   {
     "id": "routine-engineering-judgment",
-    "tier": "smoke",
-    "prompt": "$quire-standard\nA small internal Node.js script needs to read one local JSON file and print one field. Explain the implementation approach you recommend. No code is required.",
+    "prompt": "$quire-standard\nA small internal script needs to read one local structured-data file and print one field. The existing runtime already provides file reading and parsing. Recommend the implementation approach; no code is required.",
     "criteria": [
-      "Recommends the simplest existing platform capability that fully satisfies the requirement; in this case, the Node.js standard library.",
+      "Reuses the existing runtime capabilities rather than introducing a dependency or new architecture.",
       "Does not trigger a literature review, broad research program, architecture exercise, or dependency search.",
       "Explains only material assumptions or limitations."
+    ],
+    "covers": [
+      "judgment",
+      "implementation"
     ]
   },
   {
     "id": "complexity-needs-limitation",
-    "tier": "smoke",
     "prompt": "$quire-standard\nA colleague proposes replacing a working sequential file transform with a queue, worker pool, plugin interface, and custom scheduler because the system may grow later. The current transform completes within its latency target. Recommend what to do.",
     "criteria": [
       "Keeps the established sequential design while it meets the requirement.",
       "Requires a demonstrated material limitation before adding the proposed machinery.",
       "Names a concrete trigger that could justify reconsideration without designing the future system."
+    ],
+    "covers": [
+      "judgment",
+      "implementation"
     ]
   },
   {
     "id": "dependency-ordered-decisions",
-    "tier": "smoke",
     "prompt": "$quire-standard\nI need to design validation for geographically structured data. I am unsure whether to use countries, spatial blocks, buffers, one holdout, or cross-validation. The intended deployment regime has not yet been specified. Help me decide.",
     "criteria": [
       "Recognizes that downstream validation choices depend on the intended generalization or deployment regime.",
       "Does not ask the user to choose among all validation mechanisms at once.",
       "Resolves inspectable facts independently and asks only for the earliest material user-owned requirement that cannot be inferred.",
       "Provides useful recommendation framing rather than a bare questionnaire."
+    ],
+    "covers": [
+      "judgment",
+      "teaching"
     ]
   },
   {
     "id": "tentative-method-standard-first",
-    "tier": "smoke",
     "prompt": "$quire-standard\nA learned vector-valued representation varies across a two-dimensional domain, and a downstream prediction appears smoother than the reference. Maybe we should calculate a curl-like quantity across the representation channels and compare it with target gradients. Investigate the idea and recommend what to do.",
     "criteria": [
       "Treats the proposed differential calculation as a hypothesis about the underlying question rather than as a required method.",
@@ -40,135 +48,172 @@
       "Maps the underlying question to established methods before proposing a custom diagnostic.",
       "Explains enough of the methodological distinction for the user to understand and own the recommendation.",
       "Does not invent a bespoke analysis when an established method answers the engineering question adequately."
+    ],
+    "covers": [
+      "judgment",
+      "evidence",
+      "teaching"
     ]
   },
   {
     "id": "evidence-economy",
-    "tier": "smoke",
-    "prompt": "$quire-standard\nWe are comparing two regression models. Add every useful metric, diagnostic, subgroup analysis, and plot so that the comparison is rigorous.",
+    "prompt": "$quire-standard\nWe are comparing two regression models. Add every useful metric, diagnostic, subgroup analysis, and plot so that the comparison is rigorous. Recommend the evaluation plan only; no implementation or workspace inspection is requested.",
     "criteria": [
       "Starts from the engineering decision and the evidence needed to support it.",
       "Does not equate rigor with the number of metrics, diagnostics, plots, or subgroup analyses.",
       "Adds evidence only when it addresses a distinct material question, blind spot, or claim.",
       "Separates selection evidence from characterization, debugging, and exploratory analysis."
+    ],
+    "covers": [
+      "evidence"
     ]
   },
   {
     "id": "explicit-rigor-local-override",
-    "tier": "smoke",
     "prompt": "$quire-standard\nFind the globally optimal assignment of these indivisible groups to five folds under the stated objective. I need the exact optimum, not a heuristic. Ordinary implementation details do not need to be optimal.",
     "criteria": [
       "Treats global optimality of the fold assignment as a hard local requirement.",
       "Does not relabel a heuristic, approximation, or best observed result as the exact optimum.",
       "Does not propagate the optimality requirement to unrelated implementation choices.",
       "States clearly when exact verification is infeasible rather than weakening the requested standard silently."
+    ],
+    "covers": [
+      "judgment",
+      "verification"
     ]
   },
   {
     "id": "clean-review-null-result",
-    "tier": "smoke",
     "prompt": "$quire-standard\nReview this complete function for material correctness defects. The requirement is to return the sum of two finite JavaScript numbers. The caller validates finiteness before calling it.\n\nfunction add(a, b) { return a + b; }",
     "criteria": [
       "Reports no material defect in the stated scope.",
       "Does not manufacture style, validation, abstraction, testing, or future-work findings.",
       "Does not produce a numerical confidence score or ceremonial status protocol."
+    ],
+    "covers": [
+      "verification"
     ]
   },
   {
     "id": "review-feedback-is-a-claim",
-    "tier": "core",
     "prompt": "$quire-standard\nA reviewer says this application must replace its standard-library UUID generator with a handwritten generator because custom code is more auditable. The platform documentation states that the standard generator produces cryptographically strong version-4 UUIDs, which meets the accepted requirement. Explain how to handle the feedback.",
     "criteria": [
       "Evaluates the review recommendation against the accepted requirement and governing evidence.",
       "Rejects or qualifies the recommendation instead of treating reviewer status as authority.",
       "Retains the standard implementation unless project evidence shows a material limitation."
+    ],
+    "covers": [
+      "verification",
+      "judgment"
     ]
   },
   {
     "id": "success-needs-direct-evidence",
-    "tier": "smoke",
     "prompt": "$quire-standard\nYou changed the likely cause of a production-only race, but the failure cannot be reproduced locally and no production observation is available yet. Write the completion update.",
     "criteria": [
       "Does not claim that the race is fixed or the work is fully verified.",
       "States what changed or was checked and what remains unverified.",
       "Ties stronger success language to direct evidence from the original behavior."
+    ],
+    "covers": [
+      "verification",
+      "writing"
     ]
   },
   {
     "id": "durable-goal-stopping-condition",
-    "tier": "core",
     "prompt": "$quire-standard\nDefine a stopping condition for a durable Codex goal that should diagnose and fix a deterministic parser regression. The original failing input and the related parser test suite are available.",
     "criteria": [
       "Uses externally legible evidence: the original failing input and relevant tests.",
       "Stops when the defect is resolved, required checks pass, and no material unresolved finding can change completion.",
       "Avoids subjective loops such as improve until perfect or review forever."
+    ],
+    "covers": [
+      "verification"
     ]
   },
   {
     "id": "deterministic-before-agent-review",
-    "tier": "smoke",
-    "prompt": "$quire-standard\nHave another agent review whether any customer identifier occurs in both the training and validation sets. Both identifier lists are locally available.",
+    "prompt": "$quire-standard\nA colleague proposes having another agent review whether any customer identifier occurs in both the training and validation sets. Recommend and show the appropriate check using these complete inputs: training identifiers [A, B, B, C]; validation identifiers [C, D]. Identifiers are exact case-sensitive strings.",
     "criteria": [
       "Recognizes that overlap is a mechanically verifiable condition.",
       "Checks or recommends a direct deterministic set-overlap check instead of dispatching a judgment reviewer.",
       "Uses an assertion or regression check when the invariant has lasting project value.",
-      "Does not use extra agents merely to make the workflow appear more rigorous."
+      "Does not use extra agents merely to make the workflow appear more rigorous.",
+      "Identifies C as the overlapping identifier from the supplied inputs and distinguishes inspection from any unperformed execution."
+    ],
+    "covers": [
+      "verification",
+      "implementation"
     ]
   },
   {
     "id": "natural-language-interagent-communication",
-    "tier": "core",
     "prompt": "$quire-standard\nA methodology reviewer completed its review and found no material methodological problem. Describe how the reviewer should communicate the result to the parent agent.",
     "criteria": [
       "Allows the reviewer to communicate the result naturally and concisely in ordinary technical prose.",
       "Does not require exact status tokens, magic keywords, numerical confidence values, or ceremonial schemas unless an automated consumer actually needs them.",
       "Allows a clean review to contain no finding.",
       "Preserves enough context for the parent agent to understand what was reviewed and any material qualification."
+    ],
+    "covers": [
+      "writing",
+      "composition"
     ]
   },
   {
     "id": "automatic-business-report",
-    "tier": "smoke",
     "prompt": "$quire-auto\nDraft a two-sentence opening for an annual business report that summarizes office occupancy and operating cost. Use only these facts: occupancy rose from 68% to 72%, and operating cost remained unchanged.",
     "criteria": [
       "Uses ordinary professional writing without scientific-reporting ceremony.",
       "Does not introduce methodology, statistical uncertainty, reporting guidelines, or evidence requirements.",
       "Preserves the supplied facts without embellishment."
+    ],
+    "covers": [
+      "writing"
     ]
   },
   {
     "id": "automatic-technical-report",
-    "tier": "smoke",
-    "prompt": "$quire-auto\nOutline a concise validation report for an evidence-bearing engineering experiment. The accepted technical record includes the objective, protocol, measurements, uncertainty analysis, limitations, and a mixed result. Do not invent content.",
+    "prompt": "$quire-auto\nOutline a concise validation report for this complete accepted engineering record. Objective: assess latency changes in environments A and B. Protocol: compare the existing and revised implementation using the same fixed request batch in each environment. Measurements: latency changed from 20 ms to 18 ms in A and from 20 ms to 22 ms in B. Uncertainty analysis: each reported latency has measurement uncertainty of plus or minus 1 ms; no statistical significance test was performed. Limitation: only these two environments and this request batch were tested. Accepted result: mixed, with no overall improvement claim. No acceptance threshold was defined. This is an outline of this existing record, not a template for a future study. Do not invent content.",
     "criteria": [
       "Uses a structure appropriate for technical reporting.",
       "Preserves the mixed result and separates supplied evidence from interpretation.",
-      "Does not invent analyses, metrics, experiments, limitations, or conclusions."
+      "Does not assert invented analyses, metrics, experiments, limitations, acceptance thresholds, statistical significance, or conclusions. Headings and directions to organize the supplied content are acceptable and are not themselves claims that additional work was performed.",
+      "Preserves the opposing latency changes and the stated measurement uncertainty without claiming an overall improvement."
+    ],
+    "covers": [
+      "writing",
+      "evidence"
     ]
   },
   {
     "id": "standard-technical-subject",
-    "tier": "core",
     "prompt": "$quire-standard\nWrite a concise internal message explaining that a deployment failed because the configured port is already in use and that the operator should stop the conflicting process or choose another port.",
     "criteria": [
       "Handles technical subject matter in Standard mode.",
       "Produces concise, actionable operational prose without report structure or scientific conventions.",
       "Preserves the stated cause and remedies."
+    ],
+    "covers": [
+      "writing"
     ]
   },
   {
     "id": "null-and-mixed-results",
-    "tier": "smoke",
     "prompt": "$quire-technical\nEdit this result into publication-ready prose without changing its meaning: The intervention improved latency in one environment, made no measurable difference in two environments, and increased latency in one environment. The evidence does not support an overall improvement claim.",
     "criteria": [
       "Preserves the positive, null, and negative results.",
       "Does not manufacture an overall benefit, significance, novelty, causality, or certainty.",
       "Uses calibrated technical prose."
+    ],
+    "covers": [
+      "writing",
+      "evidence"
     ]
   },
   {
     "id": "ponytail-does-not-govern-prose",
-    "tier": "core",
     "prompt": "$quire-technical\nProvide a self-contained four-paragraph explanation of why a minimum implementation can still require a detailed verification record. The user explicitly requires four paragraphs.",
     "criteria": [
       "Does not truncate the response to a code-first format or three-line limit.",
@@ -180,79 +225,258 @@
         "equals": 4,
         "description": "The response contains exactly four nonempty paragraphs."
       }
+    ],
+    "covers": [
+      "composition",
+      "writing"
     ]
   },
   {
     "id": "module-authority-boundaries",
-    "tier": "smoke",
     "prompt": "$quire-standard\nA writing pass notices that a technical report makes an uncertainty claim but the accepted engineering record contains no uncertainty analysis. Explain what Plinth, Ponytail, and Quire should each do next.",
     "criteria": [
       "Assigns technical meaning, evidence obligations, and the decision to Plinth.",
       "Allows Quire to flag the unsupported element but not invent an analysis or conclusion.",
       "Restricts Ponytail to implementation economy if code changes are later accepted."
+    ],
+    "covers": [
+      "composition"
     ]
   },
   {
     "id": "writing-does-not-alter-technical-semantics",
-    "tier": "core",
     "prompt": "$quire-technical\nThe accepted engineering record distinguishes 'development score' from 'independent performance estimate'. Edit the report for clarity. A writing suggestion proposes replacing both terms with 'validation accuracy' to reduce repetition.",
     "criteria": [
       "Preserves the technically meaningful distinction between development evidence and independent evaluation.",
       "Does not use elegant variation when it changes or blurs technical meaning.",
       "Allows Quire to improve sentence structure without overruling terminology established by Plinth."
+    ],
+    "covers": [
+      "writing",
+      "composition"
     ]
   },
   {
     "id": "settled-decisions-stay-settled",
-    "tier": "extended",
-    "prompt": "$quire-standard\nThe accepted validation design uses whole administrative regions as the grouping unit. Review the fold implementation. Another valid design could use smaller spatial blocks, but no new evidence has challenged the accepted grouping decision.",
+    "prompt": "$quire-standard\nThe accepted validation design uses whole administrative regions as the grouping unit. Review the fold implementation. Another valid design could use smaller spatial blocks, but no new evidence has challenged the accepted grouping decision.\n\nThe complete implementation is:\nfunction assignFolds(rows, regionToFold) {\n  return rows.map(row => ({ ...row, fold: regionToFold[row.region] }));\n}\nThe caller supplies a fixed mapping covering every region, with valid integer fold values. Region identifiers are canonical strings; neither the rows nor mapping mutate during the call. All downstream splits use the assigned fold unchanged. Review this supplied code directly.",
     "criteria": [
       "Checks whether the accepted grouping unit is implemented faithfully, including whether a region can cross folds.",
       "Does not reopen the accepted regions-versus-blocks decision merely because another valid method exists.",
       "Reopens methodology only if implementation evidence exposes a material defect or conflict with the accepted objective."
+    ],
+    "covers": [
+      "judgment",
+      "software"
     ]
   },
   {
     "id": "current-state-outranks-stale-history",
-    "tier": "extended",
     "prompt": "$quire-standard\nAn earlier design note says the batch size is 8. The current committed configuration sets it to 16, and the observed launch path reads that configuration. What batch size does the current experiment use?",
     "criteria": [
       "Answers 16 based on the current configuration and observed execution path.",
       "Treats the earlier design note as historical rationale rather than current implementation state.",
       "States only a material qualification, such as a different runtime override, if the supplied evidence leaves one genuinely possible."
+    ],
+    "covers": [
+      "judgment"
     ]
   },
   {
     "id": "software-contract-before-lint",
-    "tier": "extended",
-    "prompt": "$quire-standard\nReview this proposed refactor. A working async Python consumer awaits each write sequentially because the remote protocol requires ordered writes and stops at the first failure. WPS476 flags the await in a loop. A reviewer suggests gather, splitting a cohesive function to reduce a complexity score, and deleting a Protocol because it has only one implementation. The Protocol is the accepted boundary consumed by an external host. Recommend how to reconcile these findings with Plinth, Ponytail, and Quire. No code changes are requested.",
+    "prompt": "$quire-standard\nReview this proposed refactor. A working async Python consumer awaits each write sequentially because the remote protocol requires ordered writes and stops at the first failure. WPS476 flags the await in a loop. A reviewer suggests gather, splitting a cohesive function to reduce a complexity score, and deleting a Protocol because it has only one implementation. The Protocol is the accepted boundary consumed by an external host. Recommend how to reconcile these findings with Plinth, Ponytail, and Quire. No code changes are requested. Explain how findings feed back between the modules, not only which module owns each concern.",
     "criteria": [
       "Preserves sequential execution and first-failure semantics instead of automatically introducing concurrency.",
       "Retains the meaningful externally consumed contract even with one implementation.",
       "Treats complexity warnings as investigation triggers and uses narrow justified exceptions for genuine rule conflicts.",
       "Explains cooperation and feedback between engineering meaning, implementation economy, and expression without inventing mandatory agents or phases."
+    ],
+    "covers": [
+      "software",
+      "composition"
     ]
   },
   {
     "id": "software-agnostic-repository",
-    "tier": "extended",
     "prompt": "$quire-standard\nAn existing small Julia research repository has a notebook, one coherent settings module, a shared computation function, a working native dependency lock and test command, and runs identified by configuration and input-data hashes. Suggest how the software engineering extension should apply. A colleague proposes adding uv, Pydantic, a Python package with src and CLI folders, replacing the notebook, and splitting settings merely because its name sounds generic.",
     "criteria": [
       "Applies general contract, cohesion, ownership, verification, and reproducibility principles without imposing Python tools or a foreign repository layout.",
       "Retains legitimate notebooks, the coherent settings module, and sound native tools.",
       "Ties any proposed promotion or infrastructure to an actual consumer or material limitation.",
       "Does not equate a dependency lock alone with complete experimental reproducibility."
+    ],
+    "covers": [
+      "software",
+      "implementation"
     ]
   },
   {
     "id": "python-contract-and-prose",
-    "tier": "extended",
     "prompt": "$quire-standard\nReview these claims in a Python design: a NumPy ndarray annotated with tuple[int, int, int] and uint8 proves RGB input; typing.cast validates that claim; Final makes a dict deeply immutable; strict Pydantic validates once so later arbitrary mutation is safe. The application has repeated dependent-field validation that is currently handwritten. A reviewer also asks to split long log literals, docstrings, SQL, and URLs at column 88. Explain the corrections and appropriate implementation direction. Do not implement anything.",
     "criteria": [
       "Distinguishes rank and dtype from channel count, axis meaning, and other runtime image invariants.",
       "Recognizes that cast is not runtime validation and Final does not establish deep immutability.",
       "Recommends appropriate Pydantic validation for repeated dependent-field logic while accounting for mutation or invariant lifetime.",
       "Preserves the no-manual-hard-wrapping requirement for literal text and prose while allowing formatter-owned code syntax."
+    ],
+    "covers": [
+      "software",
+      "writing"
+    ]
+  },
+  {
+    "id": "teaching-new-concept",
+    "covers": [
+      "teaching",
+      "software"
+    ],
+    "prompt": "$quire-standard\nI can write basic functions, but I have never worked with network failures. Our sender retries a request after a timeout; the receiver may already have applied it. The same request can increment an inventory count twice. Recommend a fix.",
+    "criteria": [
+      "Recommends receiver-side duplicate recognition with a stable operation identifier or an equivalent design that prevents applying the same logical change twice.",
+      "Proactively explains why a timeout does not establish that the receiver did nothing, using accessible language and a concrete request sequence or example.",
+      "Explains unfamiliar terminology if used, without assuming adjacent programming knowledge covers distributed failure semantics.",
+      "Preserves the material requirement that duplicate detection and applying the change cannot be separated by a failure that allows a duplicate effect."
+    ]
+  },
+  {
+    "id": "teaching-demonstrated-expertise",
+    "covers": [
+      "teaching",
+      "software"
+    ],
+    "prompt": "$quire-standard\nI understand ambiguous timeouts, at-least-once delivery, and idempotency keys. Our receiver uses one durable transaction to claim a unique operation key and increment inventory; repeats return the stored outcome. We plan to delete keys after one day, but delivery can retry for three days. Review the remaining issue.",
+    "criteria": [
+      "Identifies that retention is shorter than the possible replay horizon and recommends aligning retention with the actual retry/replay contract.",
+      "Uses the demonstrated knowledge to focus on the remaining boundary rather than reteaching basic timeouts, transactions, or idempotency.",
+      "Explains why expiry permits a delayed duplicate to be applied again and keeps the recommendation tied to the supplied contract."
+    ]
+  },
+  {
+    "id": "teaching-mixed-knowledge",
+    "covers": [
+      "teaching",
+      "evidence"
+    ],
+    "prompt": "$quire-standard\nI maintain data pipelines and already understand joins, unique keys, and per-customer grouping. I am new to evaluation statistics. Each customer has repeated observations, and deployment will be on entirely new customers. A colleague suggests assigning each row randomly to train or validation. Recommend what to do.",
+    "criteria": [
+      "Recommends keeping each customer entirely in one split because deployment concerns new customers.",
+      "Explains the unfamiliar statistical bridge: shared customer information can make validation appear stronger than generalization to new customers.",
+      "Builds on the supplied knowledge of keys and grouping without explaining basic joins or inferring universal expertise.",
+      "Avoids imposing a fixed number of folds or an unrelated tool stack."
+    ]
+  },
+  {
+    "id": "teaching-depth-request",
+    "covers": [
+      "teaching",
+      "hardware"
+    ],
+    "prompt": "$quire-standard\nI know how to calculate an average, but I do not understand why repeated measurements cannot remove a sensor offset. Give me a detailed explanation using this complete example: true value 10, measurements 12, 13, 11, 12; each measurement equals the true value plus a fixed offset plus varying noise. Explain the mechanism, a simple calculation, assumptions, and what an external reference adds.",
+    "criteria": [
+      "Explains the distinction between a shared offset and varying noise, with the average of the supplied measurements equal to 12.",
+      "Explains that averaging can reduce suitable random variation but leaves a shared offset; the observed average is 2 above the supplied true value.",
+      "Provides the requested depth and connects the simple calculation, assumptions about noise, and role of a known reference rather than truncating to a slogan.",
+      "Does not claim the four observations alone establish the population noise distribution or a universal calibration model."
+    ]
+  },
+  {
+    "id": "teaching-brevity-request",
+    "covers": [
+      "teaching",
+      "writing"
+    ],
+    "prompt": "$quire-standard\nI already understand retry ambiguity and deduplication. In at most two sentences, tell me whether a one-day operation-key retention is sufficient when retries can arrive three days later, and why.",
+    "criteria": [
+      "Answers that one day is insufficient and explains that a late retry could be treated as a new operation.",
+      "Honors the request for at most two sentences while retaining the material replay-horizon reason.",
+      "Avoids an unsolicited tutorial or an expertise questionnaire."
+    ]
+  },
+  {
+    "id": "teaching-followup-correction",
+    "covers": [
+      "teaching",
+      "hardware"
+    ],
+    "prompt": "$quire-standard\nEarlier you explained that averaging measurements reduces random noise but not a constant sensor offset. I understand the average formula now. So if I take enough readings, the constant offset will eventually cancel out too, right? Respond to this follow-up.",
+    "criteria": [
+      "Corrects the specific misconception: a constant offset appears in every reading and remains in their average.",
+      "Uses a focused concrete example or simple relationship to address the misunderstanding, rather than merely repeating the earlier sentence.",
+      "Acknowledges demonstrated understanding by avoiding a restart of the basic average formula and avoids patronizing labels."
+    ]
+  },
+  {
+    "id": "implementation-shared-root-cause",
+    "covers": [
+      "implementation",
+      "software"
+    ],
+    "prompt": "$quire-standard\nReview a proposed fix. Two entry points both call the same parseCount function. Its complete contract accepts only nonnegative whole-number text. It currently accepts a numeric prefix and ignores trailing characters, so both callers accept \"12bad\" as 12. The proposal adds validation only to the command-line entry point. Recommend the smallest correct fix and a regression check; do not change files.",
+    "criteria": [
+      "Places complete-input validation in the shared parser so both entry points receive the accepted contract.",
+      "Preserves valid whole-number input and rejects trailing junk rather than patching only the reported caller.",
+      "Supplies or specifies a small runnable regression check or concrete assertions for valid and invalid input, without adding speculative architecture."
+    ]
+  },
+  {
+    "id": "implementation-existing-capability",
+    "covers": [
+      "implementation"
+    ],
+    "prompt": "$quire-standard\nA repository already has a tested helper that normalizes identifiers exactly as our new import path requires, including all known edge cases. A proposal copies its body into a new configurable class to leave room for future formats. Recommend the implementation direction.",
+    "criteria": [
+      "Reuses the existing helper rather than copying its behavior or adding a speculative configurable class.",
+      "Preserves the stated edge-case behavior and ties any future abstraction to a demonstrated need."
+    ]
+  },
+  {
+    "id": "implementation-required-safeguards",
+    "covers": [
+      "implementation",
+      "software"
+    ],
+    "prompt": "$quire-standard\nA small data-ingestion service accepts untrusted records. Its accepted contract requires size limits, complete validation, and failure reporting that prevents partially written data being mistaken for a successful import. A colleague wants to delete these checks to reduce line count. Recommend what to do without designing a new system.",
+    "criteria": [
+      "Retains the required trust-boundary checks and failure semantics instead of treating code reduction as overriding correctness.",
+      "Allows simplification through existing mechanisms only when the accepted safeguards remain intact.",
+      "Keeps scope to the current import contract rather than proposing unrelated infrastructure."
+    ]
+  },
+  {
+    "id": "hardware-calibration",
+    "covers": [
+      "hardware",
+      "implementation"
+    ],
+    "prompt": "$quire-standard\nA device converts timer ticks to elapsed time using a nominal oscillator frequency. Measurements against a reference show a stable offset from that nominal frequency. A simplification proposal hard-codes the nominal value and removes the existing measured-frequency setting. Recommend the smallest sound approach.",
+    "criteria": [
+      "Preserves a measured-frequency calibration setting rather than assuming the physical oscillator exactly matches its nominal value.",
+      "Explains the practical effect on timing and recommends verification against the reference.",
+      "Avoids speculative calibration frameworks when the existing setting meets the demonstrated need."
+    ]
+  },
+  {
+    "id": "scope-review-versus-change",
+    "covers": [
+      "scope",
+      "judgment"
+    ],
+    "prompt": "$quire-standard\nReview this proposal only; do not edit or deploy anything. A working batch operation meets its accepted latency and reliability targets. The proposal replaces it with several independently deployed services because that architecture is fashionable. Provide the review.",
+    "criteria": [
+      "Keeps the response within review scope and does not claim to have edited, deployed, or launched implementation work.",
+      "Requires a concrete material limitation before replacing the working design, and avoids a speculative redesign."
+    ]
+  },
+  {
+    "id": "boundary-semantics",
+    "covers": [
+      "verification",
+      "software"
+    ],
+    "prompt": "$quire-standard\nInspect this complete interface example. The producer sends a delay value of 500 in milliseconds. The consumer interprets the same numeric field as seconds. A reviewer says the interface is valid because both sides use a numeric type and serialization succeeds. Diagnose the issue and specify a minimal boundary check.",
+    "criteria": [
+      "Identifies a units mismatch despite matching numeric types and successful serialization.",
+      "Specifies conversion or an explicit shared unit contract and a concrete expected value such as 0.5 seconds for 500 milliseconds.",
+      "Recommends a direct boundary regression check without replacing the system or adding a generic validation framework."
     ]
   }
 ]

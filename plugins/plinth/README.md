@@ -122,16 +122,11 @@ node plugins/plinth/scripts/install-agents.js
 
 Review and trust the Plinth hook before use. Its `SessionStart` and `SubagentStart` routes keep the discipline active in parent and delegated contexts.
 
+Plinth explains useful engineering rationale proactively. It adapts depth per concept from relevant demonstrated understanding and explicit preferences: a new concept may need an example, while an established concept may need only the consequential assumption or tradeoff. Follow-up corrections update that estimate; adjacent expertise alone does not establish familiarity.
+
 ## Validation
 
-Run the mechanical checks from the repository root:
-
-```bash
-node plugins/plinth/hooks/plinth.js test
-node plugins/plinth/scripts/install-agents.js test
-```
-
-Use [behavioral evaluations](evals/behavior.md) to assess policy changes on representative engineering pressure. The suite tests outcomes such as proportional research, complexity restraint, dependency-ordered decisions, direct verification, semantic boundaries, null results, goal stopping conditions, and composition with Ponytail and Quire.
+From the tooling repository root, run `node scripts/test.js`. Every mechanical and behavioral check must pass. See the [complete verification contract](../../README.md#verification) and [behavioral scenarios](evals/behavior.md).
 
 ## Maintenance rule
 

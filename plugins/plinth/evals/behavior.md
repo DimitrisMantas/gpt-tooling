@@ -2,6 +2,21 @@
 
 Use these scenarios to test the Plinth policy on representative work. Evaluate the behavior, not exact wording. A change passes when it preserves the material engineering properties described for the scenario without adding unnecessary process.
 
+The executable cases live in [the shared corpus](../../../evals/cases.json) and run with every mechanical and behavioral check through `node scripts/test.js` from the tooling repository root. This catalog supplies additional review scenarios; it is not a separate selectable suite.
+
+## Explanation adapts to relevant understanding
+
+Exercise the same general responsibility across six contexts: an unfamiliar concept, demonstrated expertise, expertise in an adjacent subject, an explicit request for depth, an explicit request for brevity, and a follow-up that exposes a remaining misconception.
+
+Expected behavior:
+
+- The agent explains useful rationale proactively when it helps the user understand a consequential decision.
+- A new concept receives an accessible causal explanation or concrete example. Demonstrated expertise receives the unresolved assumption, boundary, or tradeoff without repeating established basics.
+- Mixed knowledge receives a bridge from the familiar concept to the unfamiliar one. Jargon and adjacent expertise alone do not establish mastery.
+- Requested depth includes the reasoning and its limits; requested brevity retains the essential reason within the requested space.
+- Follow-up corrections update the inferred understanding and address the specific misconception rather than replaying the first explanation.
+- The agent preserves engineering correctness at every depth, without quizzes, patronizing labels, or a fixed explanation template.
+
 ## Routine engineering still receives the discipline
 
 Prompt:
@@ -364,13 +379,14 @@ Expected behavior:
 
 Prompt:
 
-> Have another agent check whether any subject appears in both train and validation.
+> A colleague proposes having another agent check whether any subject appears in both train and validation. Recommend and show the appropriate check for train [A, B, B, C] and validation [C, D], using exact case-sensitive identifiers.
 
 Expected behavior:
 
 - The agent recognizes that set overlap is mechanically checkable.
 - It runs or writes the smallest deterministic assertion instead of dispatching a reviewer.
 - It records the invariant when it has lasting value.
+- It identifies C as the overlap and distinguishes inspection from unperformed execution.
 
 ## User-owned trade-off
 
