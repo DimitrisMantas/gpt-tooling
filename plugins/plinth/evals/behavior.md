@@ -4,6 +4,17 @@ Use these scenarios to test the Plinth policy on representative work. Evaluate t
 
 The executable cases live in [the shared corpus](../../../evals/cases.json) and run with every mechanical and behavioral check through `node scripts/test.js` from the tooling repository root. This catalog supplies additional review scenarios; it is not a separate selectable suite.
 
+## Planning aligns progressively across turns
+
+Exercise planning in three states: material intent is initially unresolved, the user has answered the first alignment question, and the requirements are already complete.
+
+Expected behavior:
+
+- The agent states its current interpretation and a useful provisional direction before asking a focused question about the earliest user-owned decision.
+- On the following turn, it shows how the answer changes or confirms the plan and asks the next clarification that has become consequential.
+- It resolves inspectable facts independently, postpones downstream questions, and avoids a questionnaire.
+- Once the outcome and material boundaries are sufficient, it provides the plan without ceremonial confirmation.
+
 ## Explanation adapts to relevant understanding
 
 Exercise the same general responsibility across six contexts: an unfamiliar concept, demonstrated expertise, expertise in an adjacent subject, an explicit request for depth, an explicit request for brevity, and a follow-up that exposes a remaining misconception.

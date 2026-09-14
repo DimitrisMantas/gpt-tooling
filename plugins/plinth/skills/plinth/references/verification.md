@@ -51,6 +51,10 @@ Use agent review for questions that require judgment, such as methodological app
 
 Choose tests by contract and risk rather than by count or coverage theater. Prefer the smallest set of tests that exercises the changed behavior, important boundary conditions, and previously observed failure modes. Add broader tests when a material integration risk remains. Do not create test scaffolding whose maintenance cost exceeds the protection it provides.
 
+For validation or parsing changes, exercise both sides of the boundary: a representative accepted value must remain accepted and the reported invalid value must be rejected. This is one contract check, not an invitation to duplicate the implementation in a large test matrix.
+
+For calibration, retain the adjustment supported by measurement and verify both the configured value and the corrected output against the reference that revealed the offset. A retained calibration control without a reference check leaves the correction unverified.
+
 ## Match success claims to evidence
 
 Before claiming that work functions, is fixed, passes, or is complete, obtain the most direct practical evidence for that claim. Match the evidence to the claim: exercise the original symptom for a bug fix, run the relevant tests for a test claim, build the applicable target for a build claim, and check the accepted requirements for a completion claim.

@@ -124,6 +124,8 @@ Review and trust the Plinth hook before use. Its `SessionStart` and `SubagentSta
 
 Plinth explains useful engineering rationale proactively. It adapts depth per concept from relevant demonstrated understanding and explicit preferences: a new concept may need an example, while an established concept may need only the consequential assumption or tradeoff. Follow-up corrections update that estimate; adjacent expertise alone does not establish familiarity.
 
+Planning uses progressive alignment when material decisions remain open. Plinth states its current interpretation and provisional direction, asks the earliest consequential clarification, incorporates the answer, and then asks the next question that becomes relevant. It stops once the plan is decision-ready and skips ceremonial questions when the request is already complete.
+
 ## Validation
 
 From the tooling repository root, run `node scripts/test.js`. Every mechanical and behavioral check must pass. See the [complete verification contract](../../README.md#verification) and [behavioral scenarios](evals/behavior.md).

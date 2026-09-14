@@ -8,8 +8,8 @@ const { spawnSync } = require("child_process");
 const root = path.join(__dirname, "..");
 const casesPath = path.join(root, "evals", "cases.json");
 const model = process.env.GPT_TOOLING_EVAL_MODEL || "gpt-5.6-sol";
-const reasoningEffort = "high";
-const requiredCoverage = ["judgment", "evidence", "verification", "teaching", "software", "implementation", "hardware", "writing", "composition", "scope"];
+const reasoningEffort = "medium";
+const requiredCoverage = ["judgment", "evidence", "verification", "teaching", "planning", "software", "implementation", "hardware", "writing", "composition", "scope"];
 
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, { cwd: root, encoding: "utf8", windowsHide: true, ...options });

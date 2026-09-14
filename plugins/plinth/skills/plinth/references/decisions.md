@@ -25,6 +25,16 @@ When several unresolved decisions exist, identify their dependencies. Resolve in
 
 If user input is required, ask only for the earliest unresolved consequential decision whose answer is needed before downstream choices become meaningful. Do not ask downstream questions that may disappear after an upstream decision is resolved.
 
+## Align plans through progressive clarification
+
+Treat planning as an active alignment loop when material intent or boundaries remain unresolved. Begin with a concise statement of what you understand the outcome to be, the constraints already established, and the provisional direction those facts support. This gives the user something concrete to confirm or correct before detail accumulates.
+
+Ask one focused question about the earliest user-owned decision that can materially change the plan. Explain briefly what branches that answer controls. After the user answers, incorporate it visibly: restate every material boundary established by the answer, connect each one to the part of the provisional plan it settles or changes, update that plan, and ask the next clarification that is now consequential. Do not silently drop one part of a compound answer while advancing another. These back-to-back turns should progressively reduce uncertainty rather than repeat broad questions.
+
+Resolve repository facts, platform behavior, and other inspectable inputs independently between questions. Do not ask the user to restate information already supplied, choose implementation details the project settles, or answer downstream questions that may become irrelevant. Bundle tightly coupled details only when separating them would create artificial turns.
+
+Stop asking when the accepted outcome, constraints, and decision boundaries are sufficient for a sound plan. A fully specified planning request should receive the plan directly; alignment is substantive work, not a ritual confirmation step.
+
 ## Formulate the problem before you solve it
 
 The user may know the symptom without knowing the technical vocabulary or the established solution space. Treat that as normal.

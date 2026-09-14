@@ -478,5 +478,46 @@
       "Specifies conversion or an explicit shared unit contract and a concrete expected value such as 0.5 seconds for 500 milliseconds.",
       "Recommends a direct boundary regression check without replacing the system or adding a generic validation framework."
     ]
+  },
+  {
+    "id": "planning-initial-alignment",
+    "covers": [
+      "planning",
+      "judgment"
+    ],
+    "prompt": "$quire-standard\nBegin planning a migration of an internal data store. I want safer deployments, but I have not specified the acceptable service interruption or data-loss boundary, and no available project artifact settles them. Do not implement anything yet.",
+    "criteria": [
+      "States a concise current interpretation of the desired outcome and offers a useful provisional direction rather than responding with only questions.",
+      "Asks one focused alignment or clarification question about the earliest material user-owned requirement, such as availability or data preservation, and explains how the answer changes the plan.",
+      "Does not front-load a questionnaire about downstream mechanisms or ask the user to supply inspectable implementation facts.",
+      "Keeps scope to planning and does not claim implementation or verification occurred."
+    ]
+  },
+  {
+    "id": "planning-followup-clarification",
+    "covers": [
+      "planning",
+      "judgment"
+    ],
+    "prompt": "$quire-standard\nContinue the planning conversation. In the previous turn, you interpreted the goal as a safer data-store migration and asked about interruption and data preservation. I answered that a ten-minute maintenance window is acceptable and no committed data may be lost. Rollback behavior when old and new schemas coexist is still undecided. No implementation is requested.",
+    "criteria": [
+      "Explicitly incorporates the supplied answer and explains what it settles or changes in the provisional migration plan.",
+      "Advances the plan with a recommendation consistent with the maintenance window and no-data-loss requirement rather than repeating the first question.",
+      "Asks the next focused consequential clarification about rollback or schema compatibility and explains what part of the plan it controls.",
+      "Does not ask a broad batch of downstream questions or claim implementation occurred."
+    ]
+  },
+  {
+    "id": "planning-sufficient-requirements",
+    "covers": [
+      "planning",
+      "scope"
+    ],
+    "prompt": "$quire-standard\nPlan this deployment; do not implement it. The accepted requirements are complete: use the existing deployment mechanism, allow a ten-minute maintenance window, preserve every committed record, take and verify a restorable snapshot before migration, run the existing migration in staging first, and roll back by restoring that snapshot if the production verification fails.",
+    "criteria": [
+      "Provides a concrete ordered plan that uses the supplied mechanism, staging rehearsal, maintenance window, verified snapshot, production verification, and rollback condition.",
+      "Does not ask ceremonial alignment or clarification questions when the material requirements and boundaries are already sufficient.",
+      "Keeps scope to planning and does not claim that deployment, verification, or restoration has occurred."
+    ]
   }
 ]

@@ -148,6 +148,7 @@ The suite requires Node.js, Git, uv, an authenticated Codex CLI, and the initial
 | Integration | Manifests, hook events, mode persistence, selector parsing, reviewer restrictions, installer behavior, Unicode transport, compatibility patch, and release roundtrip |
 | Ponytail | Rule and version consistency, runtime, Pi extension, MCP instructions, line-count examples, and correctness examples |
 | Engineering | Conventional methods, proportional evidence, decision order, scope, direct verification, review feedback, and completion conditions |
+| Planning | Initial alignment, progressive clarification across turns, answer incorporation, and stopping when requirements are sufficient |
 | Software and hardware | Shared fixes, existing capabilities, trust boundaries, interface semantics, calibration, and the optional Python type/runtime profile |
 | Teaching | New concepts, demonstrated expertise, mixed knowledge, requested depth, requested brevity, and correction after a follow-up |
 | Writing and composition | Mode selection, technical meaning, uncertainty, null results, interagent prose, and module authority |
@@ -156,7 +157,7 @@ Behavioral cases in [evals/cases.json](evals/cases.json) check general outcomes 
 
 Candidates receive a snapshot of the current checkout's policies, including the patched Ponytail policy. Candidate and grader processes use clean contexts with user configuration, hooks, plugins, and repository instruction discovery disabled. This tests policy composition; mechanical lifecycle checks exercise hooks separately. It does not establish that a particular user's installed plugin cache discovers the policies correctly. Known-answer checks require the semantic grader to both accept a supported statement and reject an unsupported causal claim before evaluating candidates. Deterministic requirements use direct checks where possible. Behavioral results remain observations of the recorded model and prompts, not guarantees about every future response.
 
-The default evaluation model is `gpt-5.6-sol`; `GPT_TOOLING_EVAL_MODEL` can select another available model. Records include model, reasoning effort, policy hashes, prompts, responses, criteria, grades, and deterministic results. Logs and a checkpointed `report.json` live under `dist/tests/<run>/`. The summary counts mechanical check groups and behavioral cases separately from the individual assertions and upstream tests recorded in group logs. Interrupted runs retain completed evidence and mark unfinished work incomplete; rerun the same command for a new complete result.
+The default evaluation target is `gpt-5.6-sol` with medium reasoning effort; `GPT_TOOLING_EVAL_MODEL` can select another available model. Records include model, reasoning effort, policy hashes, prompts, responses, criteria, grades, and deterministic results. Logs and a checkpointed `report.json` live under `dist/tests/<run>/`. The summary counts mechanical check groups and behavioral cases separately from the individual assertions and upstream tests recorded in group logs. Interrupted runs retain completed evidence and mark unfinished work incomplete; rerun the same command for a new complete result.
 
 ## Release packaging
 
