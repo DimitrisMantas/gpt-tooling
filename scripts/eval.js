@@ -9,7 +9,7 @@ const root = path.join(__dirname, "..");
 const casesPath = path.join(root, "evals", "cases.json");
 const model = process.env.GPT_TOOLING_EVAL_MODEL || "gpt-5.6-sol";
 const candidateReasoningEffort = "medium";
-const graderReasoningEffort = "high";
+const graderReasoningEffort = "medium";
 const requiredCoverage = ["judgment", "evidence", "verification", "teaching", "planning", "software", "implementation", "hardware", "writing", "composition", "scope"];
 
 function run(command, args, options = {}) {
