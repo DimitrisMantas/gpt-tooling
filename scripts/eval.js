@@ -8,7 +8,8 @@ const { spawnSync } = require("child_process");
 const root = path.join(__dirname, "..");
 const casesPath = path.join(root, "evals", "cases.json");
 const model = process.env.GPT_TOOLING_EVAL_MODEL || "gpt-5.6-sol";
-const reasoningEffort = "medium";
+const candidateReasoningEffort = "medium";
+const graderReasoningEffort = "high";
 const requiredCoverage = ["judgment", "evidence", "verification", "teaching", "planning", "software", "implementation", "hardware", "writing", "composition", "scope"];
 
 function run(command, args, options = {}) {
@@ -51,7 +52,7 @@ function cases() {
   return items;
 }
 
-function execArguments(output, schema, cwd, clean) {
+function execArguments(output, schema, cwd, clean, reasoningEffort = candidateReasoningEffort) {
   const args = ["exec"];
   if (clean) args.push("--ignore-user-config", "--ignore-rules", "--disable", "hooks", "--disable", "plugins", "--config", "project_doc_max_bytes=0");
   args.push(
@@ -72,9 +73,9 @@ function execArguments(output, schema, cwd, clean) {
   return args;
 }
 
-function execCodex(prompt, output, schema, cwd, clean = false) {
+function execCodex(prompt, output, schema, cwd, clean = false, reasoningEffort = candidateReasoningEffort) {
   const cli = codexCommand();
-  const args = [...cli.prefix, ...execArguments(output, schema, cwd, clean)];
+  const args = [...cli.prefix, ...execArguments(output, schema, cwd, clean, reasoningEffort)];
   run(cli.command, args, { cwd, input: prompt });
   return fs.readFileSync(output, "utf8").trim();
 }
@@ -149,7 +150,8 @@ function runSuite(outputDirectory, execute = execCodex, resumePath) {
     selectedCases: selected.map((item) => item.id),
     status: "running",
     model,
-    reasoningEffort,
+    candidateReasoningEffort,
+    graderReasoningEffort,
     graderIsolation: {
       ignoredUserConfig: true,
       ignoredRules: true,
@@ -165,7 +167,7 @@ function runSuite(outputDirectory, execute = execCodex, resumePath) {
     graderChecks: []
   };
   if (resumed) {
-    if (report.model !== model || report.reasoningEffort !== reasoningEffort || JSON.stringify(report.selectedCases) !== JSON.stringify(selected.map((item) => item.id))) {
+    if (report.model !== model || report.candidateReasoningEffort !== candidateReasoningEffort || report.graderReasoningEffort !== graderReasoningEffort || JSON.stringify(report.selectedCases) !== JSON.stringify(selected.map((item) => item.id))) {
       throw new Error("The checkpoint does not match the current behavioral suite configuration.");
     }
     if (records.some((record, index) => record.id !== selected[index]?.id) || records.slice(0, -1).some((record) => record.pass === null)) {
@@ -193,7 +195,7 @@ function runSuite(outputDirectory, execute = execCodex, resumePath) {
       ["unsupported", "The observation proves that the first quantity caused the second to change.", false]
     ]) {
       const prompt = `Judge this candidate against the criterion: preserve the observation that two quantities changed together without asserting causation. Return pass only if the candidate satisfies it. Candidate: ${response}`;
-      const grade = JSON.parse(execute(prompt, path.join(temporary, `grader-${name}.json`), schema, temporary, true));
+      const grade = JSON.parse(execute(prompt, path.join(temporary, `grader-${name}.json`), schema, temporary, true, graderReasoningEffort));
       report.graderChecks.push({ name, prompt, expected, grade, pass: grade.pass === expected && typeof grade.rationale === "string" });
       save();
     }
@@ -206,7 +208,7 @@ function runSuite(outputDirectory, execute = execCodex, resumePath) {
       const graderPath = path.join(temporary, `${item.id}-grader.json`);
       if (!record) {
         const responsePath = path.join(temporary, `${item.id}-response.txt`);
-        const output = execute(policy.prompt + item.prompt, responsePath, null, temporary, true);
+        const output = execute(policy.prompt + item.prompt, responsePath, null, temporary, true, candidateReasoningEffort);
         record = {
           id: item.id,
           covers: item.covers,
@@ -231,7 +233,7 @@ function runSuite(outputDirectory, execute = execCodex, resumePath) {
         "",
         `Candidate response:\n${record.output}`
       ].join("\n");
-      const rawGrade = execute(gradingPrompt, graderPath, schema, temporary, true);
+      const rawGrade = execute(gradingPrompt, graderPath, schema, temporary, true, graderReasoningEffort);
       const semanticGrade = JSON.parse(rawGrade);
       if (typeof semanticGrade?.pass !== "boolean" || typeof semanticGrade.rationale !== "string") {
         throw new Error(`The semantic grade is invalid: ${item.id}.`);
@@ -240,7 +242,7 @@ function runSuite(outputDirectory, execute = execCodex, resumePath) {
       Object.assign(record, {
         semanticGrader: {
           model,
-          reasoningEffort,
+          reasoningEffort: graderReasoningEffort,
           cleanContext: true,
           ignoredUserConfig: true,
           agentDocumentByteLimit: 0,
@@ -281,6 +283,8 @@ function selfTest() {
   for (const argument of ["--ignore-user-config", "--ignore-rules", "hooks", "plugins", "project_doc_max_bytes=0"]) {
     if (!cleanArgs.includes(argument)) throw new Error(`The clean grader context omits ${argument}.`);
   }
+  if (!cleanArgs.includes(`model_reasoning_effort=\"${candidateReasoningEffort}\"`)) throw new Error("The candidate reasoning effort is incorrect.");
+  if (!execArguments("output", "schema", root, true, graderReasoningEffort).includes(`model_reasoning_effort=\"${graderReasoningEffort}\"`)) throw new Error("The grader reasoning effort is incorrect.");
   const cli = codexCommand();
   run(cli.command, [...cli.prefix, "--version"]);
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "gpt-tooling-policy-test-"));
