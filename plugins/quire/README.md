@@ -26,7 +26,7 @@ Quire owns:
 
 [Plinth](../plinth/README.md) owns requirements, methodology, technical semantics, evidence obligations, statistical interpretation, claim strength, accepted limitations, decisions, review, and verification. Quire can flag a missing or unsupported technical element. It cannot silently repair the text by inventing an analysis, metric, experiment, uncertainty estimate, limitation, evidence requirement, or conclusion.
 
-[Ponytail](../ponytail/README.md) owns source-code implementation and implementation economy. Quire governs the words in code comments, docstrings, messages, and documentation. Project formatters, linters, target formats, and source conventions govern their physical layout.
+[Ponytail](../ponytail/README.md) owns source-code implementation and implementation economy. Quire governs the words in code comments, docstrings, messages, and documentation. Project formatters own mechanical source syntax. Preserve semantic newlines and required target-format syntax; do not manually split prose or literal text to satisfy a line-length diagnostic.
 
 This boundary protects a central invariant: better prose must not manufacture significance, novelty, causality, certainty, or a preferred outcome. Null, mixed, adverse, negative, and unresolved results remain in that state.
 
@@ -78,7 +78,9 @@ It favors:
 - material negative or limiting information without repetitive qualification;
 - proportionate final checks.
 
-Sentence-length thresholds drawn from controlled technical English are diagnostics, not mandatory limits. Punctuation follows the target style and technical convention. Ordinary rendered prose is not hard-wrapped, while source files follow the project formatter or established layout rules.
+Sentence-length thresholds drawn from controlled technical English are diagnostics, not mandatory limits. Punctuation follows the target style and technical convention. Let the project formatter lay out source syntax while preserving complete prose and literal text, including comments and docstrings.
+
+Quire reserves binary contrast for material distinctions, corrections, expectation reversals, and trade-offs. It removes familiar or irrelevant negative setup when the affirmative point carries the useful meaning. Its default punctuation style uses colons to introduce lists after a complete lead-in, commas for simple in-line items, and semicolons for complex in-line items with internal punctuation or clause-like content. Displayed lists or separate sentences take priority when they scan more clearly.
 
 Short operational text receives checks for correctness, clarity, terminology, actionability, and unnecessary wording. Substantive documents also receive checks for audience, structure, background, uncertainty, scope, repetition, and standalone readability.
 
@@ -141,15 +143,7 @@ Review and trust the Quire hook before use. `SessionStart` and `SubagentStart` k
 
 ## Validation
 
-Run the mechanical check from the repository root:
-
-```bash
-node plugins/quire/hooks/quire.js test
-```
-
-The check validates the plugin identity, required policy files, mode behavior, concise progressive routes, hook events, selector metadata, UI labels, and false-positive-resistant mode parsing.
-
-Use the [behavioral evaluations](evals/behavior.md) to assess routing, technical-content boundaries, claim calibration, null-result preservation, medium-aware editing, interagent concision, source provenance, and the three selector modes.
+From the tooling repository root, run `node scripts/test.js`. Every mechanical and behavioral check must pass. See the [complete verification contract](../../README.md#verification) and [behavioral scenarios](evals/behavior.md).
 
 ## License
 

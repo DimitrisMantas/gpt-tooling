@@ -68,12 +68,18 @@ Use prose for reasoning, lists for parallel items, tables for repeated-field com
 - Treat 20 words for instructions and 25 words for descriptive technical prose as review thresholds derived from controlled technical-English practice. They are not mandatory limits. Revise a long sentence when its structure, qualifications, or unrelated ideas make it difficult to follow.
 - Put one topic in each paragraph. Treat six sentences as a review threshold, not a mandatory limit.
 - Put a required condition before its action. Put the reason or consequence after the action when the reader needs it.
-- Use punctuation according to the target style and established technical convention. Do not use em dashes, semicolons, or other punctuation as a substitute for clear sentence structure. Avoid repeated em-dash constructions characteristic of synthetic prose. Preserve correct uses such as an en dash in a numeric range when the target style expects it.
+- Use punctuation according to the target style and established technical convention.
+- In Quire's default style, use a colon only after a complete lead-in to introduce a list. Do not use a colon as a dramatic hinge, an explanation marker between prose clauses, or a substitute for a full stop.
+- Use commas for simple in-line items. Use semicolons for complex in-line items that contain internal commas or clause-like content. Prefer bullets or separate sentences when the series becomes hard to scan.
+- A semicolon can join two closely related independent clauses when keeping them together materially improves the reading. A full stop is usually clearer. Never use a comma splice.
+- Do not use em dashes or other punctuation as a substitute for clear sentence structure. Avoid repeated em-dash constructions characteristic of synthetic prose. Preserve correct uses such as an en dash in a numeric range when the target style expects it.
 - Do not manually hard-wrap prose, comments, docstrings, string literals, f-strings, log messages, SQL, or URLs to meet a column width. Preserve semantic newlines and required target-format syntax. Let the project formatter lay out code syntax; do not split literal text merely to satisfy a line-length diagnostic. Explicit user requirements remain controlling.
 
 ## Direct structure and negative content
 
 State the affirmative point directly. Treat contrast, negation, and correction as semantic and document-level patterns. Sentence splitting, synonym changes, or a different connective do not resolve an unnecessary pattern.
+
+Use contrast only when both sides create a material distinction, expectation reversal, correction, trade-off, or decision boundary. Delete immediate binary frames such as `X, not Y` and extended frames such as `This is not X. It is Y.` when the negative side merely states familiar, rudimentary, irrelevant, or already settled context. State the useful affirmative point directly. Do not turn additive ideas, differences in degree, or several viable options into a binary opposition. When a contrast is material, name the dimension being compared and the consequence so the reader can see why the distinction matters. Reserve contrastive connectives for that work; repeated weak contrasts make the real ones harder to identify.
 
 Before adding an exclusion, rejected alternative, negative qualification, or corrective contrast, determine whether it changes interpretation, action, safety, reproducibility, applicability, scope, or uncertainty. Use this order:
 
@@ -89,6 +95,10 @@ Remove throat-clearing, announcements, generic praise, reassurance, canned sign-
 ## Standalone artifacts
 
 Write each deliverable so its intended reader can understand it without the conversation that produced it. Include the purpose, scope, definitions, assumptions, evidence, and limitations the artifact needs.
+
+An outline of an existing record must organize only the supplied content and relationships. Match its level of detail: category-level input calls for category-level headings and brief guidance preserving the stated meaning. Specific subfields require specific support in the record. Add a missing element only when the task or governing form requires it, and identify it as missing.
+
+For code examples, explicitly distinguish predicted output from observed execution. Introduce unexecuted output as expected output, even when the prediction is obvious. Do not format a predicted error as an observed test result. State conclusions from inspecting supplied inputs as inspection results.
 
 Remove references to the prompt, chat, user request, prior discussion, drafting process, hidden reasoning, or earlier versions unless the document type requires provenance, a change history, or an AI-use disclosure.
 
@@ -107,3 +117,5 @@ The Standard principles adapt [ASD-STE100 Issue 9](https://www.asd-ste100.org/as
 OpenAI's current [model guidance](https://developers.openai.com/api/docs/guides/latest-model) informs prompt economy, outcome-focused scope, and explicit autonomy boundaries.
 
 [blader/humanizer](https://github.com/blader/humanizer), [Stop Slop](https://github.com/hardikpandya/stop-slop), and Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) provide secondary anti-pattern diagnostics. Humanizer substantially operationalizes patterns from the Wikipedia field guide, so they are related sources rather than independent evidence. Use them to detect synthetic prose tendencies, not as authorities on technical meaning or scientific reporting.
+
+The [Australian Government Style Manual](https://www.stylemanual.gov.au/grammar-punctuation-and-conventions/punctuation/semicolons) informs the distinction between comma-separated simple lists, semicolon-separated complex lists, and clearer displayed lists. The [MLA Style Center](https://style.mla.org/colons-how-to-use-them/) supplies the grammatical boundary for a complete lead-in before a list. Quire adopts the narrower house style of reserving colons for lists unless a governing target convention requires another use. Experimental work on [contrastive discourse connectives](https://doi.org/10.1080/0163853X.2019.1700760) informs the rule that a contrast marker creates a specific processing expectation and should appear only when the relationship supports it.

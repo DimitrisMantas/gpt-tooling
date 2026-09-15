@@ -88,6 +88,7 @@ function validate(destination) {
   }
   for (const file of files.filter((name) => name.endsWith(".json"))) JSON.parse(fs.readFileSync(file, "utf8"));
   const checks = [
+    ["node", ["-e", "require('./scripts/test').selfTest()"]],
     ["node", ["plugins/plinth/hooks/plinth.js", "test"]],
     ["node", ["plugins/plinth/scripts/install-agents.js", "test"]],
     ["node", ["plugins/quire/hooks/quire.js", "test"]],
@@ -121,6 +122,11 @@ function createArchive(stage, output) {
 }
 
 function main(testOnly) {
+  if (testOnly && !fs.existsSync(path.join(root, ".git"))) {
+    validate(root);
+    process.stdout.write("The extracted release product checks passed.\n");
+    return;
+  }
   if (!testOnly) assertReleaseState();
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "gpt-tooling-release-"));
   const stage = path.join(temporary, "gpt-tooling");

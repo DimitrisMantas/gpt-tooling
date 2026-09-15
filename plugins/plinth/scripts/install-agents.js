@@ -7,6 +7,7 @@ const path = require("path");
 const sourceDir = path.join(__dirname, "..", "codex-agents");
 const targetDir = path.join(os.homedir(), ".codex", "agents");
 const supportedEfforts = new Set(["low", "medium", "high", "xhigh", "max", "ultra"]);
+const legacyFiles = ["plinth_claims.toml", "plinth_code.toml", "plinth_methods.toml"];
 
 function scalar(source, key) {
   const match = source.match(new RegExp(`^${key}\\s*=\\s*"([^"]*)"\\s*$`, "m"));
@@ -50,6 +51,17 @@ function install(source, target, force, write = console.log) {
   const validated = profiles(source);
   fs.mkdirSync(target, { recursive: true });
 
+  for (const name of legacyFiles) {
+    const destination = path.join(target, name);
+    if (!fs.existsSync(destination)) continue;
+    if (force) {
+      fs.rmSync(destination, { force: true });
+      write(`The legacy agent profile was removed: ${destination}.`);
+    } else {
+      write(`The legacy agent profile remains; rerun with --force to remove it: ${destination}.`);
+    }
+  }
+
   for (const profile of validated) {
     const name = path.basename(profile.file);
     const destination = path.join(target, name);
@@ -70,7 +82,7 @@ function selfTest() {
   try {
     const validated = profiles(sourceDir);
     if (validated.some((profile) => profile.model !== null)) throw new Error("Bundled reviewers must inherit model selection.");
-    const expectedNames = ["plinth_claims", "plinth_code", "plinth_methods"];
+    const expectedNames = ["plinth_approach_reviewer", "plinth_findings_reviewer", "plinth_software_reviewer"];
     if (JSON.stringify(validated.map((profile) => profile.name)) !== JSON.stringify(expectedNames)) {
       throw new Error("The expected Plinth agent profiles are not present.");
     }
@@ -86,10 +98,20 @@ function selfTest() {
       throw new Error("The installer replaced a profile without --force.");
     }
 
+    const legacy = path.join(target, legacyFiles[0]);
+    fs.writeFileSync(legacy, "legacy profile\n");
     install(sourceDir, target, true, () => {});
     if (fs.readFileSync(path.join(target, expected[0]), "utf8") === sentinel) {
       throw new Error("The installer did not replace a profile with --force.");
     }
+    if (fs.existsSync(legacy)) throw new Error("The installer did not remove a legacy profile with --force.");
+    const assert = require("assert/strict");
+    const altered = path.join(target, expected[0]);
+    const original = fs.readFileSync(altered, "utf8");
+    fs.writeFileSync(altered, original.replace('sandbox_mode = "read-only"', 'sandbox_mode = "danger-full-access"'));
+    assert.throws(() => profiles(target), /read-only/);
+    fs.writeFileSync(altered, original.replace(/model_reasoning_effort = "[^"]+"/, 'model_reasoning_effort = "invalid"'));
+    assert.throws(() => profiles(target), /reasoning effort/);
   } finally {
     fs.rmSync(temporaryDir, { recursive: true, force: true });
   }

@@ -65,6 +65,12 @@ Plinth resolves inspectable facts before asking the user. When several real deci
 
 This produces the intended interaction: investigate the problem and evidence aggressively, involve the user minimally, and preserve user ownership where judgment actually matters.
 
+### Separate discussion from authorization
+
+Plinth treats questions as requests for answers. Observations, corrections, preferences, possibilities, and partial thoughts update the working context without authorizing side effects. It accumulates these short messages as provisional requirements until the user explicitly asks to plan, decide, change, run, send, install, deploy, or take another action.
+
+A clear direct request receives action without ceremonial confirmation. When a proposed action or its scope remains unclear, Plinth names the action and consequence, then asks one focused question before acting. Authorization stays limited to the object and scope the user granted. A challenge about an earlier action does not authorize a rollback. Every completed action is reported with its observed result or remaining uncertainty.
+
 ### Verify claims directly
 
 A changed implementation is not evidence that a defect is fixed. A reviewer report is not evidence that a claim is correct. Before making a material success claim, Plinth seeks the most direct practical evidence available. When direct verification is unavailable or disproportionate, it states what was verified and what remains unverified.
@@ -89,11 +95,11 @@ Technical feedback is evidence or a proposal to evaluate. Reviewer identity does
 
 Optional Plinth agents are documented in the [agent guide](codex-agents/README.md):
 
-- `plinth_methods.toml` checks scientific, statistical, experimental, and evaluation validity.
-- `plinth_code.toml` checks implementation fidelity and material code-level defects.
-- `plinth_claims.toml` checks whether available evidence supports a consequential claim.
+- `plinth_approach_reviewer.toml` checks engineering approaches, methods, designs, and materially better established alternatives.
+- `plinth_software_reviewer.toml` checks software correctness, requirement fidelity, regressions, and better established implementations.
+- `plinth_findings_reviewer.toml` checks consequential findings, interpretations, supporting evidence, and more defensible formulations.
 
-Use one only for a distinct material failure mode or bounded investigation that benefits from fresh context. The parent agent retains synthesis and decision ownership.
+Plinth routes one automatically when a distinct material review axis or bounded investigation benefits from fresh context. The parent agent retains alignment, synthesis, teaching, and decision ownership.
 
 ## Progressive policy
 
@@ -122,16 +128,13 @@ node plugins/plinth/scripts/install-agents.js
 
 Review and trust the Plinth hook before use. Its `SessionStart` and `SubagentStart` routes keep the discipline active in parent and delegated contexts.
 
+Plinth explains useful engineering rationale proactively. It adapts depth per concept from relevant demonstrated understanding and explicit preferences: a new concept may need an example, while an established concept may need only the consequential assumption or tradeoff. Follow-up corrections update that estimate; adjacent expertise alone does not establish familiarity.
+
+Planning uses progressive alignment when material decisions remain open. Plinth states its current interpretation and provisional direction, asks the earliest consequential clarification, incorporates the answer, and then asks the next question that becomes relevant. It stops once the plan is decision-ready and skips ceremonial questions when the request is already complete.
+
 ## Validation
 
-Run the mechanical checks from the repository root:
-
-```bash
-node plugins/plinth/hooks/plinth.js test
-node plugins/plinth/scripts/install-agents.js test
-```
-
-Use [behavioral evaluations](evals/behavior.md) to assess policy changes on representative engineering pressure. The suite tests outcomes such as proportional research, complexity restraint, dependency-ordered decisions, direct verification, semantic boundaries, null results, goal stopping conditions, and composition with Ponytail and Quire.
+From the tooling repository root, run `node scripts/test.js`. Every mechanical and behavioral check must pass. See the [complete verification contract](../../README.md#verification) and [behavioral scenarios](evals/behavior.md).
 
 ## Maintenance rule
 

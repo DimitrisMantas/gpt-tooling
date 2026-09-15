@@ -43,17 +43,27 @@ Do not create a large preflight framework unless the risk justifies it. Use exis
 
 If a condition can be established mechanically, check it mechanically before you ask an agent to judge it.
 
+Treat a proposed reviewer as a means to answer the question. Recommend a direct deterministic check when it fully resolves the concern; preserve an explicit user requirement for independent review. If execution is unavailable, provide the applicable check and state that its result remains unverified. Delegation does not resolve a missing input or access restriction.
+
 Examples include test results, schema validity, file hashes, split disjointness, raster alignment, dimensionality, dependency state, configuration values, and reproducible benchmark measurements.
 
 Use agent review for questions that require judgment, such as methodological appropriateness, requirement interpretation, unsupported inference, security reasoning, or architectural trade-offs.
 
 Choose tests by contract and risk rather than by count or coverage theater. Prefer the smallest set of tests that exercises the changed behavior, important boundary conditions, and previously observed failure modes. Add broader tests when a material integration risk remains. Do not create test scaffolding whose maintenance cost exceeds the protection it provides.
 
+For an action boundary, test observable effects as well as prose. Give the candidate an isolated writable fixture and verify that discussion, questions, corrections, and partial thoughts leave protected files and command markers unchanged. Include counter-cases where a clear instruction changes the named file or runs the named check. This distinguishes restraint from general inability to act. Test that completed actions are reported and that an overreach is disclosed without an inferred rollback.
+
+For validation or parsing changes, exercise both sides of the boundary: a representative accepted value must remain accepted and the reported invalid value must be rejected. This is one contract check, not an invitation to duplicate the implementation in a large test matrix.
+
+For calibration, retain the adjustment supported by measurement and verify both the configured value and the corrected output against the reference that revealed the offset. A retained calibration control without a reference check leaves the correction unverified.
+
 ## Match success claims to evidence
 
 Before claiming that work functions, is fixed, passes, or is complete, obtain the most direct practical evidence for that claim. Match the evidence to the claim: exercise the original symptom for a bug fix, run the relevant tests for a test claim, build the applicable target for a build claim, and check the accepted requirements for a completion claim.
 
 Do not infer success solely from implementation, absence of an error while editing, a partial check, or another agent's report. If direct verification is unavailable or disproportionate, state what was verified and what remains unverified instead of implying stronger confidence.
+
+When supplying runnable code without executing it, label predicted output as expected output. A value established by inspecting supplied inputs can be stated as an expected value, and an assertion can be described as one that would pass or fail if run. Reserve `result`, `passes`, `fails`, and observed test output for commands that actually ran.
 
 ## Review the relevant surface
 
@@ -74,6 +84,16 @@ Do not dispatch agents merely to increase apparent rigor or to obtain votes.
 
 Keep the parent agent responsible for the overall objective, accepted constraints, synthesis, teaching, and user escalation.
 
+Route the question to the narrowest applicable Plinth reviewer:
+
+- `plinth_approach_reviewer` examines whether an engineering approach, architecture, method, evaluation design, or operating plan supports the intended result and whether an established alternative materially improves the named objective.
+- `plinth_software_reviewer` examines whether software realizes the accepted requirement and approach, avoids material defects or regressions, and has a materially better established implementation alternative.
+- `plinth_findings_reviewer` examines whether the available evidence supports a consequential finding, interpretation, alternative explanation, or more defensible formulation.
+
+All three reviewers are available in normal and adversarial review. Normal review independently assesses the assigned axis and relevant alternatives. Adversarial review increases the search for counterexamples, boundary failures, invalid assumptions, alternative explanations, and stronger options; it does not prescribe a negative verdict. Choose reviewers from the questions that can change the decision rather than from repository age or whether code already exists.
+
+Give each fresh-context reviewer a dynamic task packet containing the bounded question, named objectives, accepted requirements and constraints, relevant artifacts and evidence, known uncertainties, explicit exclusions, and the completion condition. For an existing or evolving repository, include the local conventions and current project state that govern the reviewed question. When independent judgment matters, omit persuasive rationale from the originating party until the reviewer has formed its assessment. Reviewers may return a precise alignment question to the orchestrator when a missing user-owned requirement prevents a sound conclusion. They do not ask the user directly or dispatch other reviewers. The orchestrator may authorize a bounded follow-up reviewer when a new material question remains, and remains responsible for alignment, synthesis, teaching, and the final decision.
+
 ## Keep interagent communication semantic, not ceremonial
 
 Use ordinary technical prose between the orchestrator and subagents by default. Give each agent a clear task, relevant context, constraints, and expected scope. Let the agent return the information that matters in the form that best preserves meaning.
@@ -82,15 +102,15 @@ Do not invent protocol keywords, status flags, confidence scores, JSON schemas, 
 
 The orchestrator should understand and synthesize the substance of subagent responses rather than depend on magic tokens. Subagents should not recursively create more review layers unless the orchestrator has authorized that behavior or the workflow explicitly requires it.
 
-## Give reviewers a failure-seeking role
+## Give reviewers a comparative review role
 
-A reviewer should test one explicit material concern rather than judge the work generically.
+A reviewer should examine one explicit material question rather than judge the work generically. It should assess the current proposal and compare credible established alternatives when that comparison can change the decision.
 
-Provide the reviewer with the artifact or relevant code, the requirement, necessary project constraints, and relevant evidence. When independent judgment matters, omit the originating agent's persuasive rationale until after the reviewer forms its assessment.
+Provide the reviewer with the artifact or relevant code when one exists, the requirement, necessary project constraints, named optimization objectives, and relevant evidence. A new project can be reviewed from requirements, designs, prototypes, and governed external semantics; an evolving project also uses its current implementation and local conventions. Do not privilege or discount a proposal because it came from the user, orchestrator, repository, or another reviewer.
 
 Keep reviewers read-only by default. The implementation agent makes changes. The reviewer that raised a blocking finding should verify the fix when practical.
 
-A clean review is a valid result. Say plainly that no material issue was found and stop. If the surrounding API or workflow naturally uses `None` for that condition, returning `None` is also valid. Do not require a literal token, exact phrase, flag, or status field when ordinary prose is sufficient.
+A clean review is a valid result. Say plainly that no material defect or better alternative was found and stop. If the surrounding API or workflow naturally uses `None` for that condition, returning `None` is also valid. Do not require a literal token, exact phrase, flag, or status field when ordinary prose is sufficient.
 
 Do not confuse a clean review with uncertainty. If the evidence cannot settle a material concern, explain what remains uncertain and what evidence is missing. Do not force that state into a special keyword unless a machine-readable workflow actually needs one.
 

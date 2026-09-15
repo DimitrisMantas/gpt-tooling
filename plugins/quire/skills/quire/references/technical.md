@@ -24,6 +24,8 @@ Use IMRaD for original empirical research when the target venue and discipline s
 
 Build the artifact from the accepted evidence and method. Remove conversational assumptions, requested conclusions, negotiation history, and emphasis that the evidence does not support. Include the context an independent qualified reader needs to evaluate the work.
 
+For an outline of an existing technical record, match the detail supplied. When only content categories are available, provide headings at that level and brief guidance preserving the supplied relationships. Detailed subfields require support in the record. The common-section guidance below applies only to supported content; it is not a checklist to expand a sparse record. Surface a missing element only when it materially affects the report's interpretation or required form.
+
 Separate observations, calculated results, interpretations, assumptions, estimates, and recommendations. Identify exploratory analysis and post hoc hypotheses when Plinth or the technical record establishes that status. Report contradictory evidence and plausible alternatives when they can change the conclusion.
 
 Describe scope, sampling, exclusions, missing data, measurement limits, model limits, conflicts of interest, funding, and material sources of bias when they apply and are supported by the technical record. State uncertainty and applicability. Keep each limitation specific enough to show its likely effect.
@@ -50,7 +52,7 @@ Describe what a source measured, reported, compared, specified, or implemented. 
 
 Distinguish association from causation and statistical significance from practical or engineering importance. Present effect sizes, uncertainty intervals, absolute counts, percentages, analysis populations, and denominators when the accepted analysis provides them and they matter to interpretation.
 
-Treat a missing comparison as an unresolved measurement. Draw no directional conclusion from its absence. Mention missing or unspecified information when it affects interpretation, a decision, reproducibility, applicability, or uncertainty. Reserve `proof` for formal deduction and established domain-specific uses.
+Treat a missing comparison as an unresolved measurement. Draw no directional conclusion from its absence. Report a missing threshold, criterion, or decision rule as missing; do not infer that no decision can be made unless the governing contract makes that consequence explicit. Mention missing or unspecified information when it affects interpretation, a decision, reproducibility, applicability, or uncertainty. Reserve `proof` for formal deduction and established domain-specific uses.
 
 Use `optimal` only when the objective, feasible set, metric, data, constraints, and domain are explicit. Use `best`, `superior`, and equivalent rankings only for named alternatives under a stated protocol. Treat untested alternatives as unranked.
 

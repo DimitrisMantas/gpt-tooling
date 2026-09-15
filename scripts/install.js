@@ -35,9 +35,9 @@ function runCodex(args) {
   const executable = paths.find((file) => /\.(?:exe|com)$/i.test(file));
   if (executable) return run(executable, args);
   const commandShim = paths.find((file) => /\.cmd$/i.test(file));
-  const powerShellShim = commandShim && commandShim.replace(/\.cmd$/i, ".ps1");
-  if (!powerShellShim || !fs.existsSync(powerShellShim)) throw new Error("The Codex command could not be resolved to a Windows executable or PowerShell shim.");
-  return run("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", powerShellShim, ...args]);
+  const entrypoint = commandShim && path.join(path.dirname(commandShim), "node_modules", "@openai", "codex", "bin", "codex.js");
+  if (!entrypoint || !fs.existsSync(entrypoint)) throw new Error("The Codex command requires a native executable or an npm installation.");
+  return run(process.execPath, [entrypoint, ...args]);
 }
 
 function verifyFiles() {
@@ -51,11 +51,11 @@ function verifyFiles() {
   }
 }
 
-function initializePonytail() {
+function verifyPonytail(initialize = false, execute = run) {
   const manifest = path.join(ponytailPath, ".codex-plugin", "plugin.json");
   if (fs.existsSync(path.join(root, ".git"))) {
-    run("git", ["submodule", "update", "--init", "--recursive", "--", "plugins/ponytail"]);
-    const actual = run("git", ["-C", ponytailPath, "rev-parse", "HEAD"]);
+    if (initialize) execute("git", ["submodule", "update", "--init", "--recursive", "--", "plugins/ponytail"]);
+    const actual = execute("git", ["-C", ponytailPath, "rev-parse", "HEAD"]);
     if (actual !== ponytailCommit) throw new Error(`Ponytail is at ${actual}; expected ${ponytailCommit}.`);
   } else if (!fs.existsSync(manifest)) {
     throw new Error("This source archive does not contain the pinned Ponytail plugin. Use a complete release archive or clone with submodules.");
@@ -108,7 +108,7 @@ function refreshCachebusters(date = new Date()) {
 }
 
 function initialInstall() {
-  initializePonytail();
+  verifyPonytail(true);
   verifyFiles();
   addMarketplace();
   const applied = ponytailCompatibility.apply(ponytailPath);
@@ -121,7 +121,7 @@ function initialInstall() {
 }
 
 function updateLocalPlugins() {
-  initializePonytail();
+  verifyPonytail();
   verifyFiles();
   addMarketplace();
   refreshCachebusters();
@@ -130,8 +130,18 @@ function updateLocalPlugins() {
 }
 
 function selfTest() {
-  initializePonytail();
+  verifyPonytail();
   verifyFiles();
+  if (fs.existsSync(path.join(root, ".git"))) {
+    const assert = require("assert/strict");
+    const calls = [];
+    verifyPonytail(false, (command, args) => {
+      calls.push([command, args]);
+      return ponytailCommit;
+    });
+    assert.deepEqual(calls, [["git", ["-C", ponytailPath, "rev-parse", "HEAD"]]]);
+    assert.throws(() => verifyPonytail(false, () => "wrong-commit"), /expected/);
+  }
   const fixed = new Date("2026-08-24T13:01:00.000Z");
   if (cachebuster("1.2.3", fixed) !== "1.2.3+codex.local-20260824-130100") throw new Error("Cachebuster creation is invalid.");
   if (cachebuster("1.2.3+old", fixed) !== "1.2.3+codex.local-20260824-130100") throw new Error("Cachebuster replacement is invalid.");

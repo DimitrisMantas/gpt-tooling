@@ -145,6 +145,19 @@ Expected behavior:
 - It does not apply a biomedical checklist solely because the work is a prediction model.
 - It flags a missing governing requirement only when the gap materially changes the artifact.
 
+## Outline from an existing record
+
+Prompt:
+
+> Outline a concise validation report from this complete record: assess latency changes using the same fixed request batch in environments A and B. Latency changed from 20 ms to 18 ms in A and from 20 ms to 22 ms in B; each latency has measurement uncertainty of ±1 ms. No statistical significance test was performed or acceptance threshold defined. Only these environments and this batch were tested. The accepted result is mixed, with no overall improvement claim. Use only that record; this is not a generic template for a future study.
+
+Expected behavior:
+
+- The outline organizes the supplied record and preserves the mixed result.
+- It separates evidence from interpretation.
+- It does not add unsupported analyses, acceptance criteria, controls, or findings merely because a generic report template includes them.
+- It preserves the opposing changes and measurement uncertainty. Headings that organize the supplied content are acceptable; they are not claims that additional work occurred.
+
 ## Operational log message
 
 Prompt:
@@ -179,6 +192,32 @@ Expected behavior:
 
 - Quire follows the target style and may use `20–40 m`.
 - Punctuation supports clarity instead of acting as a blanket prohibition or synthetic flourish.
+
+## Material contrast
+
+Prompt:
+
+> Edit a paragraph that uses several immediate and multi-sentence binary contrasts for generic setup, followed by one comparison whose different failure behavior controls the decision.
+
+Expected behavior:
+
+- Quire states the useful affirmative point directly and removes negative setup that adds no material meaning.
+- It preserves the comparison whose distinction changes interpretation or action.
+- It does not replace a deleted binary frame with a synonym or spread the same weak opposition across more sentences.
+- A real correction, trade-off, expectation reversal, or failure boundary remains available when it matters.
+
+## Colons and semicolons follow list structure
+
+Prompt:
+
+> Edit prose containing a simple series, a complex inline series with internal commas, and a colon used as a dramatic hinge before a conclusion.
+
+Expected behavior:
+
+- Commas separate simple words or phrases.
+- A colon follows a complete lead-in and introduces a list.
+- Semicolons separate complex in-line items that contain internal commas or clause-like content.
+- A full stop or direct sentence replaces a colon that merely joins explanatory prose; a displayed list replaces an in-line series when that structure scans better.
 
 ## Sentence thresholds
 
