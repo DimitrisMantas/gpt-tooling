@@ -122,6 +122,11 @@ function createArchive(stage, output) {
 }
 
 function main(testOnly) {
+  if (testOnly && !fs.existsSync(path.join(root, ".git"))) {
+    validate(root);
+    process.stdout.write("The extracted release product checks passed.\n");
+    return;
+  }
   if (!testOnly) assertReleaseState();
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "gpt-tooling-release-"));
   const stage = path.join(temporary, "gpt-tooling");

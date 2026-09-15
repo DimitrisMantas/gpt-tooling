@@ -1,44 +1,15 @@
 diff --git a/.codex-plugin/plugin.json b/.codex-plugin/plugin.json
+index 474acfb..5046a4e 100644
 --- a/.codex-plugin/plugin.json
 +++ b/.codex-plugin/plugin.json
-@@ -1,5 +1,5 @@
- {
-   "name": "ponytail",
+@@ -3 +3 @@
 -  "version": "4.9.0",
 +  "version": "4.9.0+gpt-tooling.1",
-   "description": "Lazy senior dev mode. Forces the simplest, shortest solution that actually works: YAGNI, stdlib first, no unrequested abstractions.",
-   "author": {
-diff --git a/hooks/ponytail-instructions.js b/hooks/ponytail-instructions.js
---- a/hooks/ponytail-instructions.js
-+++ b/hooks/ponytail-instructions.js
-@@ -62,7 +62,3 @@ function getFallbackInstructions(mode) {
--    '## Output\n\n' +
--    'Code first. Then at most three short lines: what was skipped, when to add it. ' +
--    'If the explanation is longer than the code, delete the explanation. ' +
--    'Explanation the user explicitly asked for is not debt, give it in full.\n\n' +
-     '## When NOT to be lazy\n\n' +
-     'Never simplify away: understanding the problem (read it fully and trace the real flow before picking a rung — a small diff you do not understand is just laziness dressed up as efficiency), input validation at trust boundaries, error handling that prevents data loss, ' +
-     'security measures, accessibility basics, the calibration real hardware needs (the platform is never the spec ideal), anything the user explicitly asked to keep. ' +
-diff --git a/hooks/ponytail-runtime.js b/hooks/ponytail-runtime.js
---- a/hooks/ponytail-runtime.js
-+++ b/hooks/ponytail-runtime.js
-@@ -56,7 +56,7 @@ function writeHookOutput(event, mode, context = '') {
-     return;
-   }
-   if (isCodex) {
--    const output = { systemMessage: `PONYTAIL:${mode.toUpperCase()}` };
-+    const output = {};
-     if (context) {
-       output.hookSpecificOutput = {
-         hookEventName: event,
-diff --git a/skills/ponytail/SKILL.md b/skills/ponytail/SKILL.md
---- a/skills/ponytail/SKILL.md
-+++ b/skills/ponytail/SKILL.md
-@@ -63,17 +63,6 @@ every sibling caller still broken. Fix it once, where all callers route through.
- - Complex request? Ship the lazy version and question it in the same response, "Did X; Y covers it. Need full X? Say so." Never stall on an answer you can default.
- - Two stdlib options, same size? Take the one that's correct on edge cases. Lazy means writing less code, not picking the flimsier algorithm.
- - Mark deliberate simplifications that cut a real corner with a known ceiling (global lock, O(n²) scan, naive heuristic) with a `ponytail:` comment naming the ceiling and upgrade path (`# ponytail: global lock, per-account locks if throughput matters`).
--
+diff --git a/.openclaw/skills/ponytail/SKILL.md b/.openclaw/skills/ponytail/SKILL.md
+index a3e4d94..0768f3c 100644
+--- a/.openclaw/skills/ponytail/SKILL.md
++++ b/.openclaw/skills/ponytail/SKILL.md
+@@ -54,11 +53,0 @@ every sibling caller still broken. Fix it once, where all callers route through.
 -## Output
 -
 -Code first. Then at most three short lines: what was skipped, when to add it.
@@ -49,45 +20,84 @@ diff --git a/skills/ponytail/SKILL.md b/skills/ponytail/SKILL.md
 -give it in full, the rule is only against unrequested prose.
 -
 -Pattern: `[code] → skipped: [X], add when [Y].`
- 
- ## Intensity
- 
+-
+diff --git a/hooks/ponytail-instructions.js b/hooks/ponytail-instructions.js
+index 3ec3980..8851a74 100644
+--- a/hooks/ponytail-instructions.js
++++ b/hooks/ponytail-instructions.js
+@@ -65,4 +64,0 @@ function getFallbackInstructions(mode) {
+-    '## Output\n\n' +
+-    'Code first. Then at most three short lines: what was skipped, when to add it. ' +
+-    'If the explanation is longer than the code, delete the explanation. ' +
+-    'Explanation the user explicitly asked for is not debt, give it in full.\n\n' +
+diff --git a/hooks/ponytail-runtime.js b/hooks/ponytail-runtime.js
+index db0c477..5bb2e48 100644
+--- a/hooks/ponytail-runtime.js
++++ b/hooks/ponytail-runtime.js
+@@ -59 +59 @@ function writeHookOutput(event, mode, context = '') {
+-    const output = { systemMessage: `PONYTAIL:${mode.toUpperCase()}` };
++    const output = {};
+diff --git a/scripts/check-versions.js b/scripts/check-versions.js
+index b2b0d6f..855b45c 100644
+--- a/scripts/check-versions.js
++++ b/scripts/check-versions.js
+@@ -17,0 +18 @@ const PINNED_SEMVER = /^\d+\.\d+\.\d+$/;
++const CODEX_BUILD = '+gpt-tooling.1';
+@@ -45 +46,4 @@ const versions = VERSION_FILES.map((relPath) => {
+-  if (typeof version !== 'string' || !PINNED_SEMVER.test(version)) {
++  const base = relPath === '.codex-plugin/plugin.json' && typeof version === 'string' && version.endsWith(CODEX_BUILD)
++    ? version.slice(0, -CODEX_BUILD.length)
++    : version;
++  if (typeof version !== 'string' || !PINNED_SEMVER.test(base)) {
+@@ -49 +53 @@ const versions = VERSION_FILES.map((relPath) => {
+-  return [relPath, version];
++  return [relPath, version, base];
+@@ -53 +57 @@ const versions = VERSION_FILES.map((relPath) => {
+-const distinct = [...new Set(versions.map(([, v]) => v))];
++const distinct = [...new Set(versions.map(([, , base]) => base))];
+diff --git a/skills/ponytail/SKILL.md b/skills/ponytail/SKILL.md
+index 02c0712..d338a6c 100644
+--- a/skills/ponytail/SKILL.md
++++ b/skills/ponytail/SKILL.md
+@@ -66,11 +65,0 @@ every sibling caller still broken. Fix it once, where all callers route through.
+-## Output
+-
+-Code first. Then at most three short lines: what was skipped, when to add it.
+-No essays, no feature tours, no design notes. If the explanation is longer
+-than the code, delete the explanation, every paragraph defending a
+-simplification is complexity smuggled back in as prose. Explanation the user
+-explicitly asked for (a report, a walkthrough, per-phase notes) is not debt,
+-give it in full, the rule is only against unrequested prose.
+-
+-Pattern: `[code] → skipped: [X], add when [Y].`
+-
+diff --git a/tests/gemini-extension.test.js b/tests/gemini-extension.test.js
+index db09661..2eca74a 100644
+--- a/tests/gemini-extension.test.js
++++ b/tests/gemini-extension.test.js
+@@ -18,0 +19 @@ const PINNED_SEMVER = /^\d+\.\d+\.\d+$/;
++const CODEX_BUILD = '+gpt-tooling.1';
+@@ -61,2 +62,5 @@ test('version stays aligned with the other plugin manifests', () => {
+-    assert.match(manifest.version, PINNED_SEMVER, `${rel} version must be pinned semver`);
+-    return manifest.version;
++    const version = rel === '.codex-plugin/plugin.json' && typeof manifest.version === 'string' && manifest.version.endsWith(CODEX_BUILD)
++      ? manifest.version.slice(0, -CODEX_BUILD.length)
++      : manifest.version;
++    assert.match(version, PINNED_SEMVER, `${rel} version must be pinned semver`);
++    return version;
 diff --git a/tests/hooks.test.js b/tests/hooks.test.js
+index 44ee922..b57b4df 100644
 --- a/tests/hooks.test.js
 +++ b/tests/hooks.test.js
-@@ -59,7 +59,7 @@ let result = run('ponytail-activate.js', codexEnv);
- assert.equal(result.status, 0, result.stderr);
- assert.equal(fs.readFileSync(codexState, 'utf8'), 'ultra');
- let output = JSON.parse(result.stdout);
+@@ -62 +62 @@ let output = JSON.parse(result.stdout);
 -assert.equal(output.systemMessage, 'PONYTAIL:ULTRA');
 +assert.equal(output.systemMessage, undefined);
- assert.equal(output.additionalContext, undefined, 'Codex must not emit additionalContext at top level (#573)');
- assert.equal(output.hookSpecificOutput.hookEventName, 'SessionStart');
- assert.match(
-@@ -75,7 +75,7 @@ result = run(
- assert.equal(result.status, 0, result.stderr);
- assert.equal(fs.readFileSync(codexState, 'utf8'), 'lite');
- output = JSON.parse(result.stdout);
+@@ -78 +78 @@ output = JSON.parse(result.stdout);
 -assert.equal(output.systemMessage, 'PONYTAIL:LITE');
 +assert.equal(output.systemMessage, undefined);
- 
- // Querying bare @ponytail should report the active level ('lite') without resetting it to default ('ultra')
- result = run(
-@@ -101,7 +101,7 @@ result = run(
- assert.equal(result.status, 0, result.stderr);
- assert.equal(fs.existsSync(codexState), false);
- output = JSON.parse(result.stdout);
+@@ -104 +104 @@ output = JSON.parse(result.stdout);
 -assert.equal(output.systemMessage, 'PONYTAIL:OFF');
 +assert.equal(output.systemMessage, undefined);
- 
- // A request that merely mentions "normal mode" must not deactivate ponytail.
- result = run('ponytail-mode-tracker.js', codexEnv, JSON.stringify({ prompt: '@ponytail lite' }));
-@@ -280,7 +280,7 @@ fs.writeFileSync(path.join(subCodex, '.ponytail-active'), 'full');
- result = run('ponytail-subagent.js', { HOME: subHome, USERPROFILE: subHome, PLUGIN_DATA: subCodex });
- assert.equal(result.status, 0, result.stderr);
- output = JSON.parse(result.stdout);
+@@ -283 +283 @@ output = JSON.parse(result.stdout);
 -assert.equal(output.systemMessage, 'PONYTAIL:FULL');
 +assert.equal(output.systemMessage, undefined);
- assert.equal(output.additionalContext, undefined, 'Codex must not emit additionalContext at top level (#573)');
- assert.equal(output.hookSpecificOutput.hookEventName, 'SubagentStart');
- assert.match(output.hookSpecificOutput.additionalContext, /PONYTAIL MODE ACTIVE — level: full/);
