@@ -80,6 +80,8 @@ It favors:
 
 Sentence-length thresholds drawn from controlled technical English are diagnostics, not mandatory limits. Punctuation follows the target style and technical convention. Let the project formatter lay out source syntax while preserving complete prose and literal text, including comments and docstrings.
 
+Quire reserves binary contrast for material distinctions, corrections, expectation reversals, and trade-offs. It removes familiar or irrelevant negative setup when the affirmative point carries the useful meaning. Its default punctuation style uses colons to introduce lists after a complete lead-in, commas for simple in-line items, and semicolons for complex in-line items with internal punctuation or clause-like content. Displayed lists or separate sentences take priority when they scan more clearly.
+
 Short operational text receives checks for correctness, clarity, terminology, actionability, and unnecessary wording. Substantive documents also receive checks for audience, structure, background, uncertainty, scope, repetition, and standalone readability.
 
 ## Technical extension

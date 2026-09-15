@@ -1,6 +1,6 @@
 {
   "name": "quire",
-  "version": "1.0.0+codex.20260906152535",
+  "version": "1.0.0+codex.local-20260915-074927",
   "description": "Apply an always-on, medium-aware writing policy with Standard and Technical branches to every natural-language surface.",
   "author": {
     "name": "GPT Tooling"

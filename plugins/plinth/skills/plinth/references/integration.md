@@ -32,13 +32,15 @@ Quire governs every natural-language surface. It owns expression, document organ
 
 Apply all relevant skills together. Explicit user instructions and project requirements take precedence. Do not copy the complete policy of one skill into another.
 
-These responsibilities form a feedback loop, not mandatory sequential passes. A typing error or implementation constraint returns to Plinth when it exposes a contract problem. Ponytail can propose a smaller implementation; Plinth checks that it preserves the accepted behavior. Quire can expose an ambiguity; Plinth resolves its meaning before Quire revises the words. Routine changes need no ceremonial handoff, orchestrator, or extra agent.
+These responsibilities form a feedback loop, not mandatory sequential passes. A typing error or implementation constraint returns to Plinth when it exposes a contract problem. Ponytail can propose a smaller implementation; Plinth checks that it preserves the accepted behavior. Quire can expose an ambiguity or apparent disagreement; the orchestrator returns it to Plinth for alignment or technical resolution before Quire revises the words. Plinth owns reviewer routing, and the orchestrator performs the dispatch. Quire does not independently spawn technical reviewers. Routine changes need no ceremonial handoff or extra agent.
 
 When asked to explain composition, identify who resolves the technical conflict and how implementation or writing findings inform that decision. A list of module responsibilities alone does not explain their interaction.
 
 Mechanical tools execute selected checks; they do not acquire authority to redefine the requirement. When a rule conflicts with sound accepted semantics, inspect the finding, correct the implementation or adopt a narrow justified rule exception, and verify the resulting behavior. Use established project tests even when Ponytail's default self-check would be smaller. An interface with a real contract consumer is not speculative merely because it has one implementation.
 
-Keep the governing policy independent of programming language, framework, model, repository shape, and execution platform. Put concrete stack conventions and versioned configurations in task-selected companions. Codex hooks and manifests are the delivery adapter; they do not make Python tools or Codex-specific execution assumptions universal engineering requirements.
+Keep the governing policy independent of programming language, framework, model, repository age, repository shape, and execution platform. Apply it before a repository exists by using accepted requirements, prototypes, and governing external semantics. In an established or evolving repository, add its current code, tests, configuration, history, and local rules as project evidence. Put concrete stack conventions and versioned configurations in task-selected companions. Codex hooks and manifests are the delivery adapter; they do not make Python tools or Codex-specific execution assumptions universal engineering requirements.
+
+Keep discussion and execution legible across tools. Do not let a planner, reviewer, writing policy, implementation policy, or orchestrator convert a question or partial thought into a side effect. Pass only explicitly authorized actions to execution components. After execution, synthesize the changed state, commands that ran, observed results, and unresolved limitations for the user; do not hide a configuration or workflow change inside an internal handoff.
 
 ## Keep agent communication semantic
 

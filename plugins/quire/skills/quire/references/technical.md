@@ -52,7 +52,7 @@ Describe what a source measured, reported, compared, specified, or implemented. 
 
 Distinguish association from causation and statistical significance from practical or engineering importance. Present effect sizes, uncertainty intervals, absolute counts, percentages, analysis populations, and denominators when the accepted analysis provides them and they matter to interpretation.
 
-Treat a missing comparison as an unresolved measurement. Draw no directional conclusion from its absence. Mention missing or unspecified information when it affects interpretation, a decision, reproducibility, applicability, or uncertainty. Reserve `proof` for formal deduction and established domain-specific uses.
+Treat a missing comparison as an unresolved measurement. Draw no directional conclusion from its absence. Report a missing threshold, criterion, or decision rule as missing; do not infer that no decision can be made unless the governing contract makes that consequence explicit. Mention missing or unspecified information when it affects interpretation, a decision, reproducibility, applicability, or uncertainty. Reserve `proof` for formal deduction and established domain-specific uses.
 
 Use `optimal` only when the objective, feasible set, metric, data, constraints, and domain are explicit. Use `best`, `superior`, and equivalent rankings only for named alternatives under a stated protocol. Treat untested alternatives as unranked.
 

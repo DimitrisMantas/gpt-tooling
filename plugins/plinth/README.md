@@ -65,6 +65,12 @@ Plinth resolves inspectable facts before asking the user. When several real deci
 
 This produces the intended interaction: investigate the problem and evidence aggressively, involve the user minimally, and preserve user ownership where judgment actually matters.
 
+### Separate discussion from authorization
+
+Plinth treats questions as requests for answers. Observations, corrections, preferences, possibilities, and partial thoughts update the working context without authorizing side effects. It accumulates these short messages as provisional requirements until the user explicitly asks to plan, decide, change, run, send, install, deploy, or take another action.
+
+A clear direct request receives action without ceremonial confirmation. When a proposed action or its scope remains unclear, Plinth names the action and consequence, then asks one focused question before acting. Authorization stays limited to the object and scope the user granted. A challenge about an earlier action does not authorize a rollback. Every completed action is reported with its observed result or remaining uncertainty.
+
 ### Verify claims directly
 
 A changed implementation is not evidence that a defect is fixed. A reviewer report is not evidence that a claim is correct. Before making a material success claim, Plinth seeks the most direct practical evidence available. When direct verification is unavailable or disproportionate, it states what was verified and what remains unverified.
@@ -89,11 +95,11 @@ Technical feedback is evidence or a proposal to evaluate. Reviewer identity does
 
 Optional Plinth agents are documented in the [agent guide](codex-agents/README.md):
 
-- `plinth_methods.toml` checks scientific, statistical, experimental, and evaluation validity.
-- `plinth_code.toml` checks implementation fidelity and material code-level defects.
-- `plinth_claims.toml` checks whether available evidence supports a consequential claim.
+- `plinth_approach_reviewer.toml` checks engineering approaches, methods, designs, and materially better established alternatives.
+- `plinth_software_reviewer.toml` checks software correctness, requirement fidelity, regressions, and better established implementations.
+- `plinth_findings_reviewer.toml` checks consequential findings, interpretations, supporting evidence, and more defensible formulations.
 
-Use one only for a distinct material failure mode or bounded investigation that benefits from fresh context. The parent agent retains synthesis and decision ownership.
+Plinth routes one automatically when a distinct material review axis or bounded investigation benefits from fresh context. The parent agent retains alignment, synthesis, teaching, and decision ownership.
 
 ## Progressive policy
 

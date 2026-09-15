@@ -193,6 +193,32 @@ Expected behavior:
 - Quire follows the target style and may use `20–40 m`.
 - Punctuation supports clarity instead of acting as a blanket prohibition or synthetic flourish.
 
+## Material contrast
+
+Prompt:
+
+> Edit a paragraph that uses several immediate and multi-sentence binary contrasts for generic setup, followed by one comparison whose different failure behavior controls the decision.
+
+Expected behavior:
+
+- Quire states the useful affirmative point directly and removes negative setup that adds no material meaning.
+- It preserves the comparison whose distinction changes interpretation or action.
+- It does not replace a deleted binary frame with a synonym or spread the same weak opposition across more sentences.
+- A real correction, trade-off, expectation reversal, or failure boundary remains available when it matters.
+
+## Colons and semicolons follow list structure
+
+Prompt:
+
+> Edit prose containing a simple series, a complex inline series with internal commas, and a colon used as a dramatic hinge before a conclusion.
+
+Expected behavior:
+
+- Commas separate simple words or phrases.
+- A colon follows a complete lead-in and introduces a list.
+- Semicolons separate complex in-line items that contain internal commas or clause-like content.
+- A full stop or direct sentence replaces a colon that merely joins explanatory prose; a displayed list replaces an in-line series when that structure scans better.
+
 ## Sentence thresholds
 
 Prompt:

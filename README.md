@@ -100,13 +100,13 @@ Automatic mode routes by purpose rather than by nouns. A business report or repo
 
 ## Plinth agents
 
-Plinth includes bounded profiles for methods, code, and claim review. They are optional because reviewer topology should follow the material failure modes of the task. See the [Plinth agent guide](plugins/plinth/codex-agents/README.md), then install them when you want the profiles available in your Codex agent directory:
+Plinth includes bounded approach, software, and findings reviewer profiles. Installing the profiles makes them available for automatic, task-dependent routing; the user does not need to choose among them. Reviewer topology follows the material questions in the task and works with proposed, new, established, and evolving repositories. See the [Plinth agent guide](plugins/plinth/codex-agents/README.md), then install the profiles in your Codex agent directory:
 
 ```bash
 node plugins/plinth/scripts/install-agents.js
 ```
 
-The parent agent retains synthesis and decision ownership. Reviewers communicate findings and evidence in ordinary technical prose, accept clean results, and do not create recursive review hierarchies.
+The parent agent retains alignment, synthesis, teaching, and decision ownership. Reviewers compare the current proposal with credible established alternatives against named objectives, communicate findings and evidence in ordinary technical prose, accept clean results, and do not create recursive review hierarchies. Every reviewer can operate in normal or adversarial mode; adversarial mode strengthens the examination without requiring a negative verdict.
 
 ## Repository layout
 
@@ -141,23 +141,30 @@ Run the complete suite from the repository root:
 node scripts/test.js
 ```
 
-The suite requires Node.js, Git, uv, an authenticated Codex CLI, and the initialized Ponytail submodule. It runs every mechanical check group, the upstream Ponytail tests, the Python companion checks, release assembly and extraction checks, and every behavioral case. Python tooling is optional for adoption but mandatory to verify its supported companion profile. There are no tiers or case selectors. Every expected result must pass; a failure, execution error, or incomplete case makes the command fail. Results from different runs are never combined into a passing result.
+If an external interruption stops behavioral evaluation, continue the recorded run without repeating completed cases:
+
+```bash
+node scripts/test.js continue dist/tests/<run>/report.json
+```
+
+The suite requires Node.js, Git, uv, an authenticated Codex CLI, and the initialized Ponytail submodule. It runs every mechanical check group, the upstream Ponytail tests, the Python companion checks, release assembly and extraction checks, and every behavioral case. Python tooling is optional for adoption but mandatory to verify its supported companion profile. There are no tiers or case selectors. Continuation resumes one checkpointed run and does not create a second suite level. Every expected result must pass; a failure, execution error, or incomplete case makes the command fail. Results from different runs are never combined into a passing result.
 
 | Responsibility | Coverage |
 | --- | --- |
 | Integration | Manifests, hook events, mode persistence, selector parsing, reviewer restrictions, installer behavior, Unicode transport, compatibility patch, and release roundtrip |
 | Ponytail | Rule and version consistency, runtime, Pi extension, MCP instructions, line-count examples, and correctness examples |
 | Engineering | Conventional methods, proportional evidence, decision order, scope, direct verification, review feedback, and completion conditions |
-| Planning | Initial alignment, progressive clarification across turns, answer incorporation, and stopping when requirements are sufficient |
+| Planning | Initial alignment, fragmented intent, progressive clarification across turns, answer incorporation, and stopping when requirements are sufficient |
+| Action boundary | Questions, discussion, prior authorization, corrections, explicit changes, explicit test runs, action reporting, and overreach recovery |
 | Software and hardware | Shared fixes, existing capabilities, trust boundaries, interface semantics, calibration, and the optional Python type/runtime profile |
 | Teaching | New concepts, demonstrated expertise, mixed knowledge, requested depth, requested brevity, and correction after a follow-up |
 | Writing and composition | Mode selection, technical meaning, uncertainty, null results, interagent prose, and module authority |
 
-Behavioral cases in [evals/cases.json](evals/cases.json) check general outcomes rather than stock phrases or a preferred implementation language. Concrete fixtures supply the evidence needed to answer each prompt. Coverage tags require every major responsibility to remain represented. The scenario catalogs provide additional context: [Plinth behavior](plugins/plinth/evals/behavior.md) and [Quire behavior](plugins/quire/evals/behavior.md).
+Behavioral cases in [evals/cases.json](evals/cases.json) check general outcomes rather than stock phrases or a preferred implementation language. Concrete fixtures supply the evidence needed to answer each prompt. Side-effect cases use isolated writable fixtures: discussion cases must preserve protected files and command markers, while explicit-action counter-cases must perform the named edit or command. Coverage tags require every major responsibility to remain represented. The scenario catalogs provide additional context: [Plinth behavior](plugins/plinth/evals/behavior.md) and [Quire behavior](plugins/quire/evals/behavior.md).
 
 Candidates receive a snapshot of the current checkout's policies, including the patched Ponytail policy. Candidate and grader processes use clean contexts with user configuration, hooks, plugins, and repository instruction discovery disabled. This tests policy composition; mechanical lifecycle checks exercise hooks separately. It does not establish that a particular user's installed plugin cache discovers the policies correctly. Known-answer checks require the semantic grader to both accept a supported statement and reject an unsupported causal claim before evaluating candidates. Deterministic requirements use direct checks where possible. Behavioral results remain observations of the recorded model and prompts, not guarantees about every future response.
 
-The default test-taking target and its independent evaluator use `gpt-5.6-sol` with medium reasoning effort. `GPT_TOOLING_EVAL_MODEL` can select another available model for both roles. Records include both reasoning settings, policy hashes, prompts, responses, criteria, grades, and deterministic results. Logs and a checkpointed `report.json` live under `dist/tests/<run>/`. The summary counts mechanical check groups and behavioral cases separately from the individual assertions and upstream tests recorded in group logs. Interrupted runs retain completed evidence and mark unfinished work incomplete; rerun the same command for a new complete result.
+The default test-taking target and its independent evaluator use `gpt-5.6-sol` with medium reasoning effort. `GPT_TOOLING_EVAL_MODEL` can select another available model for both roles. Records include the candidate source root, a complete case-definition hash, both reasoning settings, policy hashes, prompts, responses, criteria, grades, and deterministic results. A checkpoint cannot resume after its policy or case definitions change. Logs and a checkpointed `report.json` live under `dist/tests/<run>/`. The summary counts mechanical check groups and behavioral cases separately from the individual assertions and upstream tests recorded in group logs. Interrupted runs retain completed evidence and mark unfinished work incomplete.
 
 ## Release packaging
 

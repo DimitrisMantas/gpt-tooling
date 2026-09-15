@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
 const fs = require("fs");
+const crypto = require("crypto");
 const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const { isDeepStrictEqual } = require("util");
 
 const root = path.join(__dirname, "..");
 const casesPath = path.join(root, "evals", "cases.json");
@@ -39,8 +41,19 @@ function cases() {
     if (!item.id || ids.has(item.id) || !item.prompt || !Array.isArray(item.criteria) || !item.criteria.length || !Array.isArray(item.covers) || !item.covers.length || item.covers.some((area) => !requiredCoverage.includes(area))) {
       throw new Error(`The behavioral case is invalid: ${item.id || "unnamed"}.`);
     }
+    if (item.fixture && (typeof item.fixture !== "object" || Array.isArray(item.fixture) || !item.fixture.files || Object.values(item.fixture.files).some((value) => typeof value !== "string"))) {
+      throw new Error(`The behavioral fixture is invalid: ${item.id}.`);
+    }
     for (const check of item.checks || []) {
-      if (check.type !== "paragraph-count" || !Number.isInteger(check.equals) || check.equals < 1 || !check.description) {
+      const valid = check.description && (
+        (check.type === "paragraph-count" && Number.isInteger(check.equals) && check.equals > 0)
+        || (check.type === "word-count-max" && Number.isInteger(check.atMost) && check.atMost > 0)
+        || (check.type === "file-unchanged" && typeof check.path === "string" && item.fixture?.files?.[check.path] !== undefined)
+        || (check.type === "file-absent" && typeof check.path === "string")
+        || (check.type === "file-equals" && typeof check.path === "string" && typeof check.equals === "string")
+        || (check.type === "json-file-equals" && typeof check.path === "string" && check.equals && typeof check.equals === "object")
+      );
+      if (!valid) {
         throw new Error(`The deterministic check is invalid: ${item.id}.`);
       }
     }
@@ -52,14 +65,14 @@ function cases() {
   return items;
 }
 
-function execArguments(output, schema, cwd, clean, reasoningEffort = candidateReasoningEffort) {
+function execArguments(output, schema, cwd, clean, reasoningEffort = candidateReasoningEffort, sandbox = "read-only") {
   const args = ["exec"];
   if (clean) args.push("--ignore-user-config", "--ignore-rules", "--disable", "hooks", "--disable", "plugins", "--config", "project_doc_max_bytes=0");
   args.push(
     "--ephemeral",
     "--skip-git-repo-check",
     "--sandbox",
-    "read-only",
+    sandbox,
     "--model",
     model,
     "--config",
@@ -73,9 +86,9 @@ function execArguments(output, schema, cwd, clean, reasoningEffort = candidateRe
   return args;
 }
 
-function execCodex(prompt, output, schema, cwd, clean = false, reasoningEffort = candidateReasoningEffort) {
+function execCodex(prompt, output, schema, cwd, clean = false, reasoningEffort = candidateReasoningEffort, sandbox = "read-only") {
   const cli = codexCommand();
-  const args = [...cli.prefix, ...execArguments(output, schema, cwd, clean, reasoningEffort)];
+  const args = [...cli.prefix, ...execArguments(output, schema, cwd, clean, reasoningEffort, sandbox)];
   run(cli.command, args, { cwd, input: prompt });
   return fs.readFileSync(output, "utf8").trim();
 }
@@ -84,15 +97,52 @@ function manifestVersion(name) {
   return JSON.parse(fs.readFileSync(path.join(root, "plugins", name, ".codex-plugin", "plugin.json"), "utf8")).version;
 }
 
-function deterministicChecks(item, output) {
+function fixturePath(directory, name) {
+  const resolved = path.resolve(directory, name);
+  if (resolved !== directory && !resolved.startsWith(`${directory}${path.sep}`)) throw new Error(`Fixture path escapes its case directory: ${name}.`);
+  return resolved;
+}
+
+function prepareCase(item, temporary) {
+  const directory = path.join(temporary, "cases", item.id);
+  fs.mkdirSync(directory, { recursive: true });
+  for (const [name, content] of Object.entries(item.fixture?.files || {})) {
+    const target = fixturePath(directory, name);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, content, "utf8");
+  }
+  return directory;
+}
+
+function deterministicChecks(item, output, directory) {
   return (item.checks || []).map((check) => {
-    const actual = output.trim().split(/\r?\n[ \t]*\r?\n+/).filter((paragraph) => paragraph.trim()).length;
+    if (check.type === "paragraph-count") {
+      const actual = output.trim().split(/\r?\n[ \t]*\r?\n+/).filter((paragraph) => paragraph.trim()).length;
+      return { type: check.type, description: check.description, expected: check.equals, actual, pass: actual === check.equals };
+    }
+    if (check.type === "word-count-max") {
+      const actual = output.trim() ? output.trim().split(/\s+/).length : 0;
+      return { type: check.type, description: check.description, expected: { atMost: check.atMost }, actual, pass: actual <= check.atMost };
+    }
+    const target = fixturePath(directory, check.path);
+    if (check.type === "file-absent") {
+      const actual = fs.existsSync(target) ? "present" : "absent";
+      return { type: check.type, description: check.description, path: check.path, expected: "absent", actual, pass: actual === "absent" };
+    }
+    const actual = fs.existsSync(target) ? fs.readFileSync(target, "utf8") : null;
+    const expected = check.type === "file-unchanged" ? item.fixture.files[check.path] : check.equals;
+    if (check.type === "json-file-equals") {
+      let parsed = null;
+      try { parsed = actual === null ? null : JSON.parse(actual); } catch {}
+      return { type: check.type, description: check.description, path: check.path, expected, actual: parsed, pass: isDeepStrictEqual(parsed, expected) };
+    }
     return {
       type: check.type,
       description: check.description,
-      expected: check.equals,
+      path: check.path,
+      expected,
       actual,
-      pass: actual === check.equals
+      pass: actual === expected
     };
   });
 }
@@ -129,6 +179,7 @@ function localPolicy(temporary) {
 
 function runSuite(outputDirectory, execute = execCodex, resumePath) {
   const selected = cases();
+  const caseDefinitionsHash = crypto.createHash("sha256").update(JSON.stringify(selected)).digest("hex");
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "gpt-tooling-eval-"));
   const schema = path.join(temporary, "grader-schema.json");
   fs.writeFileSync(schema, JSON.stringify({
@@ -152,6 +203,7 @@ function runSuite(outputDirectory, execute = execCodex, resumePath) {
     model,
     candidateReasoningEffort,
     graderReasoningEffort,
+    caseDefinitionsHash,
     graderIsolation: {
       ignoredUserConfig: true,
       ignoredRules: true,
@@ -159,6 +211,7 @@ function runSuite(outputDirectory, execute = execCodex, resumePath) {
       disabledFeatures: ["hooks", "plugins"]
     },
     toolkit: {
+      sourceRoot: root,
       plinth: manifestVersion("plinth"),
       quire: manifestVersion("quire"),
       ponytailCommit: "2ed6c52c9d7e5e56942508591085fd45dea277d3"
@@ -167,7 +220,7 @@ function runSuite(outputDirectory, execute = execCodex, resumePath) {
     graderChecks: []
   };
   if (resumed) {
-    if (report.model !== model || report.candidateReasoningEffort !== candidateReasoningEffort || report.graderReasoningEffort !== graderReasoningEffort || JSON.stringify(report.selectedCases) !== JSON.stringify(selected.map((item) => item.id))) {
+    if (report.model !== model || report.candidateReasoningEffort !== candidateReasoningEffort || report.graderReasoningEffort !== graderReasoningEffort || report.caseDefinitionsHash !== caseDefinitionsHash || JSON.stringify(report.selectedCases) !== JSON.stringify(selected.map((item) => item.id))) {
       throw new Error("The checkpoint does not match the current behavioral suite configuration.");
     }
     if (records.some((record, index) => record.id !== selected[index]?.id) || records.slice(0, -1).some((record) => record.pass === null)) {
@@ -180,7 +233,15 @@ function runSuite(outputDirectory, execute = execCodex, resumePath) {
   function save() {
     fs.mkdirSync(outputDirectory, { recursive: true });
     fs.writeFileSync(`${outputPath}.tmp`, `${JSON.stringify(report, null, 2)}\n`, "utf8");
-    fs.renameSync(`${outputPath}.tmp`, outputPath);
+    for (let attempt = 0; ; attempt += 1) {
+      try {
+        fs.renameSync(`${outputPath}.tmp`, outputPath);
+        break;
+      } catch (error) {
+        if (attempt === 4 || !["EACCES", "EBUSY", "EPERM"].includes(error.code)) throw error;
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 25 * (attempt + 1));
+      }
+    }
   }
   let policy;
   try {
@@ -188,7 +249,7 @@ function runSuite(outputDirectory, execute = execCodex, resumePath) {
     if (resumed && JSON.stringify(report.candidatePolicy?.hashes) !== JSON.stringify(policy.hashes)) {
       throw new Error("The local policy changed after the checkpoint; continuing would mix policy versions.");
     }
-    report.candidatePolicy = { source: "local-snapshot", delivery: "inline-stdin", hooksEnabled: false, hashes: policy.hashes };
+    report.candidatePolicy = { source: "local-snapshot", sourceRoot: root, delivery: "inline-stdin", hooksEnabled: false, hashes: policy.hashes };
     save();
     for (const [name, response, expected] of report.graderChecks.length ? [] : [
       ["supported", "The two quantities changed together; causation is not established.", true],
@@ -207,15 +268,18 @@ function runSuite(outputDirectory, execute = execCodex, resumePath) {
       save();
       const graderPath = path.join(temporary, `${item.id}-grader.json`);
       if (!record) {
+        const caseDirectory = prepareCase(item, temporary);
+        const sandbox = item.fixture ? "workspace-write" : "read-only";
         const responsePath = path.join(temporary, `${item.id}-response.txt`);
-        const output = execute(policy.prompt + item.prompt, responsePath, null, temporary, true, candidateReasoningEffort);
+        const output = execute(policy.prompt + item.prompt, responsePath, null, caseDirectory, true, candidateReasoningEffort, sandbox);
         record = {
           id: item.id,
           covers: item.covers,
           prompt: item.prompt,
           semanticCriteria: item.criteria,
+          candidateExecution: { sandbox, workingDirectory: caseDirectory, fixtureFiles: Object.keys(item.fixture?.files || {}) },
           output,
-          deterministicChecks: deterministicChecks(item, output),
+          deterministicChecks: deterministicChecks(item, output, caseDirectory),
           pass: null
         };
         records.push(record);
@@ -277,14 +341,18 @@ function resumeSuite(checkpointPath, execute = execCodex) {
 function selfTest() {
   const items = cases();
   const paragraphCase = items.find((item) => item.id === "ponytail-does-not-govern-prose");
-  if (!deterministicChecks(paragraphCase, "One.\n\nTwo.\n\nThree.\n\nFour.")[0].pass) throw new Error("The paragraph-count check rejected valid output.");
-  if (deterministicChecks(paragraphCase, "One.\n\nTwo.\n\nThree.")[0].pass) throw new Error("The paragraph-count check accepted invalid output.");
+  if (!deterministicChecks(paragraphCase, "One.\n\nTwo.\n\nThree.\n\nFour.", root)[0].pass) throw new Error("The paragraph-count check rejected valid output.");
+  if (deterministicChecks(paragraphCase, "One.\n\nTwo.\n\nThree.", root)[0].pass) throw new Error("The paragraph-count check accepted invalid output.");
+  const wordCase = items.find((item) => item.id === "fragmented-discussion-remains-provisional");
+  if (!deterministicChecks(wordCase, "Concise response.", root).find((check) => check.type === "word-count-max").pass) throw new Error("The word-count check rejected concise output.");
+  if (deterministicChecks(wordCase, `${"word ".repeat(181)}`.trim(), root).find((check) => check.type === "word-count-max").pass) throw new Error("The word-count check accepted excessive output.");
   const cleanArgs = execArguments("output", "schema", root, true);
   for (const argument of ["--ignore-user-config", "--ignore-rules", "hooks", "plugins", "project_doc_max_bytes=0"]) {
     if (!cleanArgs.includes(argument)) throw new Error(`The clean grader context omits ${argument}.`);
   }
   if (!cleanArgs.includes(`model_reasoning_effort=\"${candidateReasoningEffort}\"`)) throw new Error("The candidate reasoning effort is incorrect.");
   if (!execArguments("output", "schema", root, true, graderReasoningEffort).includes(`model_reasoning_effort=\"${graderReasoningEffort}\"`)) throw new Error("The grader reasoning effort is incorrect.");
+  if (!execArguments("output", null, root, true, candidateReasoningEffort, "workspace-write").includes("workspace-write")) throw new Error("The candidate sandbox is not selectable.");
   const cli = codexCommand();
   run(cli.command, [...cli.prefix, "--version"]);
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), "gpt-tooling-policy-test-"));
@@ -295,6 +363,11 @@ function selfTest() {
       if (!policy.prompt.includes(heading)) throw new Error(`The inline policy snapshot omits ${heading}.`);
     }
     const assert = require("assert/strict");
+    const effectCase = items.find((item) => item.id === "explicit-config-change-is-executed-and-reported");
+    const effectDirectory = prepareCase(effectCase, temporary);
+    assert.ok(deterministicChecks(effectCase, "Done.", effectDirectory).some((check) => !check.pass));
+    fs.writeFileSync(path.join(effectDirectory, "eval-config.json"), '{"graderReasoningEffort":"medium"}\n');
+    assert.ok(deterministicChecks(effectCase, "Done.", effectDirectory).every((check) => check.pass));
     const npmRoot = path.join(temporary, "npm with spaces");
     const entrypoint = path.join(npmRoot, "node_modules", "@openai", "codex", "bin", "codex.js");
     fs.mkdirSync(path.dirname(entrypoint), { recursive: true });
@@ -328,8 +401,13 @@ function selfTest() {
     assert.equal(report.activeCase, report.cases[1].id);
     assert.match(report.error, /semantic grade is invalid/);
     assert.ok(report.candidatePolicy.hashes);
-    const resumedResult = resumeSuite(path.join(outputDirectory, fs.readdirSync(outputDirectory)[0]), (prompt, _output, schema) => {
+    function applySyntheticEffects(prompt, cwd) {
+      if (prompt.includes("Set graderReasoningEffort to medium in eval-config.json")) fs.writeFileSync(path.join(cwd, "eval-config.json"), '{"graderReasoningEffort":"medium"}\n');
+      if (prompt.includes("Run node test.js in the fixture")) fs.writeFileSync(path.join(cwd, "test-ran.txt"), "ran\n");
+    }
+    const resumedResult = resumeSuite(path.join(outputDirectory, fs.readdirSync(outputDirectory)[0]), (prompt, _output, schema, cwd) => {
       if (prompt.startsWith("Judge this candidate")) return JSON.stringify({ pass: !prompt.includes("Candidate: The observation proves"), rationale: "Test grade" });
+      if (!schema) applySyntheticEffects(prompt, cwd);
       return schema ? '{"pass":true,"rationale":"Test grade"}' : "One.\n\nTwo.\n\nThree.\n\nFour.";
     });
     assert.equal(resumedResult.status, "completed");
@@ -337,8 +415,9 @@ function selfTest() {
     assert.equal(resumedResult.cases.every((item) => item.pass === true), true);
     assert.equal(resumedResult.resumedAt.length, 1);
     const completedDirectory = path.join(temporary, "completed");
-    const completeResult = runSuite(completedDirectory, (prompt, _output, schema) => {
+    const completeResult = runSuite(completedDirectory, (prompt, _output, schema, cwd) => {
       if (prompt.startsWith("Judge this candidate")) return JSON.stringify({ pass: !prompt.includes("Candidate: The observation proves"), rationale: "Test grade" });
+      if (!schema) applySyntheticEffects(prompt, cwd);
       return schema ? '{"pass":true,"rationale":"Test grade"}' : "One.\n\nTwo.\n\nThree.\n\nFour.";
     });
     const completed = JSON.parse(fs.readFileSync(path.join(completedDirectory, fs.readdirSync(completedDirectory)[0]), "utf8"));

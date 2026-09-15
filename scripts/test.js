@@ -14,6 +14,18 @@ function testFiles(directory) {
   return files.map((file) => path.join(directory, file));
 }
 
+function replaceFile(source, target) {
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      fs.renameSync(source, target);
+      return;
+    } catch (error) {
+      if (attempt === 4 || !["EACCES", "EBUSY", "EPERM"].includes(error.code)) throw error;
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 25 * (attempt + 1));
+    }
+  }
+}
+
 function passed(report) {
   return report.status === "completed"
     && report.mechanical.length === report.expectedMechanical.length
@@ -64,7 +76,7 @@ function resumeReport(reportPath) {
   }
   report.pass = passed(report);
   fs.writeFileSync(`${reportPath}.tmp`, `${JSON.stringify(report, null, 2)}\n`);
-  fs.renameSync(`${reportPath}.tmp`, reportPath);
+  replaceFile(`${reportPath}.tmp`, reportPath);
   const checked = [...report.mechanical, ...(report.behavioral?.cases || [])];
   const passCount = checked.filter((item) => item.pass === true).length;
   const failCount = checked.filter((item) => item.pass === false).length;
@@ -108,7 +120,7 @@ function main() {
   const reportPath = path.join(directory, "report.json");
   function save() {
     fs.writeFileSync(`${reportPath}.tmp`, `${JSON.stringify(report, null, 2)}\n`);
-    fs.renameSync(`${reportPath}.tmp`, reportPath);
+    replaceFile(`${reportPath}.tmp`, reportPath);
   }
   save();
   process.stdout.write(`Test record: ${reportPath}\n`);
@@ -149,8 +161,9 @@ function main() {
 
 if (require.main === module) {
   if (process.argv.length === 2) main();
+  else if (process.argv.length === 4 && process.argv[2] === "continue") resumeReport(path.resolve(process.argv[3]));
   else {
-    process.stderr.write("Usage: node scripts/test.js\n");
+    process.stderr.write("Usage: node scripts/test.js [continue <report.json>]\n");
     process.exitCode = 2;
   }
 }
